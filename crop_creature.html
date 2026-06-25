@@ -112,6 +112,17 @@
   .pupil{width:44%;height:44%;background:#2b2b3a;border-radius:50%;animation:googly 1.8s ease-in-out infinite;}
   @keyframes googly{0%,100%{transform:translate(0,1px)}25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
   .mouth{width:24%;height:12%;border:3px solid #2b2b3a;border-top:none;border-radius:0 0 999px 999px;background:#ff7a9b;}
+  .presets{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+  .presets button{font-size:22px;width:46px;height:46px;border-radius:50%;border:2px solid #e0e8d6;background:#fff;cursor:pointer;box-shadow:0 3px 8px rgba(76,166,76,.1);}
+  .presets button.on{border-color:var(--leaf-d);background:#eafae0;transform:scale(1.06);}
+  #creatureBox.p-wow .eye{width:23%;}
+  #creatureBox.p-wow .mouth{width:13%;aspect-ratio:1;height:auto;border:3px solid #2b2b3a;border-radius:50%;background:#ff7a9b;}
+  #creatureBox.p-cool .pupil{display:none;}
+  #creatureBox.p-cool .eye{background:#23232f;border-color:#23232f;}
+  #creatureBox.p-cool .mouth{transform:translate(-50%,-50%) rotate(-8deg);border-radius:0 0 999px 0;}
+  #creatureBox.p-sad .mouth{border:3px solid #2b2b3a;border-bottom:none;border-radius:999px 999px 0 0;background:transparent;}
+  #creatureBox.p-sleepy .eye{background:transparent;border:none;box-shadow:none;border-bottom:3px solid #2b2b3a;border-radius:0 0 999px 999px;height:9%;}
+  #creatureBox.p-sleepy .pupil{display:none;}
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 </head>
@@ -166,7 +177,7 @@
       <h1 class="alive-title">It's <span style="color:var(--pink-d)">ALIVE!</span> ✨</h1>
     </div>
     <div class="stage" id="stage">
-      <div class="creature-box" id="creatureBox">
+      <div class="creature-box p-happy" id="creatureBox">
         <img class="creature-cut" id="creatureCut" alt="your creature">
         <div class="feat eye" data-f="eyeL" style="left:30%;top:28%"><span class="pupil"></span></div>
         <div class="feat eye" data-f="eyeR" style="left:55%;top:28%"><span class="pupil"></span></div>
@@ -177,6 +188,13 @@
       <div id="creatureLoading" style="display:none;font-weight:700;color:var(--leaf-d);margin-top:10px;">✨ Making your creature…</div>
     </div>
 
+    <div class="presets" id="presets">
+      <button data-p="happy" class="on">😀</button>
+      <button data-p="wow">😮</button>
+      <button data-p="cool">😎</button>
+      <button data-p="sad">🥲</button>
+      <button data-p="sleepy">😴</button>
+    </div>
     <label class="consent"><input type="checkbox" id="saveConsent">
       <span>I'm a parent/guardian and I agree to save this creature card to <b>this device only</b>. Nothing is uploaded.</span></label>
     <div class="row2">
@@ -226,7 +244,7 @@ fileInput.addEventListener('change',async e=>{
     const mod=await import('https://esm.sh/@imgly/background-removal@1.5.8');
     const blob=await mod.removeBackground(f);
     const cropped=await cropToSubject(blob);
-    if(cropped) cutURL=cropped;
+    if(cropped&&cropped.url){ cutURL=cropped.url; if(cropped.pos) applyPos(cropped.pos); }
   }catch(err){ /* fallback: use original photo if bg removal unavailable */ }
   loading.style.display='none';
   const cut=document.getElementById('creatureCut');
@@ -240,17 +258,32 @@ function cropToSubject(blob){ return new Promise(res=>{
     const cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
     const c=document.createElement('canvas'); c.width=cw;c.height=ch;
     const x=c.getContext('2d'); x.drawImage(img,0,0,cw,ch);
-    let d; try{ d=x.getImageData(0,0,cw,ch).data; }catch(e){ res(c.toDataURL('image/png')); return; }
+    let d; try{ d=x.getImageData(0,0,cw,ch).data; }catch(e){ res({url:c.toDataURL('image/png'),pos:null}); return; }
     let minx=cw,miny=ch,maxx=0,maxy=0,found=false;
     for(let y=0;y<ch;y++)for(let xx=0;xx<cw;xx++){ if(d[(y*cw+xx)*4+3]>24){found=true; if(xx<minx)minx=xx; if(xx>maxx)maxx=xx; if(y<miny)miny=y; if(y>maxy)maxy=y;} }
-    if(!found){ res(c.toDataURL('image/png')); return; }
+    if(!found){ res({url:c.toDataURL('image/png'),pos:null}); return; }
     const pad=Math.round(Math.max(maxx-minx,maxy-miny)*0.08);
     minx=Math.max(0,minx-pad);miny=Math.max(0,miny-pad);maxx=Math.min(cw,maxx+pad);maxy=Math.min(ch,maxy+pad);
     const bw=maxx-minx,bh=maxy-miny,o=document.createElement('canvas'); o.width=bw;o.height=bh;
-    o.getContext('2d').drawImage(c,minx,miny,bw,bh,0,0,bw,bh);
-    res(o.toDataURL('image/png'));
+    const oc=o.getContext('2d'); oc.drawImage(c,minx,miny,bw,bh,0,0,bw,bh);
+    let pos=null;
+    try{ const od=oc.getImageData(0,0,bw,bh).data;
+      const band=(y0,y1)=>{ let mn=bw,mx=0,sx=0,n=0; for(let y=Math.floor(y0*bh);y<Math.floor(y1*bh);y++)for(let xx=0;xx<bw;xx++){ if(od[(y*bw+xx)*4+3]>40){ if(xx<mn)mn=xx; if(xx>mx)mx=xx; sx+=xx;n++; } } return n?{mn:mn/bw,mx:mx/bw,cx:(sx/n)/bw}:null; };
+      const eb=band(0.20,0.42), mb=band(0.46,0.64);
+      if(eb){ const sp=Math.min(0.26,Math.max(0.12,(eb.mx-eb.mn)*0.24));
+        pos={ eyeL:[Math.max(8,(eb.cx-sp)*100),30], eyeR:[Math.min(92,(eb.cx+sp)*100),30], mouth:[((mb?mb.cx:eb.cx))*100,54] }; }
+    }catch(e){}
+    res({url:o.toDataURL('image/png'),pos:pos});
   }; img.onerror=()=>res(null); img.src=URL.createObjectURL(blob);
 });}
+function applyPos(p){ const set=(id,a)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); if(e){e.style.left=a[0]+'%'; e.style.top=a[1]+'%';}};
+  if(p.eyeL)set('eyeL',p.eyeL); if(p.eyeR)set('eyeR',p.eyeR); if(p.mouth)set('mouth',p.mouth); }
+/* expression presets */
+const PRESETS=['happy','wow','cool','sad','sleepy'];
+function setPreset(name){ const box=document.getElementById('creatureBox'); PRESETS.forEach(p=>box.classList.remove('p-'+p)); box.classList.add('p-'+name);
+  document.querySelectorAll('#presets button').forEach(x=>x.classList.toggle('on',x.dataset.p===name)); }
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>setPreset(b.dataset.p));
+function curPreset(){ const m=document.getElementById('creatureBox').className.match(/p-(happy|wow|cool|sad|sleepy)/); return m?m[1]:'happy'; }
 /* drag the eyes & mouth */
 document.querySelectorAll('.feat').forEach(el=>{
   let drag=false;
@@ -278,7 +311,7 @@ document.getElementById('again').onclick=()=>{
   document.getElementById('creatureCut').removeAttribute('src');
   document.getElementById('saveConsent').checked=false; refreshLock();
   const setp=(id,l,t)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); e.style.left=l; e.style.top=t;};
-  setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('mouth','42%','54%');
+  setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('mouth','42%','54%'); setPreset('happy');
   go(0);
 };
 
@@ -315,11 +348,17 @@ function load(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);
 
 function _pct(v){ return parseFloat(v||'50')/100; }
 function drawFeaturesOnCard(c,dx,dy,dw,dh){
-  ['eyeL','eyeR'].forEach(id=>{ const e=document.querySelector('.feat[data-f="'+id+'"]'); const cx=dx+_pct(e.style.left)*dw, cy=dy+_pct(e.style.top)*dh, r=0.095*dw;
-    c.beginPath();c.arc(cx,cy,r,0,7);c.fillStyle='#fff';c.fill();c.lineWidth=Math.max(2,r*0.18);c.strokeStyle='#2b2b3a';c.stroke();
-    c.beginPath();c.arc(cx,cy+r*0.12,r*0.42,0,7);c.fillStyle='#2b2b3a';c.fill(); });
+  const pr=curPreset();
+  ['eyeL','eyeR'].forEach(id=>{ const e=document.querySelector('.feat[data-f="'+id+'"]'); const cx=dx+_pct(e.style.left)*dw, cy=dy+_pct(e.style.top)*dh; let r=0.095*dw; if(pr==='wow') r*=1.18;
+    c.lineWidth=Math.max(2,r*0.2); c.strokeStyle='#2b2b3a'; c.lineCap='round';
+    if(pr==='sleepy'){ c.beginPath(); c.arc(cx,cy,r,0.15*Math.PI,0.85*Math.PI); c.stroke(); return; }
+    c.beginPath();c.arc(cx,cy,r,0,7); c.fillStyle=(pr==='cool')?'#23232f':'#fff'; c.fill(); c.stroke();
+    if(pr!=='cool'){ c.beginPath();c.arc(cx,cy+r*0.12,r*0.42,0,7);c.fillStyle='#2b2b3a';c.fill(); } });
   const m=document.querySelector('.feat[data-f="mouth"]'); const mx=dx+_pct(m.style.left)*dw, my=dy+_pct(m.style.top)*dh, mw=0.24*dw;
-  c.beginPath(); c.arc(mx,my,mw*0.5,0.12*Math.PI,0.88*Math.PI); c.lineWidth=Math.max(3,dw*0.014); c.strokeStyle='#2b2b3a'; c.lineCap='round'; c.stroke();
+  c.lineWidth=Math.max(3,dw*0.014); c.strokeStyle='#2b2b3a'; c.lineCap='round'; c.fillStyle='#ff7a9b';
+  if(pr==='wow'){ c.beginPath();c.arc(mx,my,mw*0.32,0,7);c.fill();c.stroke(); }
+  else if(pr==='sad'){ c.beginPath();c.arc(mx,my+mw*0.32,mw*0.5,1.15*Math.PI,1.85*Math.PI);c.stroke(); }
+  else { c.beginPath();c.arc(mx,my,mw*0.5,0.12*Math.PI,0.88*Math.PI);c.stroke(); }
 }
 saveBtn.addEventListener('click',async ()=>{
   if(!saveConsent.checked){ alert(window.MK_LANG==='ko'?'저장하려면 보호자 동의 칸을 체크해야 해요.':'A parent/guardian must check the box to save.'); return; }
