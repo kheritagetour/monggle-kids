@@ -297,6 +297,7 @@
   .mission.shakex{animation:shake .4s;}
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
+<script src="assets/tts/manifest.js"></script>
 </head>
 <body>
 
@@ -604,6 +605,8 @@ async function speak(t,who){
   const txt=String(t).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); if(!txt) return;
   const lang=LANG(); const v=VOICES[who]||VOICES.narrator; const voice=v.en;
   stopAudio();
+  const pre=(window.TTS_PREGEN||{})[lang+'|'+(who||'narrator')+'|'+txt];
+  if(pre){ try{ const a=new Audio(pre); currentAudio=a; a.play(); return; }catch(e){} }
   if(TTS_SERVER && voice && lang==='en'){
     try{
       const key=lang+'|'+voice+'|'+txt; let url=TTS_CACHE[key];
