@@ -254,6 +254,24 @@
   .win-ov p{font-size:14px;opacity:.92;}
   .win-ov .fact{margin-top:14px;background:#ffffff1a;border:1px solid #ffffff33;border-radius:14px;padding:14px 16px;max-width:350px;font-size:13.5px;line-height:1.55;}
   .win-ov .fact b{display:block;color:#ffd166;margin-bottom:5px;font-size:13px;}
+  /* rainbow battle finale */
+  .battle{position:absolute;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    text-align:center;padding:24px;color:#3b3550;background:radial-gradient(80% 60% at 50% 28%,#fff3c4,transparent),linear-gradient(160deg,#cde7ff,#ffe1ec);}
+  .battle.show{display:flex;animation:pop .4s ease;}
+  .bt-scene{position:relative;width:100%;max-width:380px;height:150px;display:flex;align-items:center;justify-content:space-between;}
+  .bt-mungi,.bt-grumble{width:96px;height:96px;border-radius:30%;object-fit:cover;background:#fff;box-shadow:0 10px 24px rgba(90,58,120,.22);z-index:2;}
+  .bt-mungi{animation:bob 1.6s ease-in-out infinite;}
+  .bt-grumble.hit{animation:shake .5s;}
+  .bt-grumble.won{animation:pop .5s ease;}
+  .bt-beam{position:absolute;left:96px;right:96px;top:50%;height:18px;transform:translateY(-50%) scaleX(0);transform-origin:left center;
+    border-radius:999px;background:linear-gradient(90deg,#ff5a5a,#ffb02e,#ffe14d,#5ad17a,#4a8bff,#9b6bff);box-shadow:0 0 16px #ffffffcc;z-index:1;}
+  .bt-beam.fire{animation:beam .9s ease forwards;}
+  @keyframes beam{to{transform:translateY(-50%) scaleX(1)}}
+  .bt-proj{position:absolute;left:96px;top:50%;transform:translateY(-50%);font-size:34px;z-index:3;opacity:0;}
+  .bt-proj.fire{animation:proj .9s ease forwards;}
+  @keyframes proj{0%{opacity:1;left:96px}100%{opacity:1;left:calc(100% - 130px)}}
+  .battle h3{font-size:22px;font-weight:900;}
+  .battle p{font-size:14px;color:#6a6385;max-width:320px;}
   /* mission briefing overlay */
   .brief{position:absolute;inset:0;z-index:11;background:linear-gradient(160deg,#160f2bf2,#3a2a5af2);backdrop-filter:blur(3px);
     display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;text-align:center;padding:28px;}
@@ -521,6 +539,17 @@
       <div class="fact"><b>💛 Friendship Tip</b><span id="mFact"></span></div>
       <button class="story-next" id="mWinNext" style="margin-top:18px;">Continue ▶</button>
     </div>
+    <div class="battle" id="mBattle">
+      <div class="bt-scene">
+        <img class="bt-mungi" id="btMungi" src="assets/characters/mungi.png" alt="Mungi">
+        <div class="bt-beam" id="btBeam"></div>
+        <div class="bt-proj" id="btProj">🌈</div>
+        <img class="bt-grumble" id="btGrumble" src="assets/characters/grumble.png" alt="The Grumble">
+      </div>
+      <h3 id="btTitle">Mungi fires the rainbow! 🌈</h3>
+      <p id="btText">Pew pew — the colors zoom at the Grumble!</p>
+      <button class="story-next" id="btNext" style="margin-top:18px;display:none;">Continue ▶</button>
+    </div>
   </div>
 </div>
 
@@ -733,7 +762,7 @@ const WINSUB=[
 const BRIEFS=[
   {e:'🤗',t:'Help Hugo',x:"Hugo feels lonely and gray. Wave your hand to send him a big friendly hello and bring his smile back!",b:'Wave Hello ▶'},
   {e:'😊',t:'Cheer up Joy',x:"Joy forgot how to feel happy. Show your biggest smile — your happy face will remind Joy how good it feels!",b:'Share a Smile ▶'},
-  {e:'🌈',t:'Color in Iris',x:"Iris lost the colors of her feelings. Find each color around you — red, then yellow, then blue — to paint them back!",b:'Find the Colors ▶'}
+  {e:'🌈',t:'Color in Iris',x:"Iris lost the colors of her feelings. Find each color around you — red, then yellow, then blue — to rebuild the rainbow so Mungi can stop the Grumble!",b:'Find the Colors ▶'}
 ];
 const FACTS=[
   "Saying 'hi' or giving a wave tells a friend you're happy to see them — it's the very first step of friendship! 🤗",
@@ -756,6 +785,7 @@ function resetUI(){
   video.classList.remove('mirror'); canvas.classList.remove('mirror');
   shutter.onclick=null; setStatus('');
   const sw=document.getElementById('mSwatch'); if(sw) sw.style.display='none';
+  const bt=document.getElementById('mBattle'); if(bt) bt.classList.remove('show');
 }
 async function startCam(facing){
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:720}},audio:false});
@@ -936,6 +966,25 @@ async function runCadetCheck(){
   };
 }
 
+/* ---------- Rainbow finale: Mungi blasts the Grumble with the rainbow ---------- */
+function playRainbowBattle(onDone){
+  const ov=document.getElementById('mBattle');
+  const beam=document.getElementById('btBeam'), proj=document.getElementById('btProj'),
+        gr=document.getElementById('btGrumble'), title=document.getElementById('btTitle'),
+        text=document.getElementById('btText'), next=document.getElementById('btNext');
+  beam.classList.remove('fire'); proj.classList.remove('fire'); gr.classList.remove('hit','won');
+  gr.src='assets/characters/grumble.png'; next.style.display='none';
+  title.textContent='Mungi fires the rainbow! 🌈';
+  text.textContent='The colors zoom straight at the Grumble!';
+  ov.classList.add('show'); void beam.offsetWidth;
+  setTimeout(()=>{ beam.classList.add('fire'); proj.classList.add('fire'); },350);
+  setTimeout(()=>{ gr.classList.add('hit'); title.textContent='Direct hit! 💥'; text.textContent='The gloom melts away in the colors…'; },1300);
+  setTimeout(()=>{ gr.classList.remove('hit'); gr.src='assets/characters/grumble_happy.png'; gr.classList.add('won');
+    title.textContent='The Grumble smiles again! 😊'; text.textContent='The rainbow filled him with happy feelings.'; blast(); },2300);
+  setTimeout(()=>{ next.style.display='inline-block'; },2900);
+  next.onclick=()=>{ ov.classList.remove('show'); if(onDone) onDone(); };
+}
+
 /* ---------- Mission 3: Bring Back the Rainbow (color vision) ---------- */
 function rgb2hsv(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;
   if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360;}
@@ -991,7 +1040,11 @@ async function runRainbow(){
       else                stat('find'+idx,  `${tgt.e} Find something <b>${tgt.n}</b> and fill the circle!`);
       drawProgress();
       if(hold>=30){ idx++; hold=0; frames=0; lastKey=''; setMeter(0); blast();
-        if(idx>=SEQ.length){ drawProgress(); if(swatch) swatch.style.display='none'; win(); return; }
+        if(idx>=SEQ.length){ drawProgress(); if(swatch) swatch.style.display='none';
+          settled=true; if(loopId){cancelAnimationFrame(loopId);loopId=null;}
+          playRainbowBattle(()=>{ closeMission(); markStamp(2); });
+          return;
+        }
       }
     }
     loopId=requestAnimationFrame(tick);
