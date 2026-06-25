@@ -641,11 +641,11 @@ function chapterIntro(){ return LANG()==='ko' ? [
   {c:'mungi',t:'Chapter 1 · <span class="v">A Lonely Friend</span>',x:`Hold on, Hugo! Heart Hero <b>${heroName}</b> and Moong are here. Hugo feels all alone — let's send him a big friendly hello! 🤗`,btn:'Start Chapter 1 ▶'}
 ]; }
 function postSunny(){ return LANG()==='ko' ? [
-  {c:'hugo',t:'휴고가 다시 웃어요!',x:`"인사해줘서… 이제 외롭지 않아. 고마워, ${heroName}!" — 휴고`},
+  {c:'hugo_free',t:'휴고가 다시 웃어요!',x:`"인사해줘서… 이제 외롭지 않아. 고마워, ${heroName}!" — 휴고`},
   {c:'grumble',t:'그럼블이 으르렁',x:`"으르렁! 내 감옥이 왜 부서지는 거야?!" 그럼블이 마을 감정에 대한 힘을 잃어가요…`},
   {c:'mungi',t:'챕터 2 · <span class="v">조이의 행복 되찾기</span>',x:`Moong: "두 친구 남았어! 조이가 행복을 잊어버렸대 — 활짝 웃어주자."`,btn:'챕터 2 시작 ▶'}
 ] : [
-  {c:'hugo',t:'Hugo smiles again!',x:`"You said hello… I don't feel lonely anymore. Thank you, ${heroName}!" — Hugo`},
+  {c:'hugo_free',t:'Hugo smiles again!',x:`"You said hello… I don't feel lonely anymore. Thank you, ${heroName}!" — Hugo`},
   {c:'grumble',t:'The Grumble snarls',x:`"Grr! How are my cages breaking?!" The Grumble is losing his grip on the town's feelings…`},
   {c:'mungi',t:'Chapter 2 · <span class="v">Bring Back Joy</span>',x:`Moong: "Two friends to go! Joy forgot how to feel happy — let's share a great big smile."`,btn:'Start Chapter 2 ▶'}
 ]; }
@@ -704,7 +704,7 @@ function markStamp(i){
   done[i]=true; cleared++;
   const m=document.querySelector(`.mission[data-m="${i}"]`);
   m.classList.add('cleared'); m.querySelector('.m-go').textContent=(LANG()==='ko'?'완료 ✓':'DONE ✓');
-  const faces=['hugo','joy','iris'];
+  const faces=['hugo_free','joy','iris_free'];
   const st=document.querySelector(`.stamp[data-s="${i}"]`);
   st.innerHTML=`<img src="assets/characters/${faces[i]}.png" alt="">`; st.classList.add('done');
   document.getElementById('cnt').textContent=cleared;
@@ -717,7 +717,7 @@ function freeFriend(i){
   if(!f) return;
   f.classList.remove('trapped'); f.classList.add('freed');
   const s=f.querySelector('.fstat'); if(s) s.textContent=(window.MK_LANG==='ko'?'마음 회복! 💛':'Heart back! 💛');
-  if(i===2){ const im=f.querySelector('img.charimg'); if(im) im.src='assets/characters/iris_free.png'; }
+  const _free={0:'hugo_free',2:'iris_free'}[i]; if(_free){ const im=f.querySelector('img.charimg'); if(im) im.src='assets/characters/'+_free+'.png'; }
 }
 function finishAll(){
   const r=document.getElementById('reward'); r.classList.add('show');
