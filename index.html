@@ -190,7 +190,8 @@
   <a href="#ch2"   data-s="ch2"><span class="lbl">Joy · Smile</span><span class="n">03</span><span class="dot"></span></a>
   <a href="#ch3"   data-s="ch3"><span class="lbl">Iris · Colors</span><span class="n">04</span><span class="dot"></span></a>
   <a href="#reward"data-s="reward"><span class="lbl">Reward</span><span class="n">05</span><span class="dot"></span></a>
-  <a href="#go"    data-s="go"><span class="lbl">Start</span><span class="n">06</span><span class="dot"></span></a>
+  <a href="#bonus" data-s="bonus"><span class="lbl">Crop Creatures</span><span class="n">06</span><span class="dot"></span></a>
+  <a href="#go"    data-s="go"><span class="lbl">Start</span><span class="n">07</span><span class="dot"></span></a>
 </div>
 
 <!-- 00 HERO -->
@@ -317,7 +318,27 @@
   </div>
 </section>
 
-<!-- 04 CTA -->
+<!-- 06 BONUS · Crop Creatures -->
+<section id="bonus" class="chapter flip" style="--ac:#4ca64c;background:linear-gradient(165deg,#e7f7df 0%,#fff8f0 72%);">
+  <div class="wrap">
+    <div class="ch-visual reveal">
+      <div class="bignum">＋</div>
+      <div class="ch-blob" style="background:#8ccf6b;"></div>
+      <img class="friend" src="assets/crop/creature.jpg" alt="Crop creature" style="border-radius:24%;">
+    </div>
+    <div class="ch-text">
+      <div class="ch-eyebrow reveal" style="color:var(--ac)">Bonus Quest — Crop Creatures</div>
+      <h2 class="reveal d1">Build a creature<br>from real veggies</h2>
+      <div class="lost reveal d1">Make it for real · <b>then bring it to life 🌱</b></div>
+      <p class="how reveal d2">Use cucumbers, zucchini, tomatoes &amp; toothpicks to build a silly creature — a dino, a doggo, a hedgehog. Snap a photo and watch Mungi’s magic make it <b style="color:var(--ink)">come alive</b> and hop around!</p>
+      <div class="reveal d3" style="margin-top:22px;">
+        <a class="cta" href="crop_creature.html" style="background:linear-gradient(135deg,#4ca64c,#8ccf6b);box-shadow:0 14px 30px rgba(76,166,76,.36);">Make a Crop Creature 🥒</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 CTA -->
 <section id="go">
   <div class="wrap">
     <div class="eyebrow reveal" style="text-align:center;">Ready, Hero?</div>
@@ -370,13 +391,13 @@ const byId=id=>links.find(l=>l.dataset.s===id);
 const ao=new IntersectionObserver((es)=>{
   es.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.remove('on')); const a=byId(e.target.id); if(a)a.classList.add('on'); } });
 },{threshold:.5});
-['hero','story','ch1','ch2','ch3','reward','go'].forEach(id=>{ const s=document.getElementById(id); if(s) ao.observe(s); });
+['hero','story','ch1','ch2','ch3','reward','bonus','go'].forEach(id=>{ const s=document.getElementById(id); if(s) ao.observe(s); });
 
-/* analytics: capture QR/NFC source (?src=nfc) and carry it into the experience */
+/* analytics: capture QR/NFC source (?src=nfc) and carry it into the experiences */
 const qs=location.search;
 const SRC=new URLSearchParams(qs).get('src')||'direct';
 window.dataLayer=window.dataLayer||[]; window.dataLayer.push({event:'landing_open',src:SRC});
-if(qs){ document.querySelectorAll('a[href="monggle_event.html"]').forEach(a=>{ a.href='monggle_event.html'+qs; }); }
+if(qs){ document.querySelectorAll('a[href="monggle_event.html"],a[href="crop_creature.html"]').forEach(a=>{ a.href=a.getAttribute('href')+qs; }); }
 </script>
 </body>
 </html>

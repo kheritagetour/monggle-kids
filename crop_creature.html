@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#dff7e3">
+<title>Monggle Kids — Crop Creatures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fffaf2; --leaf:#8ccf6b; --leaf-d:#4ca64c; --soil:#b58a5f;
+    --sun:#ffd45e; --pink:#ff8fb3; --pink-d:#ff6f91; --ink:#3b4a32; --soft:#8a8f7e;
+    --shadow:0 8px 24px rgba(76,166,76,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:'Poppins',sans-serif;color:var(--ink);
+    background:radial-gradient(130% 60% at 50% 0%, #e7f7df 0%, var(--cream) 60%);min-height:100%;overflow-x:hidden;}
+  h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.4px;}
+  .app{max-width:460px;margin:0 auto;min-height:100vh;padding:0 20px 48px;position:relative;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 4px 6px;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Fredoka';font-weight:700;font-size:18px;color:var(--leaf-d);}
+  .brand img{width:34px;height:34px;border-radius:30%;box-shadow:0 4px 12px rgba(76,166,76,.2);}
+  .tag{font-size:11px;font-weight:800;color:#fff;background:var(--leaf-d);padding:5px 11px;border-radius:999px;}
+
+  /* step dots */
+  .steps{display:flex;gap:8px;justify-content:center;margin:14px 0 6px;}
+  .steps i{height:7px;width:34px;border-radius:999px;background:#dcebd3;transition:.3s;}
+  .steps i.on{background:var(--leaf-d);}
+
+  .panel{display:none;animation:fade .45s ease;}
+  .panel.show{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .hero{text-align:center;padding:6px 0 2px;}
+  .bubble{display:inline-block;background:#fff;border:2px solid #e3f3da;color:var(--ink);font-weight:700;font-size:14px;
+    padding:9px 15px;border-radius:16px;box-shadow:var(--shadow);position:relative;margin-bottom:8px;}
+  .bubble:after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fff;}
+  .mungi{width:96px;height:96px;border-radius:30%;object-fit:cover;box-shadow:var(--shadow);animation:bob 2.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+  h1{font-size:27px;margin-top:8px;line-height:1.15;}
+  h1 .hl{color:var(--leaf-d);}
+  .lead{font-size:13.5px;color:var(--soft);margin-top:8px;line-height:1.6;}
+
+  .card{background:#fff;border-radius:22px;padding:18px;margin-top:18px;box-shadow:var(--shadow);}
+  .guide{width:100%;border-radius:16px;display:block;}
+  .how{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+  .how li{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  .how .n{flex-shrink:0;width:26px;height:26px;border-radius:9px;background:var(--leaf);color:#fff;font-family:'Fredoka';font-weight:700;
+    display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:18px;padding:16px;border:none;border-radius:16px;
+    font-family:'Fredoka';font-weight:600;font-size:17px;color:#fff;background:linear-gradient(135deg,var(--leaf-d),var(--leaf));
+    box-shadow:0 12px 26px rgba(76,166,76,.32);cursor:pointer;font-family:inherit;}
+  .btn:active{transform:scale(.98);}
+  .btn.pink{background:linear-gradient(135deg,var(--pink-d),var(--sun));box-shadow:0 12px 26px rgba(255,111,145,.32);}
+  .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 16px rgba(76,166,76,.12);font-weight:700;}
+  .note{font-size:11.5px;color:var(--soft);text-align:center;margin-top:12px;line-height:1.6;}
+  .note b{color:var(--ink);}
+  input[type=file]{display:none;}
+
+  /* snap preview */
+  .shot{width:100%;border-radius:16px;display:none;margin-top:6px;box-shadow:var(--shadow);}
+
+  /* STEP 3 — alive stage */
+  .stage{position:relative;background:linear-gradient(160deg,#eaf7e2,#fffaf2);border-radius:24px;padding:26px 18px 22px;
+    margin-top:18px;text-align:center;box-shadow:var(--shadow);overflow:hidden;min-height:300px;}
+  .alive-title{font-size:20px;color:var(--leaf-d);}
+  .creature-wrap{position:relative;display:inline-block;margin-top:8px;}
+  .creature{width:min(78vw,330px);filter:drop-shadow(0 14px 22px rgba(76,166,76,.28));transform-origin:50% 90%;cursor:pointer;}
+  .creature.live{animation:alive 1.7s ease-in-out infinite;}
+  @keyframes alive{
+    0%{transform:translateY(0) scale(1,1) rotate(-2deg)}
+    25%{transform:translateY(-15px) scale(1.05,.95) rotate(2deg)}
+    50%{transform:translateY(0) scale(.97,1.04) rotate(-2deg)}
+    75%{transform:translateY(-8px) scale(1.03,.98) rotate(1deg)}
+    100%{transform:translateY(0) scale(1,1) rotate(-2deg)}
+  }
+  .creature.hop{animation:hop .5s ease;}
+  @keyframes hop{0%{transform:translateY(0) scale(1,1)}30%{transform:translateY(-40px) scale(1.08,.92)}60%{transform:translateY(0) scale(.92,1.08)}100%{transform:translateY(0) scale(1,1)}}
+  .poet{font-size:13px;color:var(--soft);margin-top:10px;}
+  /* polaroid of their real build */
+  .polaroid{position:absolute;left:14px;bottom:14px;width:96px;background:#fff;padding:6px 6px 18px;border-radius:8px;
+    box-shadow:0 8px 18px rgba(0,0,0,.18);transform:rotate(-7deg);z-index:3;}
+  .polaroid img{width:100%;border-radius:4px;display:block;aspect-ratio:1;object-fit:cover;}
+  .polaroid span{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8px;font-weight:700;color:var(--soft);}
+  .spark{position:absolute;font-size:22px;pointer-events:none;z-index:4;}
+
+  .row2{display:flex;gap:10px;margin-top:14px;}
+  .row2 .btn{margin-top:0;font-size:15px;padding:14px;}
+
+  /* save consent */
+  .consent{display:flex;gap:10px;align-items:flex-start;text-align:left;background:#fff;border-radius:14px;padding:12px 14px;
+    margin:14px 0 4px;font-size:12px;line-height:1.5;color:var(--ink);box-shadow:0 4px 12px rgba(76,166,76,.08);}
+  .consent input{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--leaf-d);}
+  .locked{opacity:.45;pointer-events:none;}
+
+  .footer{text-align:center;font-size:11px;color:#b3bba6;margin-top:24px;line-height:1.7;}
+  .confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:120;border-radius:2px;pointer-events:none;}
+  canvas#cardCanvas{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><img src="assets/characters/mungi.png" alt="">Monggle Kids</div>
+    <span class="tag">🥒 CROP CREATURES</span>
+  </div>
+  <div class="steps"><i class="on" data-i="0"></i><i data-i="1"></i><i data-i="2"></i></div>
+
+  <!-- STEP 1 · Build -->
+  <section class="panel show" id="s1">
+    <div class="hero">
+      <div class="bubble" id="bubble">Let's grow a creature! 🌱</div>
+      <img class="mungi" src="assets/characters/mungi.png" alt="Mungi">
+      <h1>Make a <span class="hl">Crop Creature</span></h1>
+      <p class="lead">Build a silly creature out of real fruits &amp; veggies — then watch it come to life! 🥒🐛</p>
+    </div>
+    <div class="card">
+      <img class="guide" src="assets/crop/build-guide.jpg" alt="Crop creature examples">
+      <ul class="how">
+        <li><span class="n">1</span><div>Grab veggies &amp; fruit — cucumbers, zucchini, tomatoes, apples, peppers.</div></li>
+        <li><span class="n">2</span><div>Use toothpicks to join them into legs, ears, eyes &amp; a tail.</div></li>
+        <li><span class="n">3</span><div>Make a dino, a doggo, a hedgehog… anything you imagine!</div></li>
+      </ul>
+    </div>
+    <button class="btn" id="toSnap">I built my creature ▶</button>
+  </section>
+
+  <!-- STEP 2 · Snap -->
+  <section class="panel" id="s2">
+    <div class="hero">
+      <div class="bubble">Wow! Now snap a photo 📸</div>
+      <img class="mungi" src="assets/characters/mungi.png" alt="Mungi">
+      <h1>Snap your <span class="hl">creature</span></h1>
+      <p class="lead">Take a clear photo of your crop creature so Mungi can bring it to life.</p>
+    </div>
+    <div class="card">
+      <img class="shot" id="shotPreview" alt="your creature">
+      <label class="btn pink" for="fileInput" id="snapBtn">📸 Take / choose a photo</label>
+      <input type="file" id="fileInput" accept="image/*" capture="environment">
+      <p class="note">📷 <b>Camera is used only for this activity.</b><br>Your photo is <b>not uploaded or stored</b> — it stays on this device.</p>
+    </div>
+    <button class="btn ghost" id="backTo1">◀ Back</button>
+  </section>
+
+  <!-- STEP 3 · Alive -->
+  <section class="panel" id="s3">
+    <div class="hero">
+      <div class="bubble">Abracadabra… 🪄</div>
+      <h1 class="alive-title">It's <span style="color:var(--pink-d)">ALIVE!</span> ✨</h1>
+    </div>
+    <div class="stage" id="stage">
+      <img class="creature" id="creature" src="assets/crop/creature.jpg" alt="Living crop creature">
+      <div class="polaroid" id="polaroid"><img id="polaImg" alt="your build"><span>my build</span></div>
+      <div class="poet">Tap your creature to make it hop! 🦘</div>
+    </div>
+
+    <label class="consent"><input type="checkbox" id="saveConsent">
+      <span>I'm a parent/guardian and I agree to save this creature card to <b>this device only</b>. Nothing is uploaded.</span></label>
+    <div class="row2">
+      <button class="btn" id="saveBtn">💾 Save card</button>
+      <button class="btn pink" id="shareBtn">📤 Share</button>
+    </div>
+    <button class="btn ghost" id="again">🔄 Make another creature</button>
+    <canvas id="cardCanvas" width="1000" height="680"></canvas>
+  </section>
+
+  <div class="footer">
+    © 2026 Monggle Kids · Crop Creatures 🌱 Made in Texas<br>
+    Camera is used only for this activity · Photos are not uploaded or stored · No name or photo is saved to any server
+  </div>
+</div>
+
+<script>
+/* analytics: capture QR/NFC source */
+const SRC=new URLSearchParams(location.search).get('src')||'direct';
+window.dataLayer=window.dataLayer||[]; window.dataLayer.push({event:'crop_open',src:SRC});
+
+const panels={s1:document.getElementById('s1'),s2:document.getElementById('s2'),s3:document.getElementById('s3')};
+const dots=[...document.querySelectorAll('.steps i')];
+function go(step){
+  Object.values(panels).forEach(p=>p.classList.remove('show'));
+  panels['s'+(step+1)].classList.add('show');
+  dots.forEach((d,i)=>d.classList.toggle('on',i<=step));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('toSnap').onclick=()=>go(1);
+document.getElementById('backTo1').onclick=()=>go(0);
+
+let photoURL=null;
+const fileInput=document.getElementById('fileInput');
+fileInput.addEventListener('change',e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    photoURL=fr.result;
+    document.getElementById('shotPreview').src=photoURL;
+    document.getElementById('shotPreview').style.display='block';
+    document.getElementById('polaImg').src=photoURL;
+    setTimeout(()=>comeAlive(),350);
+  };
+  fr.readAsDataURL(f);
+});
+
+function comeAlive(){
+  go(2);
+  const cr=document.getElementById('creature');
+  cr.classList.remove('live'); void cr.offsetWidth; cr.classList.add('live');
+  sparkle(document.getElementById('stage')); blast();
+}
+document.getElementById('creature').addEventListener('click',e=>{
+  const cr=e.currentTarget;
+  cr.classList.remove('hop'); void cr.offsetWidth; cr.classList.add('hop');
+  setTimeout(()=>cr.classList.add('live'),500);
+  sparkle(document.getElementById('stage'));
+});
+
+document.getElementById('again').onclick=()=>{
+  photoURL=null; fileInput.value='';
+  document.getElementById('shotPreview').style.display='none';
+  document.getElementById('saveConsent').checked=false; refreshLock();
+  go(0);
+};
+
+/* sparkles */
+function sparkle(host){
+  const r=host.getBoundingClientRect();
+  for(let i=0;i<14;i++){
+    const s=document.createElement('div'); s.className='spark'; s.textContent=['✨','⭐','💚','🌿'][i%4];
+    s.style.left=(20+Math.random()*60)+'%'; s.style.top=(20+Math.random()*50)+'%';
+    host.appendChild(s);
+    s.animate([{transform:'scale(0) rotate(0)',opacity:0},{transform:`scale(1.2) translateY(-${20+Math.random()*30}px) rotate(${Math.random()*180}deg)`,opacity:1},{transform:'scale(.4)',opacity:0}],{duration:900+Math.random()*500,easing:'ease-out'});
+    setTimeout(()=>s.remove(),1500);
+  }
+}
+function blast(){
+  const cols=['#8ccf6b','#ff8fb3','#ffd45e','#4ca64c','#ff6f91'];
+  for(let i=0;i<70;i++){ const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw'; c.style.background=cols[i%cols.length]; document.body.appendChild(c);
+    const dur=1700+Math.random()*1300;
+    c.animate([{transform:'translateY(0) rotate(0)',opacity:1},{transform:`translateY(110vh) rotate(${Math.random()*720}deg)`,opacity:.9}],{duration:dur,easing:'cubic-bezier(.3,.6,.5,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+/* parental consent to save */
+const saveConsent=document.getElementById('saveConsent'), saveBtn=document.getElementById('saveBtn');
+function refreshLock(){ saveBtn.classList.toggle('locked',!saveConsent.checked); }
+saveConsent.addEventListener('change',refreshLock); refreshLock();
+
+/* build a downloadable creature card (local only) */
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function cover(c,img,x,y,w,h){const ir=img.width/img.height,br=w/h;let dw,dh;if(ir>br){dh=h;dw=h*ir;}else{dw=w;dh=w/ir;}c.save();roundRect(c,x,y,w,h,18);c.clip();c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);c.restore();}
+function load(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});}
+
+saveBtn.addEventListener('click',async ()=>{
+  if(!saveConsent.checked){ alert('A parent/guardian must check the box to save.'); return; }
+  const cv=document.getElementById('cardCanvas'), c=cv.getContext('2d'),W=cv.width,H=cv.height;
+  c.fillStyle='#fffaf2'; c.fillRect(0,0,W,H);
+  c.strokeStyle='#8ccf6b'; c.lineWidth=10; c.strokeRect(22,22,W-44,H-44);
+  c.textAlign='center'; c.fillStyle='#4ca64c'; c.font="700 20px Fredoka,sans-serif";
+  c.fillText('★  MONGGLE KIDS · CROP CREATURES · TEXAS  ★',W/2,76);
+  c.fillStyle='#3b4a32'; c.font="700 44px Fredoka,sans-serif"; c.fillText('My Crop Creature',W/2,132);
+  const cr=await load('assets/crop/creature.jpg');
+  const ph=photoURL?await load(photoURL):null;
+  if(ph) cover(c,ph,70,180,360,360);
+  if(cr) cover(c,cr,470,170,470,380);
+  c.fillStyle='#8a8f7e'; c.font="600 16px Poppins,sans-serif";
+  c.fillText('I built it for real — and brought it to life! 🌱',W/2,600);
+  c.fillStyle='#4ca64c'; c.font="700 15px Poppins,sans-serif";
+  c.fillText(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W/2,636);
+  const a=document.createElement('a'); a.download='my-crop-creature.png'; a.href=cv.toDataURL('image/png'); a.click();
+});
+
+document.getElementById('shareBtn').addEventListener('click',async ()=>{
+  const data={title:'Monggle Kids · Crop Creatures',text:'I made a crop creature and it came to life! 🥒🐛',url:location.href};
+  if(navigator.share){try{await navigator.share(data);}catch(_){}} else alert('Share this link:\n'+location.href);
+});
+</script>
+</body>
+</html>
