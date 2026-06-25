@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#dff7e3">
-<title>Monggle Kids — Crop Creatures</title>
+<title>Monglekids — Crop Creatures</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -106,7 +106,7 @@
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><img src="assets/characters/mungi.png" alt="">Monggle Kids</div>
+    <div class="brand"><img src="assets/characters/mungi.png" alt="">Monglekids</div>
     <span class="tag">🥒 CROP CREATURES</span>
   </div>
   <div class="steps"><i class="on" data-i="0"></i><i data-i="1"></i><i data-i="2"></i></div>
@@ -170,7 +170,7 @@
   </section>
 
   <div class="footer">
-    © 2026 Monggle Kids · Crop Creatures 🌱<br>
+    © 2026 Monglekids · Crop Creatures 🌱<br>
     Camera is used only for this activity · Photos are not uploaded or stored · No name or photo is saved to any server
   </div>
 </div>
@@ -263,7 +263,7 @@ saveBtn.addEventListener('click',async ()=>{
   c.fillStyle='#fffaf2'; c.fillRect(0,0,W,H);
   c.strokeStyle='#8ccf6b'; c.lineWidth=10; c.strokeRect(22,22,W-44,H-44);
   c.textAlign='center'; c.fillStyle='#4ca64c'; c.font="700 20px Fredoka,sans-serif";
-  c.fillText('★  MONGGLE KIDS · CROP CREATURES  ★',W/2,76);
+  c.fillText('★  MONGLEKIDS · CROP CREATURES  ★',W/2,76);
   c.fillStyle='#3b4a32'; c.font="700 44px Fredoka,sans-serif"; c.fillText('My Crop Creature',W/2,132);
   const cr=await load('assets/crop/creature.jpg');
   const ph=photoURL?await load(photoURL):null;
@@ -277,7 +277,7 @@ saveBtn.addEventListener('click',async ()=>{
 });
 
 document.getElementById('shareBtn').addEventListener('click',async ()=>{
-  const data={title:'Monggle Kids · Crop Creatures',text:'I made a crop creature and it came to life! 🥒🐛',url:location.href};
+  const data={title:'Monglekids · Crop Creatures',text:'I made a crop creature and it came to life! 🥒🐛',url:location.href};
   if(navigator.share){try{await navigator.share(data);}catch(_){}} else alert('Share this link:\n'+location.href);
 });
 </script>

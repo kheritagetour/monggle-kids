@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#cfe4ff">
-<title>Monggle Kids × Mungi — Heart Hero Adventure</title>
+<title>Monglekids × Mungi — Heart Hero Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@
     <div class="story-panel show" data-p="0">
       <img class="sp-char" src="assets/characters/mungi.png" alt="Mungi">
       <div class="sp-title">Meet <span class="v">Mungi</span></div>
-      <div class="sp-text">A little feelings-cloud who lives in Monggle Town, where everyone loves to share their hearts. 💛</div>
+      <div class="sp-text">A little feelings-cloud who lives in Mongle Town, where everyone loves to share their hearts. 💛</div>
     </div>
     <div class="story-panel" data-p="1">
       <img class="sp-char" src="assets/characters/grumble.png" alt="The Grumble">
@@ -357,7 +357,7 @@
 
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span class="logo">☁️</span>Monggle Kids</div>
+    <div class="brand"><span class="logo">☁️</span>Monglekids</div>
     <span class="tag">💛 HEART HERO</span>
   </div>
 
@@ -368,7 +368,7 @@
     <img class="mascot" id="mascot" src="assets/characters/mungi.png" alt="Mungi">
 
     <h1>Mungi's<br><span class="hl">Heart Hero Adventure</span></h1>
-    <p class="lead">Help Mungi with 3 AI missions, learn a friendship tip in each,<br>and bring everyone's feelings &amp; colors back to Monggle Town! 💛</p>
+    <p class="lead">Help Mungi with 3 AI missions, learn a friendship tip in each,<br>and bring everyone's feelings &amp; colors back to Mongle Town! 💛</p>
     <div class="steps"><span>1 · HELLO</span><span>2 · SMILE</span><span>3 · COLORS</span></div>
   </div>
 
@@ -463,7 +463,7 @@
   <div class="reward" id="reward">
     <div class="big">🎉💛🎉</div>
     <h3>The Grumble is defeated!</h3>
-    <p>You did it, <b><span id="rwName">Hero</span></b>! Everyone's feelings and colors are back, and the town is full of hugs.<br>You're now an official Monggle Heart Hero! 💛🌈</p>
+    <p>You did it, <b><span id="rwName">Hero</span></b>! Everyone's feelings and colors are back, and the town is full of hugs.<br>You're now an official Mongle Heart Hero! 💛🌈</p>
     <p class="save-head">Want to keep these? <b>A grown-up's OK is needed to save.</b></p>
     <label class="consent"><input type="checkbox" id="saveConsent">
       <span>I'm a parent/guardian and I agree to save this certificate &amp; photo to <b>this device only</b>. Nothing is uploaded.</span></label>
@@ -477,7 +477,7 @@
         <a class="dl locked" id="dlId" download="monggle-heart-crew-id.png">⬇ Save Heart Crew ID</a>
       </div>
     </div>
-    <div class="coupon">MONGGLE-2026<small>Event gift · One per guest</small></div>
+    <div class="coupon">MONGLE-2026<small>Event gift · One per guest</small></div>
     <div class="give" id="giveForm">
       <h3 style="font-size:15px;margin:18px 0 8px;text-align:center;">🎟️ Enter the Grand Prize Giveaway</h3>
       <p style="text-align:center;margin-bottom:12px;">Win a Mungi plushie bundle + a $100 gift card!</p>
@@ -503,7 +503,7 @@
     <a id="shareBtn" href="#">📤 Share</a>
   </div>
   <div class="footer">
-    © 2026 Monggle Kids · Mungi Heart Adventure <span class="star">★</span> Made with lots of 💛<br>
+    © 2026 Monglekids · Mungi Heart Adventure <span class="star">★</span> Made with lots of 💛<br>
     Camera is used only for this activity · Photos are not uploaded or stored · No name or photo is saved to any server<br>
     All processing runs locally on your device. Saving is optional, to your own device only, with parental consent.
   </div>
@@ -648,7 +648,7 @@ function postCosmo(){ return [
 function finaleScene(){ return [
   {c:'iris',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
   {c:'grumble_happy',t:'The Grumble is <span class="v">defeated!</span>',x:`"Nooo! My gloom is gone!" Mungi blasts the rainbow and the Grumble zooms away — the feelings are free!`},
-  {e:'🎉',t:'Monggle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
+  {e:'🎉',t:'Mongle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
   {c:'mungi',t:`Heart Hero ${heroName}!`,x:`Mungi: "You brought everyone's hearts back together. Here are your hero rewards!" 💛`,btn:'Get My Rewards 🎁'}
 ]; }
 function afterMission(i){
@@ -730,7 +730,7 @@ window.dataLayer.push({event:'experience_open',src:SRC});
 /* When a GA4 / analytics tag is added, `src` is already in dataLayer. */
 document.getElementById('shareBtn').addEventListener('click',async e=>{
   e.preventDefault();
-  const data={title:'Monggle Kids × Mungi Heart Adventure',text:'Become a Heart Hero with Mungi! 💛',url:location.href};
+  const data={title:'Monglekids × Mungi Heart Adventure',text:'Become a Heart Hero with Mungi! 💛',url:location.href};
   if(navigator.share){try{await navigator.share(data);}catch(_){}}
   else alert('Share this link:\n'+location.href);
 });
@@ -1142,7 +1142,7 @@ function drawCertificate(cv){
   [[60,60],[W-60,60],[60,H-60],[W-60,H-60]].forEach(p=>drawStar(ctx,p[0],p[1],12,'#ffb02e'));
   ctx.textAlign='center';
   ctx.fillStyle='#3fc4a8'; ctx.font='900 22px Poppins,sans-serif';
-  ctx.fillText('★  MONGGLE KIDS  ·  HEART HERO  ★', W/2, 92);
+  ctx.fillText('★  MONGLEKIDS  ·  HEART HERO  ★', W/2, 92);
   ctx.fillStyle='#3b3550'; ctx.font='900 44px Poppins,sans-serif';
   ctx.fillText('Heart Hero Certificate', W/2, 150);
   ctx.fillStyle='#9a93ad'; ctx.font='600 17px Poppins,sans-serif';
@@ -1151,16 +1151,16 @@ function drawCertificate(cv){
   ctx.fillText(heroName, W/2, 270);
   ctx.strokeStyle='#bcd6ff'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W/2-220,288); ctx.lineTo(W/2+220,288); ctx.stroke();
   ctx.fillStyle='#3b3550'; ctx.font='500 17px Poppins,sans-serif';
-  ctx.fillText('for a big, brave heart as a Monggle Heart Hero —', W/2, 330);
+  ctx.fillText('for a big, brave heart as a Mongle Heart Hero —', W/2, 330);
   ctx.fillText('bringing feelings and colors back to every friend in', W/2, 356);
-  ctx.fillText('Monggle Town, and teaching the Grumble to smile! 💛', W/2, 382);
+  ctx.fillText('Mongle Town, and teaching the Grumble to smile! 💛', W/2, 382);
   if(mungiReady) drawCircImg(ctx,mungiImg,W/2,472,54); else drawMungiSeal(ctx,W/2,476,1.0);
   ctx.fillStyle='#3b3550'; ctx.font='700 16px Poppins,sans-serif';
   ctx.fillText('Mungi', 235, 545); ctx.fillText(todayStr(), W-235, 545);
   ctx.strokeStyle='#c9c2d6'; ctx.lineWidth=1.5;
   ctx.beginPath(); ctx.moveTo(150,560); ctx.lineTo(320,560); ctx.moveTo(W-320,560); ctx.lineTo(W-150,560); ctx.stroke();
   ctx.fillStyle='#9a93ad'; ctx.font='500 13px Poppins,sans-serif';
-  ctx.fillText('Captain, Monggle Heart Crew', 235, 582); ctx.fillText('Date Awarded', W-235, 582);
+  ctx.fillText('Captain, Mongle Heart Crew', 235, 582); ctx.fillText('Date Awarded', W-235, 582);
   ctx.fillStyle='#3fc4a8'; ctx.font='700 13px Poppins,sans-serif';
   ctx.fillText('Hero No. '+crewNo, W/2, 600);
 }
@@ -1173,7 +1173,7 @@ function drawIdCard(cv){
     for(let i=0;i<8;i++) drawStar(ctx,40+i*40,30,2.5,'#ffffff66');
     ctx.textAlign='left';
     ctx.fillStyle='#ffd166'; ctx.font='900 30px Poppins,sans-serif';
-    ctx.fillText('MONGGLE HEART CREW', 36, 58);
+    ctx.fillText('MONGLE HEART CREW', 36, 58);
     ctx.fillStyle='#ffffff'; ctx.font='700 18px Poppins,sans-serif';
     ctx.fillText('Heart Hero ID', 36, 92);
     drawStar(ctx,W-56,56,20,'#ffd166');
@@ -1191,7 +1191,7 @@ function drawIdCard(cv){
     field('Rank', 'Junior Heart Hero 💛');
     ctx.fillStyle='#9a93ad'; ctx.font='700 13px Poppins,sans-serif'; ctx.fillText('TOWN',fx,fy); ctx.fillText('ISSUED',fx+170,fy);
     ctx.fillStyle='#3b3550'; ctx.font='700 17px Poppins,sans-serif';
-    ctx.fillText('Monggle Town',fx,fy+24); ctx.fillText(todayStr(),fx+170,fy+24);
+    ctx.fillText('Mongle Town',fx,fy+24); ctx.fillText(todayStr(),fx+170,fy+24);
     ctx.fillStyle='#3b3550';
     for(let x=fx,i=0;x<W-40;x+=6,i++){ if(i%3){ ctx.fillRect(x,H-46,(i%2?2:4),30); } }
     ctx.strokeStyle='#2a1840'; ctx.lineWidth=3; roundRect(ctx,2,2,W-4,H-4,27); ctx.stroke();
