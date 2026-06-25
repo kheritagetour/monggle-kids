@@ -272,6 +272,12 @@
   @keyframes proj{0%{opacity:1;left:96px}100%{opacity:1;left:calc(100% - 130px)}}
   .battle h3{font-size:22px;font-weight:900;}
   .battle p{font-size:14px;color:#6a6385;max-width:320px;}
+  /* costume picker (Mission 2) */
+  .costumes{position:absolute;top:62px;left:0;right:0;z-index:7;display:none;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 12px;}
+  .costumes.show{display:flex;}
+  .costumes button{font-size:13px;font-weight:800;color:#fff;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);
+    border:2px solid transparent;border-radius:999px;padding:8px 13px;cursor:pointer;font-family:inherit;}
+  .costumes button.on{background:#ff6f91;border-color:#fff;}
   /* mission briefing overlay */
   .brief{position:absolute;inset:0;z-index:11;background:linear-gradient(160deg,#160f2bf2,#3a2a5af2);backdrop-filter:blur(3px);
     display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;text-align:center;padding:28px;}
@@ -319,7 +325,7 @@
     <div class="story-panel" data-p="1">
       <img class="sp-char" src="assets/characters/grumble.png" alt="The Grumble">
       <div class="sp-title">Oh no… the <span class="v">Grumble!</span></div>
-      <div class="sp-text">A grumpy little rain cloud swooped in and <b>stole everyone's feelings</b> — the whole town turned gray and quiet! 🌫️</div>
+      <div class="sp-text">A sneaky <b>gloom monster</b> zoomed in and <b>stole everyone's feelings</b> — the whole town turned gray and quiet!</div>
     </div>
     <div class="story-panel" data-p="2">
       <img class="sp-char" src="assets/characters/mungi.png" alt="Mungi">
@@ -352,7 +358,7 @@
 <div class="app">
   <div class="topbar">
     <div class="brand"><span class="logo">☁️</span>Monggle Kids</div>
-    <span class="tag">⭐ TEXAS POP-UP</span>
+    <span class="tag">💛 HEART HERO</span>
   </div>
 
   <div class="hero">
@@ -456,7 +462,7 @@
   <!-- reward -->
   <div class="reward" id="reward">
     <div class="big">🎉💛🎉</div>
-    <h3>The Grumble learned to smile!</h3>
+    <h3>The Grumble is defeated!</h3>
     <p>You did it, <b><span id="rwName">Hero</span></b>! Everyone's feelings and colors are back, and the town is full of hugs.<br>You're now an official Monggle Heart Hero! 💛🌈</p>
     <p class="save-head">Want to keep these? <b>A grown-up's OK is needed to save.</b></p>
     <label class="consent"><input type="checkbox" id="saveConsent">
@@ -471,7 +477,7 @@
         <a class="dl locked" id="dlId" download="monggle-heart-crew-id.png">⬇ Save Heart Crew ID</a>
       </div>
     </div>
-    <div class="coupon">MONGGLE-TX-2026<small>In-store gift · One per guest</small></div>
+    <div class="coupon">MONGGLE-2026<small>Event gift · One per guest</small></div>
     <div class="give" id="giveForm">
       <h3 style="font-size:15px;margin:18px 0 8px;text-align:center;">🎟️ Enter the Grand Prize Giveaway</h3>
       <p style="text-align:center;margin-bottom:12px;">Win a Mungi plushie bundle + a $100 gift card!</p>
@@ -482,26 +488,22 @@
       <label class="consent"><input type="checkbox" id="giveConsent">
         <span>I'm the parent/guardian (18+) and I consent to entering with my email. We never collect a child's name or photo.</span></label>
       <button id="enterBtn">Enter to Win 💛</button>
-      <p class="fine">No purchase necessary. Open to TX residents 18+. By entering you agree to receive event updates. Winner drawn Aug 5, 2026.</p>
+      <p class="fine">No purchase necessary. Open to participants 18+ with parental consent. By entering you agree to receive event updates.</p>
     </div>
     <div class="entered" id="entered">✅ You're entered! Good luck, Hero! 🍀</div>
   </div>
 
   <!-- info -->
   <div class="info">
-    <h4>📍 Pop-Up Event Info</h4>
-    <div class="row"><span class="k">Dates</span><span class="v">July 1 – July 31, 2026</span></div>
-    <div class="row"><span class="k">Location</span><span class="v">Monggle Kids Pop-Up · The Domain, Austin, TX</span></div>
-    <div class="row"><span class="k">Hours</span><span class="v">Mon–Sun, 10:00 AM – 8:00 PM</span></div>
+    <h4>ℹ️ About</h4>
     <div class="row"><span class="k">Who</span><span class="v">Free & family-friendly — kids of all ages welcome</span></div>
-    <div class="row"><span class="k">Start</span><span class="v">Just tap your phone on a Mungi NFC tag in store!</span></div>
+    <div class="row"><span class="k">Start</span><span class="v">Tap a Mungi NFC tag to begin the adventure!</span></div>
   </div>
   <div class="share">
     <a id="shareBtn" href="#">📤 Share</a>
-    <a href="https://maps.google.com/?q=The+Domain+Austin+TX" target="_blank" rel="noopener">🗺️ Get Directions</a>
   </div>
   <div class="footer">
-    © 2026 Monggle Kids · Mungi Heart Pop-Up <span class="star">★</span> Made in Texas with lots of 💛<br>
+    © 2026 Monggle Kids · Mungi Heart Adventure <span class="star">★</span> Made with lots of 💛<br>
     Camera is used only for this activity · Photos are not uploaded or stored · No name or photo is saved to any server<br>
     All processing runs locally on your device. Saving is optional, to your own device only, with parental consent.
   </div>
@@ -515,6 +517,12 @@
     <img id="mPhoto" class="mPhoto" alt="selfie">
     <div class="reticle" id="reticle"></div>
     <div class="swatch" id="mSwatch"><span>camera sees</span></div>
+    <div class="costumes" id="mCostumes">
+      <button data-c="crew" class="on">🪖 Crew</button>
+      <button data-c="flower">🌸 Flowers</button>
+      <button data-c="bunny">🐰 Bunny</button>
+      <button data-c="crown">👑 Crown</button>
+    </div>
     <div class="m-top">
       <div class="m-title2" id="mTitle">Mission</div>
       <button class="m-close" id="mClose">✕</button>
@@ -629,17 +637,17 @@ function chapterIntro(){ return [
 ]; }
 function postSunny(){ return [
   {c:'hugo',t:'Hugo smiles again!',x:`"You said hello… I don't feel lonely anymore. Thank you, ${heroName}!" — Hugo`},
-  {c:'grumble',t:'The Grumble grumbles',x:`"W-what's this warm feeling? Stop it!" The Grumble is losing his grip on the town's feelings…`},
+  {c:'grumble',t:'The Grumble snarls',x:`"Grr! How are my cages breaking?!" The Grumble is losing his grip on the town's feelings…`},
   {c:'mungi',t:'Chapter 2 · <span class="v">Bring Back Joy</span>',x:`Mungi: "Two friends to go! Joy forgot how to feel happy — let's share a great big smile."`,btn:'Start Chapter 2 ▶'}
 ]; }
 function postCosmo(){ return [
   {c:'joy',t:'Joy is happy again!',x:`"Hehe! Your smile reminded me how good it feels!" — Joy`},
-  {c:'grumble',t:'The Grumble softens',x:`"I… I think I'm starting to feel something too…" The Grumble doesn't seem so grumpy now.`},
-  {c:'mungi',t:'Chapter 3 · <span class="v">Colors of Feelings</span>',x:`Mungi: "Last one! Iris lost the colors of her heart. Let's find them and paint her feelings back!"`,btn:'Start Chapter 3 ▶'}
+  {c:'grumble',t:'The Grumble weakens',x:`"Stop it! My gloom is slipping away!" The Grumble is getting weaker…`},
+  {c:'mungi',t:'Chapter 3 · <span class="v">Colors of Feelings</span>',x:`Mungi: "Last one! Iris lost the colors of her heart. Find them, rebuild the rainbow, and we'll blast the Grumble!"`,btn:'Start Chapter 3 ▶'}
 ]; }
 function finaleScene(){ return [
   {c:'iris',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
-  {c:'grumble_happy',t:'The Grumble <span class="v">learns to smile</span>',x:`"You showed me how to feel again… maybe I don't want to be grumpy. Thank you!" The Grumble smiles for the very first time!`},
+  {c:'grumble_happy',t:'The Grumble is <span class="v">defeated!</span>',x:`"Nooo! My gloom is gone!" Mungi blasts the rainbow and the Grumble zooms away — the feelings are free!`},
   {e:'🎉',t:'Monggle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
   {c:'mungi',t:`Heart Hero ${heroName}!`,x:`Mungi: "You brought everyone's hearts back together. Here are your hero rewards!" 💛`,btn:'Get My Rewards 🎁'}
 ]; }
@@ -652,10 +660,10 @@ function afterMission(i){
 const boss=document.getElementById('boss'), bossAv=document.getElementById('bossAv'),
       bossSay=document.getElementById('bossSay'), hpFill=document.getElementById('hpFill');
 const BOSS_SAY=[
-  "You showed me how to smile again… thank you! 😊",
-  "I… I think I'm starting to feel something…",
-  "W-what's this warm feeling? Stop it!",
-  "Hmph! I locked away ALL the feelings!"
+  "Aaargh! The rainbow beat me! I'll be baaack…",
+  "N-no! My gloom is fading away…",
+  "Ggrr! What is this colorful power?!",
+  "Mwahaha! I stole ALL the feelings!"
 ];
 function bossHit(){
   const remaining=3-cleared;
@@ -722,7 +730,7 @@ window.dataLayer.push({event:'experience_open',src:SRC});
 /* When a GA4 / analytics tag is added, `src` is already in dataLayer. */
 document.getElementById('shareBtn').addEventListener('click',async e=>{
   e.preventDefault();
-  const data={title:'Monggle Kids × Mungi Heart Pop-Up',text:'Become a Heart Hero with Mungi at the Texas pop-up! 💛',url:location.href};
+  const data={title:'Monggle Kids × Mungi Heart Adventure',text:'Become a Heart Hero with Mungi! 💛',url:location.href};
   if(navigator.share){try{await navigator.share(data);}catch(_){}}
   else alert('Share this link:\n'+location.href);
 });
@@ -761,7 +769,7 @@ const WINSUB=[
 ];
 const BRIEFS=[
   {e:'🤗',t:'Help Hugo',x:"Hugo feels lonely and gray. Wave your hand to send him a big friendly hello and bring his smile back!",b:'Wave Hello ▶'},
-  {e:'😊',t:'Cheer up Joy',x:"Joy forgot how to feel happy. Show your biggest smile — your happy face will remind Joy how good it feels!",b:'Share a Smile ▶'},
+  {e:'😊',t:'Cheer up Joy',x:"Joy forgot how to feel happy. Pick a fun look — crew helmet, flowers, bunny or crown — then show your biggest smile to remind Joy how good it feels!",b:'Share a Smile ▶'},
   {e:'🌈',t:'Color in Iris',x:"Iris lost the colors of her feelings. Find each color around you — red, then yellow, then blue — to rebuild the rainbow so Mungi can stop the Grumble!",b:'Find the Colors ▶'}
 ];
 const FACTS=[
@@ -786,6 +794,7 @@ function resetUI(){
   shutter.onclick=null; setStatus('');
   const sw=document.getElementById('mSwatch'); if(sw) sw.style.display='none';
   const bt=document.getElementById('mBattle'); if(bt) bt.classList.remove('show');
+  const co=document.getElementById('mCostumes'); if(co) co.classList.remove('show');
 }
 async function startCam(facing){
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:720}},audio:false});
@@ -920,6 +929,39 @@ function drawHelmet(ctx,lm,W,H){
   drawStar(ctx,cx,cy-r-r*0.26,r*0.13,'#ffd166');
   ctx.restore();
 }
+function faceMetrics(lm,W,H){
+  const top=lm[10],chin=lm[152],L=lm[234],R=lm[454];
+  return { cx:((L.x+R.x)/2)*W, top:top.y*H, fw:Math.abs(R.x-L.x)*W, fh:Math.abs(chin.y-top.y)*H };
+}
+function drawFlowerCrown(ctx,lm,W,H){
+  const m=faceMetrics(lm,W,H), y=m.top-m.fh*0.10, half=m.fw*0.6, pr=m.fw*0.075;
+  const cols=['#ff8fb3','#ffd45e','#ffffff','#b9a7ff','#8fe3cf'];
+  for(let i=0;i<5;i++){ const t=i/4, x=m.cx-half+2*half*t, fy=y-Math.sin(Math.PI*t)*m.fw*0.1;
+    ctx.fillStyle=cols[i%cols.length];
+    for(let p=0;p<5;p++){ const a=p/5*2*Math.PI; ctx.beginPath(); ctx.arc(x+Math.cos(a)*pr,fy+Math.sin(a)*pr,pr*0.7,0,7); ctx.fill(); }
+    ctx.fillStyle='#ffe14d'; ctx.beginPath(); ctx.arc(x,fy,pr*0.55,0,7); ctx.fill();
+  }
+}
+function drawBunnyEars(ctx,lm,W,H){
+  const m=faceMetrics(lm,W,H), baseY=m.top-m.fh*0.04, earH=m.fw*0.95, earW=m.fw*0.26;
+  function ear(dx,rot){ ctx.save(); ctx.translate(m.cx+dx,baseY); ctx.rotate(rot);
+    ctx.fillStyle='#ffffff'; ctx.beginPath(); ctx.ellipse(0,-earH/2,earW/2,earH/2,0,0,7); ctx.fill();
+    ctx.fillStyle='#ff9bc7'; ctx.beginPath(); ctx.ellipse(0,-earH/2,earW*0.26,earH*0.36,0,0,7); ctx.fill();
+    ctx.restore(); }
+  ear(-m.fw*0.2,-0.18); ear(m.fw*0.2,0.18);
+}
+function drawCrown(ctx,lm,W,H){
+  const m=faceMetrics(lm,W,H), y=m.top-m.fh*0.02, half=m.fw*0.5, h=m.fw*0.3;
+  ctx.fillStyle='#ffd166'; ctx.strokeStyle='#e0a800'; ctx.lineWidth=Math.max(2,m.fw*0.012);
+  ctx.beginPath(); ctx.moveTo(m.cx-half,y);
+  ctx.lineTo(m.cx-half*0.5,y-h); ctx.lineTo(m.cx-half*0.22,y-h*0.4);
+  ctx.lineTo(m.cx,y-h*1.18); ctx.lineTo(m.cx+half*0.22,y-h*0.4);
+  ctx.lineTo(m.cx+half*0.5,y-h); ctx.lineTo(m.cx+half,y); ctx.closePath(); ctx.fill(); ctx.stroke();
+  const gems=['#ff5a5a','#4a8bff','#ff5a5a'];
+  [-half*0.5,0,half*0.5].forEach((dx,i)=>{ ctx.fillStyle=gems[i]; ctx.beginPath(); ctx.arc(m.cx+dx,y-h*0.12,m.fw*0.032,0,7); ctx.fill(); });
+}
+const COSTUMES={crew:drawHelmet,flower:drawFlowerCrown,bunny:drawBunnyEars,crown:drawCrown};
+
 async function runCadetCheck(){
   setStatus('Loading face AI…',true);
   try{
@@ -930,8 +972,15 @@ async function runCadetCheck(){
     await startCam('user');
   }catch(err){ failCam(); return; }
   video.classList.add('mirror'); canvas.classList.add('mirror');
-  setStatus('Put on your helmet… then smile big! 😄');
+  setStatus('Pick a look 👆 then smile big! 😄');
   shutter.classList.add('show'); setMeter(0);
+  // costume picker
+  let costume='crew';
+  const cos=document.getElementById('mCostumes'); cos.classList.add('show');
+  cos.querySelectorAll('button').forEach(b=>{
+    b.classList.toggle('on', b.dataset.c==='crew');
+    b.onclick=()=>{ costume=b.dataset.c; cos.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); };
+  });
   const ctx=canvas.getContext('2d'); let last=-1,haveFace=false,smile=0,hold=0;
   function snap(){
     const out=document.createElement('canvas'); out.width=canvas.width; out.height=canvas.height;
@@ -946,7 +995,7 @@ async function runCadetCheck(){
       const res=faceRec.detectForVideo(video,performance.now());
       ctx.clearRect(0,0,canvas.width,canvas.height);
       const lm=res.faceLandmarks&&res.faceLandmarks[0]; haveFace=!!lm;
-      if(lm) drawHelmet(ctx,lm,canvas.width,canvas.height);
+      if(lm) (COSTUMES[costume]||drawHelmet)(ctx,lm,canvas.width,canvas.height);
       smile=0; const bs=res.faceBlendshapes&&res.faceBlendshapes[0];
       if(bs){ const cats=bs.categories; const get=n=>{const c=cats.find(c=>c.categoryName===n);return c?c.score:0;};
         smile=(get('mouthSmileLeft')+get('mouthSmileRight'))/2; }
@@ -980,7 +1029,7 @@ function playRainbowBattle(onDone){
   setTimeout(()=>{ beam.classList.add('fire'); proj.classList.add('fire'); },350);
   setTimeout(()=>{ gr.classList.add('hit'); title.textContent='Direct hit! 💥'; text.textContent='The gloom melts away in the colors…'; },1300);
   setTimeout(()=>{ gr.classList.remove('hit'); gr.src='assets/characters/grumble_happy.png'; gr.classList.add('won');
-    title.textContent='The Grumble smiles again! 😊'; text.textContent='The rainbow filled him with happy feelings.'; blast(); },2300);
+    title.textContent='The Grumble is defeated! 💫'; text.textContent='The rainbow zapped his gloom away!'; blast(); },2300);
   setTimeout(()=>{ next.style.display='inline-block'; },2900);
   next.onclick=()=>{ ov.classList.remove('show'); if(onDone) onDone(); };
 }
@@ -1093,7 +1142,7 @@ function drawCertificate(cv){
   [[60,60],[W-60,60],[60,H-60],[W-60,H-60]].forEach(p=>drawStar(ctx,p[0],p[1],12,'#ffb02e'));
   ctx.textAlign='center';
   ctx.fillStyle='#3fc4a8'; ctx.font='900 22px Poppins,sans-serif';
-  ctx.fillText('★  MONGGLE KIDS  ·  HEART POP-UP  ·  TEXAS  ★', W/2, 92);
+  ctx.fillText('★  MONGGLE KIDS  ·  HEART HERO  ★', W/2, 92);
   ctx.fillStyle='#3b3550'; ctx.font='900 44px Poppins,sans-serif';
   ctx.fillText('Heart Hero Certificate', W/2, 150);
   ctx.fillStyle='#9a93ad'; ctx.font='600 17px Poppins,sans-serif';
@@ -1142,7 +1191,7 @@ function drawIdCard(cv){
     field('Rank', 'Junior Heart Hero 💛');
     ctx.fillStyle='#9a93ad'; ctx.font='700 13px Poppins,sans-serif'; ctx.fillText('TOWN',fx,fy); ctx.fillText('ISSUED',fx+170,fy);
     ctx.fillStyle='#3b3550'; ctx.font='700 17px Poppins,sans-serif';
-    ctx.fillText('Monggle Town, TX',fx,fy+24); ctx.fillText(todayStr(),fx+170,fy+24);
+    ctx.fillText('Monggle Town',fx,fy+24); ctx.fillText(todayStr(),fx+170,fy+24);
     ctx.fillStyle='#3b3550';
     for(let x=fx,i=0;x<W-40;x+=6,i++){ if(i%3){ ctx.fillRect(x,H-46,(i%2?2:4),30); } }
     ctx.strokeStyle='#2a1840'; ctx.lineWidth=3; roundRect(ctx,2,2,W-4,H-4,27); ctx.stroke();
