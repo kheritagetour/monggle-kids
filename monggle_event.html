@@ -71,6 +71,7 @@
   .brand .logo{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#bfe3ff,#8fc7ff);
     display:flex;align-items:center;justify-content:center;font-size:16px;}
   .tag{font-size:11px;font-weight:800;color:#fff;background:var(--space2);padding:5px 10px;border-radius:999px;}
+  .lang-btn{font-weight:800;font-size:12px;color:#fff;background:var(--pink-d);border:none;border-radius:999px;padding:6px 12px;cursor:pointer;}
 
   /* hero */
   .hero{text-align:center;padding:8px 0 4px;}
@@ -290,6 +291,7 @@
   .mission.locked .m-go{background:#b9b3c6;}
   .mission.shakex{animation:shake .4s;}
 </style>
+<script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 </head>
 <body>
 
@@ -358,7 +360,7 @@
 <div class="app">
   <div class="topbar">
     <div class="brand"><span class="logo">☁️</span>Monglekids</div>
-    <span class="tag">💛 HEART HERO</span>
+    <div style="display:flex;gap:8px;align-items:center;"><button id="langToggle" class="lang-btn">한국어</button><span class="tag">💛 HEART HERO</span></div>
   </div>
 
   <div class="hero">
@@ -570,7 +572,9 @@ const FL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/
 
 /* ---------- mascot + names ---------- */
 const mascot=document.getElementById('mascot'), bubble=document.getElementById('bubble');
-const lines=["Let's bring the feelings back! 💛","Hugo feels loved! 🤗","Joy is smiling! 😊","One friend to go! 🌈","We did it! 💛"];
+const LANG=()=>(window.MK_LANG==='ko'?'ko':'en');
+const linesEN=["Let's bring the feelings back! 💛","Hugo feels loved! 🤗","Joy is smiling! 😊","One friend to go! 🌈","We did it! 💛"];
+const linesKO=["감정을 되찾자! 💛","휴고가 사랑받아요! 🤗","조이가 웃어요! 😊","한 친구 남았어! 🌈","우리가 해냈어! 💛"];
 function cheer(){mascot.classList.remove('happy');void mascot.offsetWidth;mascot.classList.add('happy');}
 mascot.addEventListener('click',cheer);
 
@@ -591,13 +595,13 @@ setTimeout(()=>document.getElementById('story').classList.remove('hide'),2000);
   function render(){
     panels.forEach((el,i)=>el.classList.toggle('show',i===p));
     dots.forEach((el,i)=>el.classList.toggle('on',i===p));
-    nextBtn.textContent = p===panels.length-1 ? 'Blast Off 🚀' : 'Next ▶';
+    nextBtn.textContent = p===panels.length-1 ? (LANG()==='ko'?'출발! 🚀':'Blast Off 🚀') : (LANG()==='ko'?'다음 ▶':'Next ▶');
     if(p===panels.length-1) setTimeout(()=>nameInput.focus(),200);
   }
   function finish(){
     const v=nameInput.value.trim();
     heroName = v ? v.slice(0,16) : 'Brave Hero';
-    bubble.textContent=`Howdy ${heroName}! ☁️`;
+    bubble.textContent=(LANG()==='ko'?`안녕 ${heroName}! ☁️`:`Howdy ${heroName}! ☁️`);
     story.classList.add('hide');
     playScene(chapterIntro(), ()=>openMission(0));   // straight into the story
   }
@@ -618,7 +622,7 @@ function renderScene(){
   if(st.c){ scImg.src='assets/characters/'+st.c+'.png'; scImg.style.display='inline-block'; scEmoji.style.display='none'; }
   else { scImg.style.display='none'; scEmoji.style.display='block'; scEmoji.textContent=st.e; }
   scTitle.innerHTML=st.t; scText.innerHTML=st.x;
-  scNext.textContent = sceneIdx<sceneSteps.length-1 ? 'Next ▶' : (st.btn||'Continue ▶');
+  scNext.textContent = sceneIdx<sceneSteps.length-1 ? (LANG()==='ko'?'다음 ▶':'Next ▶') : (st.btn||(LANG()==='ko'?'계속 ▶':'Continue ▶'));
   scDots.innerHTML = sceneSteps.map((_,k)=>`<i class="${k===sceneIdx?'on':''}"></i>`).join('');
 }
 function playScene(steps,onDone){
@@ -631,20 +635,35 @@ scNext.addEventListener('click',()=>{
 });
 
 /* ---------- story beats ---------- */
-function chapterIntro(){ return [
+function chapterIntro(){ return LANG()==='ko' ? [
+  {c:'mungi',t:'챕터 1 · <span class="v">외로운 친구</span>',x:`기다려, 휴고! 하트 히어로 <b>${heroName}</b>와 Moong이 왔어. 휴고가 너무 외로워해 — 반갑게 인사해 주자! 🤗`,btn:'챕터 1 시작 ▶'}
+] : [
   {c:'mungi',t:'Chapter 1 · <span class="v">A Lonely Friend</span>',x:`Hold on, Hugo! Heart Hero <b>${heroName}</b> and Moong are here. Hugo feels all alone — let's send him a big friendly hello! 🤗`,btn:'Start Chapter 1 ▶'}
 ]; }
-function postSunny(){ return [
+function postSunny(){ return LANG()==='ko' ? [
+  {c:'hugo',t:'휴고가 다시 웃어요!',x:`"인사해줘서… 이제 외롭지 않아. 고마워, ${heroName}!" — 휴고`},
+  {c:'grumble',t:'그럼블이 으르렁',x:`"으르렁! 내 감옥이 왜 부서지는 거야?!" 그럼블이 마을 감정에 대한 힘을 잃어가요…`},
+  {c:'mungi',t:'챕터 2 · <span class="v">조이의 행복 되찾기</span>',x:`Moong: "두 친구 남았어! 조이가 행복을 잊어버렸대 — 활짝 웃어주자."`,btn:'챕터 2 시작 ▶'}
+] : [
   {c:'hugo',t:'Hugo smiles again!',x:`"You said hello… I don't feel lonely anymore. Thank you, ${heroName}!" — Hugo`},
   {c:'grumble',t:'The Grumble snarls',x:`"Grr! How are my cages breaking?!" The Grumble is losing his grip on the town's feelings…`},
   {c:'mungi',t:'Chapter 2 · <span class="v">Bring Back Joy</span>',x:`Moong: "Two friends to go! Joy forgot how to feel happy — let's share a great big smile."`,btn:'Start Chapter 2 ▶'}
 ]; }
-function postCosmo(){ return [
+function postCosmo(){ return LANG()==='ko' ? [
+  {c:'joy',t:'조이가 다시 행복해요!',x:`"헤헤! 네 미소가 얼마나 좋은 기분인지 떠올려줬어!" — 조이`},
+  {c:'grumble',t:'그럼블이 약해져요',x:`"그만해! 내 우울함이 사라지고 있어!" 그럼블이 점점 약해져요…`},
+  {c:'mungi',t:'챕터 3 · <span class="v">감정의 색깔</span>',x:`Moong: "마지막이야! 아이리스가 마음의 색을 잃었어. 색을 찾아 무지개를 다시 만들어 그럼블을 물리치자!"`,btn:'챕터 3 시작 ▶'}
+] : [
   {c:'joy',t:'Joy is happy again!',x:`"Hehe! Your smile reminded me how good it feels!" — Joy`},
   {c:'grumble',t:'The Grumble weakens',x:`"Stop it! My gloom is slipping away!" The Grumble is getting weaker…`},
   {c:'mungi',t:'Chapter 3 · <span class="v">Colors of Feelings</span>',x:`Moong: "Last one! Iris lost the colors of her heart. Find them, rebuild the rainbow, and we'll blast the Grumble!"`,btn:'Start Chapter 3 ▶'}
 ]; }
-function finaleScene(){ return [
+function finaleScene(){ return LANG()==='ko' ? [
+  {c:'iris_free',t:'아이리스가 다시 빛나요!',x:`"내 색깔이 돌아왔어 — 이제 내 기분을 모두에게 보여줄 수 있어!" — 아이리스`},
+  {c:'grumble_happy',t:'그럼블을 <span class="v">물리쳤어요!</span>',x:`"안 돼! 내 우울함이 사라졌어!" Moong이 무지개를 쏘자 그럼블이 날아가고 — 감정이 자유로워졌어요!`},
+  {e:'🎉',t:'몽글 마을이 다시 살아나요',x:`모든 감정과 색이 돌아왔어요 — 온 마을이 포옹과 미소로 가득해요!`},
+  {c:'mungi',t:`하트 히어로 ${heroName}!`,x:`Moong: "모두의 마음을 다시 이어줬어. 여기 너의 히어로 보상이야!" 💛`,btn:'보상 받기 🎁'}
+] : [
   {c:'iris_free',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
   {c:'grumble_happy',t:'The Grumble is <span class="v">defeated!</span>',x:`"Nooo! My gloom is gone!" Moong blasts the rainbow and the Grumble zooms away — the feelings are free!`},
   {e:'🎉',t:'Mongle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
@@ -658,16 +677,21 @@ function afterMission(i){
 /* ---------- boss gamification ---------- */
 const boss=document.getElementById('boss'), bossAv=document.getElementById('bossAv'),
       bossSay=document.getElementById('bossSay'), hpFill=document.getElementById('hpFill');
-const BOSS_SAY=[
+const BOSS_SAY={en:[
   "Aaargh! The rainbow beat me! I'll be baaack…",
   "N-no! My gloom is fading away…",
   "Ggrr! What is this colorful power?!",
   "Mwahaha! I stole ALL the feelings!"
-];
+],ko:[
+  "으아악! 무지개에 당했다! 다시 돌아오겠어…",
+  "아, 안 돼… 내 우울함이 사라져…",
+  "으으! 이 알록달록한 힘은 뭐지?!",
+  "으하하! 내가 모든 감정을 훔쳤다!"
+]};
 function bossHit(){
   const remaining=3-cleared;
   hpFill.style.width=(remaining/3*100)+'%';
-  bossSay.textContent='"'+BOSS_SAY[remaining]+'"';
+  bossSay.textContent='"'+BOSS_SAY[LANG()][remaining]+'"';
   document.getElementById('bossImg').src = remaining===0 ? 'assets/characters/grumble_happy.png' : 'assets/characters/grumble.png';
   bossAv.classList.remove('hit'); void bossAv.offsetWidth; bossAv.classList.add('hit');
   if(remaining===0) boss.classList.add('defeated');
@@ -679,12 +703,12 @@ function markStamp(i){
   if(done[i]) return;
   done[i]=true; cleared++;
   const m=document.querySelector(`.mission[data-m="${i}"]`);
-  m.classList.add('cleared'); m.querySelector('.m-go').textContent='DONE ✓';
+  m.classList.add('cleared'); m.querySelector('.m-go').textContent=(LANG()==='ko'?'완료 ✓':'DONE ✓');
   const faces=['hugo','joy','iris'];
   const st=document.querySelector(`.stamp[data-s="${i}"]`);
   st.innerHTML=`<img src="assets/characters/${faces[i]}.png" alt="">`; st.classList.add('done');
   document.getElementById('cnt').textContent=cleared;
-  bubble.textContent=lines[Math.min(cleared,lines.length-1)]; cheer();
+  {const _ln=LANG()==='ko'?linesKO:linesEN; bubble.textContent=_ln[Math.min(cleared,_ln.length-1)];} cheer();
   bossHit(); freeFriend(i); refreshLocks();
   afterMission(i);
 }
@@ -706,8 +730,8 @@ function finishAll(){
 document.getElementById('enterBtn').addEventListener('click',()=>{
   const n=document.getElementById('gName').value.trim();
   const e=document.getElementById('gEmail').value.trim();
-  if(!document.getElementById('giveConsent').checked){alert('A parent/guardian must check the consent box to enter.');return;}
-  if(!n||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){alert('Please enter your name and a valid email to enter.');return;}
+  if(!document.getElementById('giveConsent').checked){alert(LANG()==='ko'?'응모하려면 보호자가 동의 칸을 체크해야 해요.':'A parent/guardian must check the consent box to enter.');return;}
+  if(!n||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){alert(LANG()==='ko'?'이름과 올바른 이메일을 입력해 주세요.':'Please enter your name and a valid email to enter.');return;}
   document.getElementById('giveForm').style.display='none';
   document.getElementById('entered').classList.add('show'); blast();
 });
@@ -720,7 +744,7 @@ function refreshSaveLocks(){
 }
 saveConsent.addEventListener('change',refreshSaveLocks);
 ['dlCert','dlId'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{
-  if(!saveConsent.checked){ e.preventDefault(); alert('A parent/guardian must check the box above to save.'); }
+  if(!saveConsent.checked){ e.preventDefault(); alert(LANG()==='ko'?'저장하려면 위의 보호자 동의 칸을 체크해야 해요.':'A parent/guardian must check the box above to save.'); }
 }));
 
 /* ---------- analytics: capture QR/NFC source (e.g. ?src=nfc) ---------- */
@@ -762,26 +786,52 @@ const winOv=document.getElementById('mWin'), winSub=document.getElementById('mWi
       factEl=document.getElementById('mFact'), winNext=document.getElementById('mWinNext');
 const closeBtn=document.getElementById('mClose');
 
-const WINSUB=[
+const WINSUB={en:[
   "You said hello — Hugo feels loved again! 🤗 The Grumble softened!",
   "Your big smile cheered up Joy! 😊 The Grumble is melting!",
   "Colors of feelings restored — Iris is glowing! 🌈"
-];
-const BRIEFS=[
+],ko:[
+  "인사했어요 — 휴고가 다시 사랑받아요! 🤗 그럼블이 누그러졌어요!",
+  "활짝 웃어 조이를 기운나게 했어요! 😊 그럼블이 녹고 있어요!",
+  "감정의 색을 되찾았어요 — 아이리스가 빛나요! 🌈"
+]};
+const BRIEFS={en:[
   {e:'🤗',t:'Help Hugo',x:"Hugo feels lonely and gray. Wave your hand to send him a big friendly hello and bring his smile back!",b:'Wave Hello ▶'},
   {e:'😊',t:'Cheer up Joy',x:"Joy forgot how to feel happy. Pick a fun look — crew helmet, flowers, bunny or crown — then show your biggest smile to remind Joy how good it feels!",b:'Share a Smile ▶'},
   {e:'🌈',t:'Color in Iris',x:"Iris lost the colors of her feelings. Find each color around you — red, then yellow, then blue — to rebuild the rainbow so Moong can stop the Grumble!",b:'Find the Colors ▶'}
-];
-const FACTS=[
+],ko:[
+  {e:'🤗',t:'휴고를 도와줘',x:"휴고가 외롭고 잿빛이 됐어요. 손을 흔들어 반갑게 인사하고 휴고의 미소를 되찾아 주세요!",b:'손 흔들기 ▶'},
+  {e:'😊',t:'조이를 기운나게',x:"조이가 행복을 잊었어요. 멋진 모습을 골라보고 — 대원 헬멧, 꽃, 토끼, 왕관 — 활짝 웃어 조이에게 행복을 떠올려 주세요!",b:'미소 짓기 ▶'},
+  {e:'🌈',t:'아이리스 색칠하기',x:"아이리스가 감정의 색을 잃었어요. 주변에서 빨강·노랑·파랑을 차례로 찾아 무지개를 다시 만들고 Moong이 그럼블을 물리치게 해요!",b:'색깔 찾기 ▶'}
+]};
+const FACTS={en:[
   "Saying 'hi' or giving a wave tells a friend you're happy to see them — it's the very first step of friendship! 🤗",
   "Smiles are contagious! When you smile, your face shares the feeling and helps the people around you feel happy too. 😊",
   "We match colors to feelings — warm red for excited, calm blue for relaxed. Sharing how you feel helps friends understand you! 🌈"
-];
+],ko:[
+  "'안녕' 인사나 손 흔들기는 친구를 만나 반갑다는 뜻이에요 — 우정의 첫걸음이죠! 🤗",
+  "미소는 전염돼요! 네가 웃으면 그 기분이 얼굴로 전해져 주변 사람도 행복하게 만들어요. 😊",
+  "우리는 색으로 감정을 표현해요 — 신날 땐 따뜻한 빨강, 차분할 땐 파랑처럼요. 기분을 나누면 친구가 너를 더 잘 이해해요! 🌈"
+]};
 
 let stream=null, loopId=null, fallbackTimer=null, activeMission=-1, settled=false;
 let handRec=null, faceRec=null;
 
-function setStatus(html,loading){ statusEl.innerHTML=(loading?'<span class="spin"></span>':'')+html; }
+const STATUS_KO={
+ 'Loading hand AI…':'손 인식 AI 로딩 중…',
+ 'Loading face AI…':'얼굴 인식 AI 로딩 중…',
+ 'Loading camera…':'카메라 로딩 중…',
+ 'Show your hand and grab the sunbeams! ☀️':'손을 보여주고 햇살을 잡아요! ☀️',
+ 'Show your open hand to the camera ☀️':'카메라에 손을 펴서 보여줘요 ☀️',
+ 'Pick a look 👆 then smile big! 😄':'모습을 골라요 👆 그리고 활짝 웃어요! 😄',
+ "Come closer — I can't see your face 👀":'조금 더 가까이 — 얼굴이 안 보여요 👀',
+ 'Awesome smile! Hold it… 😄':'멋진 미소! 그대로 유지… 😄',
+ 'Now give a BIG smile, Hero! 😁':'이제 활짝 웃어요, 히어로! 😁',
+ "I can't see your face yet 👀 — come closer!":'아직 얼굴이 안 보여요 👀 — 가까이 와요!',
+ 'Smile big first, Hero! 😄':'먼저 활짝 웃어요, 히어로! 😄',
+ '⚠️ Camera not available.<br>Use a phone & allow camera, or tap below.':'⚠️ 카메라를 사용할 수 없어요.<br>휴대폰에서 카메라를 허용하거나 아래를 눌러요.'
+};
+function setStatus(html,loading){ if(window.MK_LANG==='ko'&&STATUS_KO[html]) html=STATUS_KO[html]; statusEl.innerHTML=(loading?'<span class="spin"></span>':'')+html; }
 function setMeter(p){ meter.classList.add('show'); meterFill.style.width=Math.max(0,Math.min(100,p))+'%'; }
 function resetUI(){
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
@@ -808,9 +858,9 @@ function stopCam(){
 function openMission(i){
   activeMission=i; settled=false; resetUI();
   modal.classList.add('show');
-  const b=BRIEFS[i];
+  const b=BRIEFS[LANG()][i];
   document.getElementById('mbEmoji').textContent=b.e;
-  document.getElementById('mbTitle').textContent='Mission '+(i+1)+' · '+b.t;
+  document.getElementById('mbTitle').textContent=(LANG()==='ko'?'미션 ':'Mission ')+(i+1)+' · '+b.t;
   document.getElementById('mbText').textContent=b.x;
   document.getElementById('mbStart').textContent=b.b;
   titleEl.innerHTML=b.e+' '+b.t;
@@ -834,7 +884,7 @@ function refreshLocks(){
     const i=+m.dataset.m, locked = i>cleared && !done[i];
     m.classList.toggle('locked', locked);
     const go=m.querySelector('.m-go');
-    go.textContent = done[i] ? 'DONE ✓' : (locked ? '🔒' : 'START');
+    go.textContent = done[i] ? (LANG()==='ko'?'완료 ✓':'DONE ✓') : (locked ? '🔒' : (LANG()==='ko'?'시작':'START'));
   });
 }
 document.querySelectorAll('.mission').forEach(m=>{
@@ -843,7 +893,7 @@ document.querySelectorAll('.mission').forEach(m=>{
     if(done[i]) return;
     if(i>cleared){
       m.classList.remove('shakex'); void m.offsetWidth; m.classList.add('shakex');
-      bubble.textContent='Free the friend before this one first! 🔒';
+      bubble.textContent=(LANG()==='ko'?'이 친구 전에 앞 친구를 먼저 구해요! 🔒':'Free the friend before this one first! 🔒');
       return;
     }
     openMission(i);
@@ -854,8 +904,8 @@ function win(){
   if(settled) return; settled=true;
   if(loopId){cancelAnimationFrame(loopId);loopId=null;}
   const idx=activeMission;
-  winSub.textContent=WINSUB[idx]||'Great job!';
-  factEl.textContent=' '+(FACTS[idx]||'');
+  winSub.textContent=WINSUB[LANG()][idx]||(LANG()==='ko'?'잘했어요!':'Great job!');
+  factEl.textContent=' '+(FACTS[LANG()][idx]||'');
   winOv.classList.add('show'); blast();
   winNext.onclick=()=>{ closeMission(); markStamp(idx); };
 }
@@ -902,7 +952,7 @@ async function runSunbeams(){
         for(let i=beams.length-1;i>=0;i--){ const dx=beams[i].x*w-cx, dy=beams[i].y*h-cy;
           if(Math.hypot(dx,dy)<48){ beams.splice(i,1); got++; setMeter(got/NEED*100); spawn();
             if(got>=NEED){ win(); return; } } }
-        setStatus(`Sunbeams: ${got}/${NEED} — keep grabbing! ☀️`);
+        setStatus(LANG()==='ko'?`햇살: ${got}/${NEED} — 계속 잡아요! ☀️`:`Sunbeams: ${got}/${NEED} — keep grabbing! ☀️`);
       } else setStatus('Show your open hand to the camera ☀️');
     }
     loopId=requestAnimationFrame(tick);
@@ -1023,13 +1073,13 @@ function playRainbowBattle(onDone){
         text=document.getElementById('btText'), next=document.getElementById('btNext');
   beam.classList.remove('fire'); proj.classList.remove('fire'); gr.classList.remove('hit','won');
   gr.src='assets/characters/grumble.png'; next.style.display='none';
-  title.textContent='Moong fires the rainbow! 🌈';
-  text.textContent='The colors zoom straight at the Grumble!';
+  title.textContent=(LANG()==='ko'?'무지개 발사! 🌈':'Moong fires the rainbow! 🌈');
+  text.textContent=(LANG()==='ko'?'색깔이 그럼블에게 곧장 날아가요!':'The colors zoom straight at the Grumble!');
   ov.classList.add('show'); void beam.offsetWidth;
   setTimeout(()=>{ beam.classList.add('fire'); proj.classList.add('fire'); },350);
-  setTimeout(()=>{ gr.classList.add('hit'); title.textContent='Direct hit! 💥'; text.textContent='The gloom melts away in the colors…'; },1300);
+  setTimeout(()=>{ gr.classList.add('hit'); title.textContent=(LANG()==='ko'?'명중! 💥':'Direct hit! 💥'); text.textContent=(LANG()==='ko'?'우울함이 색 속에서 녹아내려요…':'The gloom melts away in the colors…'); },1300);
   setTimeout(()=>{ gr.classList.remove('hit'); gr.src='assets/characters/grumble_happy.png'; gr.classList.add('won');
-    title.textContent='The Grumble is defeated! 💫'; text.textContent='The rainbow zapped his gloom away!'; blast(); },2300);
+    title.textContent=(LANG()==='ko'?'그럼블을 물리쳤어요! 💫':'The Grumble is defeated! 💫'); text.textContent=(LANG()==='ko'?'무지개가 우울함을 날려버렸어요!':'The rainbow zapped his gloom away!'); blast(); },2300);
   setTimeout(()=>{ next.style.display='inline-block'; },2900);
   next.onclick=()=>{ ov.classList.remove('show'); if(onDone) onDone(); };
 }
@@ -1083,10 +1133,11 @@ async function runRainbow(){
       hold=good?hold+1.6:Math.max(0,hold-1.0);
       setMeter(Math.min(100,hold/30*100));
       reticle.style.borderColor=good?tgt.col:'#ffffffcc';
-      if(good)            stat('hold'+idx,  `${tgt.e} Yes! Hold it on <b>${tgt.n}</b>…`);
-      else if(frac>0.05)  stat('near'+idx,  `${tgt.e} Almost! Move closer so <b>${tgt.n}</b> fills the circle.`);
-      else if(frames>270) stat('assist'+idx,`${tgt.e} Find <b>any ${tgt.n}</b> thing — even a small one works!`);
-      else                stat('find'+idx,  `${tgt.e} Find something <b>${tgt.n}</b> and fill the circle!`);
+      const _cn={RED:'빨강',YELLOW:'노랑',BLUE:'파랑'}[tgt.n]; const _ko=LANG()==='ko';
+      if(good)            stat('hold'+idx,  _ko?`${tgt.e} 좋아요! <b>${_cn}</b> 그대로 유지…`:`${tgt.e} Yes! Hold it on <b>${tgt.n}</b>…`);
+      else if(frac>0.05)  stat('near'+idx,  _ko?`${tgt.e} 거의 다 됐어요! <b>${_cn}</b>이 원을 채우게 가까이!`:`${tgt.e} Almost! Move closer so <b>${tgt.n}</b> fills the circle.`);
+      else if(frames>270) stat('assist'+idx,_ko?`${tgt.e} <b>${_cn}</b> 아무거나 찾아봐요 — 작아도 좋아요!`:`${tgt.e} Find <b>any ${tgt.n}</b> thing — even a small one works!`);
+      else                stat('find'+idx,  _ko?`${tgt.e} <b>${_cn}</b> 물건을 찾아 원을 채워요!`:`${tgt.e} Find something <b>${tgt.n}</b> and fill the circle!`);
       drawProgress();
       if(hold>=30){ idx++; hold=0; frames=0; lastKey=''; setMeter(0); blast();
         if(idx>=SEQ.length){ drawProgress(); if(swatch) swatch.style.display='none';
@@ -1229,6 +1280,27 @@ async function buildAwards(){
   document.getElementById('dlCert').href=cert.toDataURL('image/png');
   document.getElementById('dlId').href=id.toDataURL('image/png');
 }
+
+/* ===== i18n: static DOM + toggle ===== */
+const I18N_KO={"#splash .nfc-txt": "태그 인식!", "#splash .nfc-sub": "Moong이 감정을 나누려고 기다려요…", "#story .story-panel[data-p=\"0\"] .sp-title": "<span class=\"v\">Moong</span>을 만나요", "#story .story-panel[data-p=\"0\"] .sp-text": "몽글 마을에 사는 작은 감정 구름이에요. 모두가 마음을 나누는 곳이죠. 💛", "#story .story-panel[data-p=\"1\"] .sp-title": "이런… <span class=\"v\">그럼블!</span>", "#story .story-panel[data-p=\"1\"] .sp-text": "음침한 <b>괴물</b>이 들이닥쳐 <b>모두의 감정을 훔쳤어요</b> — 온 마을이 잿빛으로 조용해졌죠!", "#story .story-panel[data-p=\"2\"] .sp-title": "Moong에게 <span class=\"v\">하트 히어로</span>가 필요해요", "#story .story-panel[data-p=\"2\"] .sp-text": "Moong의 친구들이 잿빛 감옥에 갇혀 마음을 못 나눠요. 용감한 하트 히어로가 필요해… 바로 너야!", "#story .story-panel[data-p=\"3\"] .sp-title": "히어로에겐 <span class=\"v\">이름</span>이 필요해요", "#story .story-panel[data-p=\"3\"] .sp-text": "Moong이 널 뭐라고 부를까, 하트 히어로?", "#storySkip": "건너뛰기 ▶", ".kicker": "두근 · 감정 · 하루를 구해요", ".hero h1": "Moong의<br><span class=\"hl\">하트 히어로 어드벤처</span>", ".hero .lead": "Moong과 함께 3가지 AI 미션을 하며 우정 팁을 배우고,<br>몽글 마을에 모두의 감정과 색을 되찾아요! 💛", ".hero .steps": "<span>1 · 인사</span><span>2 · 미소</span><span>3 · 색깔</span>", ".briefing .b-t": "히어로 브리핑", ".briefing .b-d": "각 미션은 친구를 구하고 감정을 되찾으며 <b>우정 팁</b>을 알려줘요. 3개를 모두 도우면 <b>하트 히어로 상장</b>과 <b>하트 크루 ID</b>를 받아요!", ".boss-name": "그럼블 <span>· 감정 도둑</span>", ".friends-wrap h2": "💛 감정을 잃어버린 친구들", ".friends-wrap .sub": "그럼블이 친구들의 마음을 잿빛 감옥에 가뒀어요. 미션을 깨서 한 명씩 구해요!", ".friend[data-f=\"0\"] .fname": "휴고 🤗", ".friend[data-f=\"1\"] .fname": "조이 😊", ".friend[data-f=\"2\"] .fname": "아이리스 🌈", ".friend[data-f=\"0\"] .fstat": "마음 잠김", ".friend[data-f=\"1\"] .fstat": "마음 잠김", ".friend[data-f=\"2\"] .fstat": "마음 잠김", ".friend[data-f=\"0\"] .yay": "구출! 🎉", ".friend[data-f=\"1\"] .yay": "구출! 🎉", ".friend[data-f=\"2\"] .yay": "구출! 🎉", ".stamp-head h2": "🌟 미션 스탬프", ".sec-title": "🚀 너의 구출 미션", ".mission[data-m=\"0\"] .m-title": "미션 1 · 인사하기<span class=\"m-badge\">HAND AI</span>", ".mission[data-m=\"0\"] .m-desc": "휴고에게 손을 흔들어 따뜻하게 인사하고 기운을 북돋아요!", ".mission[data-m=\"1\"] .m-title": "미션 2 · 미소 짓기<span class=\"m-badge\">FACE AI</span>", ".mission[data-m=\"1\"] .m-desc": "활짝 웃어 조이의 행복을 되찾고 — 사진도 찍어요!", ".mission[data-m=\"2\"] .m-title": "미션 3 · 감정의 색깔<span class=\"m-badge\">VISION AI</span>", ".mission[data-m=\"2\"] .m-desc": "카메라로 감정의 색을 찾아 마을에 색을 다시 칠해요!", "#reward h3": "그럼블을 물리쳤어요!", "#reward > p:not(.save-head)": "해냈어요, <b><span id=\"rwName\">Hero</span></b>! 모두의 감정과 색이 돌아오고 마을이 포옹으로 가득해요.<br>이제 너는 공식 몽글 하트 히어로! 💛🌈", ".save-head": "간직하고 싶나요? <b>저장하려면 보호자 동의가 필요해요.</b>", "#reward > label.consent span": "저는 보호자이며 이 상장과 사진을 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#dlCert": "⬇ 상장 저장", "#dlId": "⬇ 하트 크루 ID 저장", ".coupon small": "현장 선물 · 1인 1회", "#giveForm h3": "🎟️ 그랜드 프라이즈 응모", "#giveForm > p:not(.fine)": "Moong 인형 세트 + $100 기프트카드를 받아요!", "#giveForm .consent span": "저는 보호자(만 18세 이상)이며 이메일로 응모하는 데 동의합니다. 아이의 이름이나 사진은 수집하지 않아요.", "#enterBtn": "응모하기 💛", "#giveForm .fine": "구매 불필요. 보호자 동의하 만 18세 이상 참여 가능. 응모 시 이벤트 소식 수신에 동의합니다.", "#entered": "✅ 응모 완료! 행운을 빌어요, 히어로! 🍀", ".info h4": "ℹ️ 안내", ".info .k": "대상", ".info .v": "무료 · 가족 친화 — 모든 연령 어린이 환영", "#shareBtn": "📤 공유", ".footer": "© 2026 Monglekids · Moong Heart Adventure <span class=\"star\">★</span> 사랑을 담아 💛<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요<br>모든 처리는 기기 안에서만 이뤄져요. 저장은 선택이며 보호자 동의가 필요해요.", "#mSwatch span": "카메라가 보는 색", "#mCostumes button[data-c=\"crew\"]": "🪖 대원", "#mCostumes button[data-c=\"flower\"]": "🌸 꽃", "#mCostumes button[data-c=\"bunny\"]": "🐰 토끼", "#mCostumes button[data-c=\"crown\"]": "👑 왕관", "#mFallback": "카메라가 안 되나요? 눌러서 완료 →", "#mWin h3": "미션 완료!", "#mWin .fact b": "💛 우정 팁", "#mWinNext": "계속 ▶", "#btNext": "계속 ▶"};
+const i18nNodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
+function applyI18n(l){
+  i18nNodes.forEach(function(x){ x.el.innerHTML = (l==='ko')?x.ko:x.en; });
+  var hn=document.getElementById('heroName'); if(hn) hn.placeholder=(l==='ko')?'히어로 이름을 입력해요':'Type your hero name';
+  window.MK_LANG=l; document.documentElement.lang=l;
+  try{ var rem=3-cleared; bossSay.textContent='"'+BOSS_SAY[l][rem]+'"'; }catch(e){}
+  try{ refreshLocks(); }catch(e){}
+  try{ if(heroName && heroName!=='Brave Hero') bubble.textContent=(l==='ko'?('안녕 '+heroName+'! ☁️'):('Howdy '+heroName+'! ☁️')); }catch(e){}
+  var tb=document.getElementById('langToggle'); if(tb) tb.textContent=(l==='ko')?'EN':'한국어';
+  try{ localStorage.setItem('mk_lang',l); }catch(e){}
+}
+(function(){
+  var l=(window.MK_LANG==='ko')?'ko':'en';
+  applyI18n(l);
+  var tb=document.getElementById('langToggle');
+  if(tb) tb.onclick=function(){ l=(l==='ko')?'en':'ko'; applyI18n(l); };
+})();
+
 </script>
 </body>
 </html>

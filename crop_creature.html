@@ -25,6 +25,7 @@
   .brand{display:flex;align-items:center;gap:9px;font-family:'Fredoka';font-weight:700;font-size:18px;color:var(--leaf-d);}
   .brand img{width:34px;height:34px;border-radius:30%;box-shadow:0 4px 12px rgba(76,166,76,.2);}
   .tag{font-size:11px;font-weight:800;color:#fff;background:var(--leaf-d);padding:5px 11px;border-radius:999px;}
+  .lang-btn{font-weight:800;font-size:12px;color:#fff;background:var(--leaf-d);border:none;border-radius:999px;padding:6px 12px;cursor:pointer;}
 
   /* step dots */
   .steps{display:flex;gap:8px;justify-content:center;margin:14px 0 6px;}
@@ -102,12 +103,13 @@
   .confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:120;border-radius:2px;pointer-events:none;}
   canvas#cardCanvas{display:none;}
 </style>
+<script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div class="brand"><img src="assets/characters/mungi.png" alt="">Monglekids</div>
-    <span class="tag">🥒 CROP CREATURES</span>
+    <div style="display:flex;gap:8px;align-items:center;"><button id="langToggle" class="lang-btn">한국어</button><span class="tag">🥒 CROP CREATURES</span></div>
   </div>
   <div class="steps"><i class="on" data-i="0"></i><i data-i="1"></i><i data-i="2"></i></div>
 
@@ -258,7 +260,7 @@ function cover(c,img,x,y,w,h){const ir=img.width/img.height,br=w/h;let dw,dh;if(
 function load(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});}
 
 saveBtn.addEventListener('click',async ()=>{
-  if(!saveConsent.checked){ alert('A parent/guardian must check the box to save.'); return; }
+  if(!saveConsent.checked){ alert(window.MK_LANG==='ko'?'저장하려면 보호자 동의 칸을 체크해야 해요.':'A parent/guardian must check the box to save.'); return; }
   const cv=document.getElementById('cardCanvas'), c=cv.getContext('2d'),W=cv.width,H=cv.height;
   c.fillStyle='#fffaf2'; c.fillRect(0,0,W,H);
   c.strokeStyle='#8ccf6b'; c.lineWidth=10; c.strokeRect(22,22,W-44,H-44);
@@ -277,9 +279,27 @@ saveBtn.addEventListener('click',async ()=>{
 });
 
 document.getElementById('shareBtn').addEventListener('click',async ()=>{
-  const data={title:'Monglekids · Crop Creatures',text:'I made a crop creature and it came to life! 🥒🐛',url:location.href};
+  const _ko=window.MK_LANG==='ko'; const data={title:_ko?'Monglekids · 농작물 크리쳐':'Monglekids · Crop Creatures',text:_ko?'농작물 크리쳐를 만들었더니 살아났어요! 🥒🐛':'I made a crop creature and it came to life! 🥒🐛',url:location.href};
   if(navigator.share){try{await navigator.share(data);}catch(_){}} else alert('Share this link:\n'+location.href);
 });
 </script>
+
+<script>
+(function(){
+  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "오이·애호박·토마토·사과·피망 등 채소와 과일을 모아요.", "#s1 .how li:nth-child(2) div": "이쑤시개로 다리·귀·눈·꼬리를 이어 붙여요.", "#s1 .how li:nth-child(3) div": "공룡, 강아지, 고슴도치… 상상하는 무엇이든 만들어요!", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. Moong이 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
+  var nodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
+  var tb=document.getElementById('langToggle');
+  function apply(l){
+    nodes.forEach(function(x){ x.el.innerHTML=(l==='ko')?x.ko:x.en; });
+    window.MK_LANG=l; document.documentElement.lang=l;
+    if(tb) tb.textContent=(l==='ko')?'EN':'한국어';
+    try{ localStorage.setItem('mk_lang',l); }catch(e){}
+  }
+  var l=(window.MK_LANG==='ko')?'ko':'en';
+  apply(l);
+  if(tb) tb.onclick=function(){ l=(l==='ko')?'en':'ko'; apply(l); };
+})();
+</script>
+
 </body>
 </html>
