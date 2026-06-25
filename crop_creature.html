@@ -102,6 +102,16 @@
   .footer{text-align:center;font-size:11px;color:#b3bba6;margin-top:24px;line-height:1.7;}
   .confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:120;border-radius:2px;pointer-events:none;}
   canvas#cardCanvas{display:none;}
+  .creature-box{position:relative;display:inline-block;width:min(78vw,320px);vertical-align:top;transform-origin:50% 90%;}
+  .creature-box.live{animation:alive 1.7s ease-in-out infinite;}
+  .creature-box.hop{animation:hop .5s ease;}
+  .creature-cut{width:100%;display:block;filter:drop-shadow(0 14px 22px rgba(76,166,76,.28));pointer-events:none;}
+  .feat{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:3;}
+  .feat:active{cursor:grabbing;}
+  .eye{width:19%;aspect-ratio:1;background:#fff;border:3px solid #2b2b3a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.18);}
+  .pupil{width:44%;height:44%;background:#2b2b3a;border-radius:50%;animation:googly 1.8s ease-in-out infinite;}
+  @keyframes googly{0%,100%{transform:translate(0,1px)}25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
+  .mouth{width:24%;height:12%;border:3px solid #2b2b3a;border-top:none;border-radius:0 0 999px 999px;background:#ff7a9b;}
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 </head>
@@ -156,9 +166,15 @@
       <h1 class="alive-title">It's <span style="color:var(--pink-d)">ALIVE!</span> ✨</h1>
     </div>
     <div class="stage" id="stage">
-      <img class="creature" id="creature" src="assets/crop/creature.jpg" alt="Living crop creature">
+      <div class="creature-box" id="creatureBox">
+        <img class="creature-cut" id="creatureCut" alt="your creature">
+        <div class="feat eye" data-f="eyeL" style="left:30%;top:28%"><span class="pupil"></span></div>
+        <div class="feat eye" data-f="eyeR" style="left:55%;top:28%"><span class="pupil"></span></div>
+        <div class="feat mouth" data-f="mouth" style="left:42%;top:54%"></div>
+      </div>
       <div class="polaroid" id="polaroid"><img id="polaImg" alt="your build"><span>my build</span></div>
-      <div class="poet">Tap your creature to make it hop! 🦘</div>
+      <div class="poet">Drag the eyes &amp; mouth, then tap to hop! 🦘</div>
+      <div id="creatureLoading" style="display:none;font-weight:700;color:var(--leaf-d);margin-top:10px;">✨ Making your creature…</div>
     </div>
 
     <label class="consent"><input type="checkbox" id="saveConsent">
@@ -195,36 +211,74 @@ document.getElementById('backTo1').onclick=()=>go(0);
 
 let photoURL=null;
 const fileInput=document.getElementById('fileInput');
-fileInput.addEventListener('change',e=>{
+fileInput.addEventListener('change',async e=>{
   const f=e.target.files&&e.target.files[0]; if(!f) return;
-  const fr=new FileReader();
-  fr.onload=()=>{
-    photoURL=fr.result;
-    document.getElementById('shotPreview').src=photoURL;
-    document.getElementById('shotPreview').style.display='block';
-    document.getElementById('polaImg').src=photoURL;
-    setTimeout(()=>comeAlive(),350);
-  };
-  fr.readAsDataURL(f);
+  const url=URL.createObjectURL(f); photoURL=url;
+  document.getElementById('shotPreview').src=url; document.getElementById('shotPreview').style.display='block';
+  document.getElementById('polaImg').src=url;
+  go(2);
+  const loading=document.getElementById('creatureLoading');
+  loading.textContent=window.MK_LANG==='ko'?'✨ 크리쳐 만드는 중…':'✨ Making your creature…';
+  loading.style.display='block';
+  const box=document.getElementById('creatureBox'); box.style.visibility='hidden';
+  let cutURL=url;
+  try{
+    const mod=await import('https://esm.sh/@imgly/background-removal@1.5.8');
+    const blob=await mod.removeBackground(f);
+    const cropped=await cropToSubject(blob);
+    if(cropped) cutURL=cropped;
+  }catch(err){ /* fallback: use original photo if bg removal unavailable */ }
+  loading.style.display='none';
+  const cut=document.getElementById('creatureCut');
+  cut.onload=()=>{ box.style.visibility='visible'; comeAlive(); };
+  cut.src=cutURL;
+});
+/* crop a transparent cutout to its subject bounding box */
+function cropToSubject(blob){ return new Promise(res=>{
+  const img=new Image(); img.onload=()=>{
+    const w=img.width,h=img.height,sc=Math.min(1,520/Math.max(w,h));
+    const cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
+    const c=document.createElement('canvas'); c.width=cw;c.height=ch;
+    const x=c.getContext('2d'); x.drawImage(img,0,0,cw,ch);
+    let d; try{ d=x.getImageData(0,0,cw,ch).data; }catch(e){ res(c.toDataURL('image/png')); return; }
+    let minx=cw,miny=ch,maxx=0,maxy=0,found=false;
+    for(let y=0;y<ch;y++)for(let xx=0;xx<cw;xx++){ if(d[(y*cw+xx)*4+3]>24){found=true; if(xx<minx)minx=xx; if(xx>maxx)maxx=xx; if(y<miny)miny=y; if(y>maxy)maxy=y;} }
+    if(!found){ res(c.toDataURL('image/png')); return; }
+    const pad=Math.round(Math.max(maxx-minx,maxy-miny)*0.08);
+    minx=Math.max(0,minx-pad);miny=Math.max(0,miny-pad);maxx=Math.min(cw,maxx+pad);maxy=Math.min(ch,maxy+pad);
+    const bw=maxx-minx,bh=maxy-miny,o=document.createElement('canvas'); o.width=bw;o.height=bh;
+    o.getContext('2d').drawImage(c,minx,miny,bw,bh,0,0,bw,bh);
+    res(o.toDataURL('image/png'));
+  }; img.onerror=()=>res(null); img.src=URL.createObjectURL(blob);
+});}
+/* drag the eyes & mouth */
+document.querySelectorAll('.feat').forEach(el=>{
+  let drag=false;
+  el.addEventListener('pointerdown',ev=>{ drag=true; try{el.setPointerCapture(ev.pointerId);}catch(e){} ev.preventDefault(); });
+  el.addEventListener('pointermove',ev=>{ if(!drag) return; const b=document.getElementById('creatureBox').getBoundingClientRect();
+    let lx=(ev.clientX-b.left)/b.width*100, ly=(ev.clientY-b.top)/b.height*100;
+    lx=Math.max(4,Math.min(96,lx)); ly=Math.max(4,Math.min(96,ly)); el.style.left=lx+'%'; el.style.top=ly+'%'; });
+  el.addEventListener('pointerup',()=>{drag=false;}); el.addEventListener('pointercancel',()=>{drag=false;});
 });
 
 function comeAlive(){
-  go(2);
-  const cr=document.getElementById('creature');
-  cr.classList.remove('live'); void cr.offsetWidth; cr.classList.add('live');
+  const box=document.getElementById('creatureBox');
+  box.classList.remove('live'); void box.offsetWidth; box.classList.add('live');
   sparkle(document.getElementById('stage')); blast();
 }
-document.getElementById('creature').addEventListener('click',e=>{
-  const cr=e.currentTarget;
-  cr.classList.remove('hop'); void cr.offsetWidth; cr.classList.add('hop');
-  setTimeout(()=>cr.classList.add('live'),500);
-  sparkle(document.getElementById('stage'));
+document.getElementById('creatureBox').addEventListener('click',e=>{
+  if(e.target.closest('.feat')) return;   // don't hop while placing features
+  const b=e.currentTarget; b.classList.remove('hop'); void b.offsetWidth; b.classList.add('hop');
+  setTimeout(()=>b.classList.add('live'),500); sparkle(document.getElementById('stage'));
 });
 
 document.getElementById('again').onclick=()=>{
   photoURL=null; fileInput.value='';
   document.getElementById('shotPreview').style.display='none';
+  document.getElementById('creatureCut').removeAttribute('src');
   document.getElementById('saveConsent').checked=false; refreshLock();
+  const setp=(id,l,t)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); e.style.left=l; e.style.top=t;};
+  setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('mouth','42%','54%');
   go(0);
 };
 
@@ -259,6 +313,14 @@ function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,
 function cover(c,img,x,y,w,h){const ir=img.width/img.height,br=w/h;let dw,dh;if(ir>br){dh=h;dw=h*ir;}else{dw=w;dh=w/ir;}c.save();roundRect(c,x,y,w,h,18);c.clip();c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);c.restore();}
 function load(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});}
 
+function _pct(v){ return parseFloat(v||'50')/100; }
+function drawFeaturesOnCard(c,dx,dy,dw,dh){
+  ['eyeL','eyeR'].forEach(id=>{ const e=document.querySelector('.feat[data-f="'+id+'"]'); const cx=dx+_pct(e.style.left)*dw, cy=dy+_pct(e.style.top)*dh, r=0.095*dw;
+    c.beginPath();c.arc(cx,cy,r,0,7);c.fillStyle='#fff';c.fill();c.lineWidth=Math.max(2,r*0.18);c.strokeStyle='#2b2b3a';c.stroke();
+    c.beginPath();c.arc(cx,cy+r*0.12,r*0.42,0,7);c.fillStyle='#2b2b3a';c.fill(); });
+  const m=document.querySelector('.feat[data-f="mouth"]'); const mx=dx+_pct(m.style.left)*dw, my=dy+_pct(m.style.top)*dh, mw=0.24*dw;
+  c.beginPath(); c.arc(mx,my,mw*0.5,0.12*Math.PI,0.88*Math.PI); c.lineWidth=Math.max(3,dw*0.014); c.strokeStyle='#2b2b3a'; c.lineCap='round'; c.stroke();
+}
 saveBtn.addEventListener('click',async ()=>{
   if(!saveConsent.checked){ alert(window.MK_LANG==='ko'?'저장하려면 보호자 동의 칸을 체크해야 해요.':'A parent/guardian must check the box to save.'); return; }
   const cv=document.getElementById('cardCanvas'), c=cv.getContext('2d'),W=cv.width,H=cv.height;
@@ -267,10 +329,12 @@ saveBtn.addEventListener('click',async ()=>{
   c.textAlign='center'; c.fillStyle='#4ca64c'; c.font="700 20px Fredoka,sans-serif";
   c.fillText('★  MONGLEKIDS · CROP CREATURES  ★',W/2,76);
   c.fillStyle='#3b4a32'; c.font="700 44px Fredoka,sans-serif"; c.fillText('My Crop Creature',W/2,132);
-  const cr=await load('assets/crop/creature.jpg');
   const ph=photoURL?await load(photoURL):null;
   if(ph) cover(c,ph,70,180,360,360);
-  if(cr) cover(c,cr,470,170,470,380);
+  const cutImg=await load(document.getElementById('creatureCut').src||'');
+  const ax=470,ay=170,aw=470,ah=380;
+  if(cutImg){ const ir=cutImg.width/cutImg.height,br=aw/ah; let dw,dh; if(ir>br){dw=aw;dh=aw/ir;}else{dh=ah;dw=ah*ir;}
+    const dx=ax+(aw-dw)/2, dy=ay+(ah-dh)/2; c.drawImage(cutImg,dx,dy,dw,dh); drawFeaturesOnCard(c,dx,dy,dw,dh); }
   c.fillStyle='#8a8f7e'; c.font="600 16px Poppins,sans-serif";
   c.fillText('I built it for real — and brought it to life! 🌱',W/2,600);
   c.fillStyle='#4ca64c'; c.font="700 15px Poppins,sans-serif";
@@ -286,7 +350,7 @@ document.getElementById('shareBtn').addEventListener('click',async ()=>{
 
 <script>
 (function(){
-  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "오이·애호박·토마토·사과·피망 등 채소와 과일을 모아요.", "#s1 .how li:nth-child(2) div": "이쑤시개로 다리·귀·눈·꼬리를 이어 붙여요.", "#s1 .how li:nth-child(3) div": "공룡, 강아지, 고슴도치… 상상하는 무엇이든 만들어요!", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
+  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "오이·애호박·토마토·사과·피망 등 채소와 과일을 모아요.", "#s1 .how li:nth-child(2) div": "이쑤시개로 다리·귀·눈·꼬리를 이어 붙여요.", "#s1 .how li:nth-child(3) div": "공룡, 강아지, 고슴도치… 상상하는 무엇이든 만들어요!", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "눈·입을 드래그하고, 크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
   var nodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
   var tb=document.getElementById('langToggle');
   function apply(l){
