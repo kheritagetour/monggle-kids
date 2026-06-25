@@ -645,7 +645,7 @@ function postCosmo(){ return [
   {c:'mungi',t:'Chapter 3 · <span class="v">Colors of Feelings</span>',x:`Moong: "Last one! Iris lost the colors of her heart. Find them, rebuild the rainbow, and we'll blast the Grumble!"`,btn:'Start Chapter 3 ▶'}
 ]; }
 function finaleScene(){ return [
-  {c:'iris',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
+  {c:'iris_free',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
   {c:'grumble_happy',t:'The Grumble is <span class="v">defeated!</span>',x:`"Nooo! My gloom is gone!" Moong blasts the rainbow and the Grumble zooms away — the feelings are free!`},
   {e:'🎉',t:'Mongle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
   {c:'mungi',t:`Heart Hero ${heroName}!`,x:`Moong: "You brought everyone's hearts back together. Here are your hero rewards!" 💛`,btn:'Get My Rewards 🎁'}
@@ -692,7 +692,8 @@ function freeFriend(i){
   const f=document.querySelector(`.friend[data-f="${i}"]`);
   if(!f) return;
   f.classList.remove('trapped'); f.classList.add('freed');
-  const s=f.querySelector('.fstat'); if(s) s.textContent='Heart back! 💛';
+  const s=f.querySelector('.fstat'); if(s) s.textContent=(window.MK_LANG==='ko'?'마음 회복! 💛':'Heart back! 💛');
+  if(i===2){ const im=f.querySelector('img.charimg'); if(im) im.src='assets/characters/iris_free.png'; }
 }
 function finishAll(){
   const r=document.getElementById('reward'); r.classList.add('show');
