@@ -578,19 +578,38 @@ const FL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/
 /* ---------- mascot + names ---------- */
 const mascot=document.getElementById('mascot'), bubble=document.getElementById('bubble');
 const LANG=()=>(window.MK_LANG==='ko'?'ko':'en');
-let voiceOn=true;
-function speak(t){
-  if(!voiceOn||!window.speechSynthesis) return;
-  try{ const txt=String(t).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); if(!txt) return;
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(txt);
-    u.lang=LANG()==='ko'?'ko-KR':'en-US'; u.rate=.98; u.pitch=1.06;
-    speechSynthesis.speak(u);
-  }catch(e){}
+let voiceOn=true, currentAudio=null;
+/* ----- TTS: Kokoro-FastAPI (OpenAI-compatible /v1/audio/speech), browser fallback -----
+   Point at your server via ?tts=https://your-tts-host  OR  window.MK_TTS='https://your-tts-host'.
+   On an HTTPS page the TTS server must also be HTTPS (no http://localhost from a deployed site). */
+const TTS_SERVER=(new URLSearchParams(location.search).get('tts')||window.MK_TTS||'').replace(/\/$/,'');
+const TTS_VOICE={en:'af_heart', ko:''};   // add a Kokoro Korean voice id here when available
+const TTS_CACHE={};
+function browserSpeak(txt,lang){ if(!window.speechSynthesis) return;
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang=lang==='ko'?'ko-KR':'en-US'; u.rate=.98; u.pitch=1.06; speechSynthesis.speak(u);}catch(e){} }
+function stopAudio(){ if(currentAudio){ try{currentAudio.pause();}catch(e){} currentAudio=null; } try{ if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){} }
+async function speak(t){
+  if(!voiceOn) return;
+  const txt=String(t).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); if(!txt) return;
+  const lang=LANG(), voice=TTS_VOICE[lang];
+  stopAudio();
+  if(TTS_SERVER && voice){
+    try{
+      const key=lang+'|'+txt; let url=TTS_CACHE[key];
+      if(!url){
+        const res=await fetch(TTS_SERVER+'/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({model:'kokoro',input:txt,voice:voice,response_format:'mp3'})});
+        if(!res.ok) throw 0;
+        url=URL.createObjectURL(await res.blob()); TTS_CACHE[key]=url;
+      }
+      if(!voiceOn) return;
+      const a=new Audio(url); currentAudio=a; a.play(); return;
+    }catch(e){ /* fall back to browser voice */ }
+  }
+  browserSpeak(txt,lang);
 }
 (function(){ const vb=document.getElementById('voiceToggle'); if(!vb) return;
-  vb.onclick=()=>{ voiceOn=!voiceOn; vb.textContent=voiceOn?'🔊':'🔇';
-    if(!voiceOn&&window.speechSynthesis) speechSynthesis.cancel(); }; })();
+  vb.onclick=()=>{ voiceOn=!voiceOn; vb.textContent=voiceOn?'🔊':'🔇'; if(!voiceOn) stopAudio(); }; })();
 const linesEN=["Let's bring the feelings back! 💛","Hugo feels loved! 🤗","Joy is smiling! 😊","One friend to go! 🌈","We did it! 💛"];
 const linesKO=["감정을 되찾자! 💛","휴고가 사랑받아요! 🤗","조이가 웃어요! 😊","한 친구 남았어! 🌈","우리가 해냈어! 💛"];
 function cheer(){mascot.classList.remove('happy');void mascot.offsetWidth;mascot.classList.add('happy');}
