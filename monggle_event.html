@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#cfe4ff">
+<title>Monggle Kids × Mungi — Heart Hero Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fff7ef; --sky:#cfe4ff; --mint:#8fe3cf; --mint-d:#3fc4a8;
+    --pink:#ff9bb3; --pink-d:#ff6f91; --sun:#ffb02e; --space:#2a1840; --space2:#3a2a5a;
+    --ink:#3b3550; --soft:#9a93ad; --shadow:0 8px 24px rgba(90,58,120,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:'Poppins','Apple SD Gothic Neo',-apple-system,'Segoe UI',sans-serif;
+    background:radial-gradient(130% 70% at 50% 0%, #e7f1ff 0%, #fff7ef 60%);
+    color:var(--ink);min-height:100%;overflow-x:hidden;}
+  .app{max-width:440px;margin:0 auto;min-height:100vh;position:relative;z-index:1;padding:0 20px 48px;}
+
+  /* ambient decorations */
+  .deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .deco .d{position:absolute;}
+  .d-rocket{font-size:30px;animation:fly 10s linear infinite;}
+  @keyframes fly{0%{left:-14%;top:90%;opacity:0;transform:rotate(38deg)}10%{opacity:.95}88%{opacity:.95}100%{left:110%;top:6%;opacity:0;transform:rotate(38deg)}}
+  .d-cloud{font-size:30px;opacity:.5;animation:drift linear infinite;}
+  @keyframes drift{from{transform:translateX(-26vw)}to{transform:translateX(130vw)}}
+  .d-tw{animation:tw 2.6s ease-in-out infinite;}
+  @keyframes tw{0%,100%{opacity:.12;transform:scale(.8)}50%{opacity:.95;transform:scale(1.2)}}
+
+  /* splash */
+  #splash{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#1b1430,#3a2a5a 60%,#5b3b8a);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .6s,visibility .6s;}
+  #splash.hide{opacity:0;visibility:hidden;}
+  .nfc-wave{font-size:64px;animation:pulse 1.1s ease-in-out infinite;}
+  .nfc-txt{font-size:19px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+  .nfc-sub{font-size:13px;color:#fff;opacity:.9;}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.18);opacity:1}}
+
+  /* story */
+  #story,#scene{position:fixed;inset:0;z-index:80;background:linear-gradient(160deg,#160f2b,#2a1840 55%,#4a2a6b);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 26px;text-align:center;color:#fff;
+    transition:opacity .5s,visibility .5s;overflow:hidden;}
+  #story:before,#scene:before{content:'';position:absolute;inset:0;background-image:radial-gradient(#ffffff66 1px,transparent 1px);background-size:26px 26px;opacity:.3;}
+  #story.hide,#scene.hide{opacity:0;visibility:hidden;}
+  .story-stage{max-width:430px;width:100%;position:relative;z-index:1;}
+  .story-panel{display:none;}
+  .story-panel.show{display:block;animation:fadeUp .5s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .sp-emoji{font-size:84px;margin-bottom:14px;display:block;animation:bob 2.4s ease-in-out infinite;}
+  .sp-title{font-size:25px;font-weight:900;margin-bottom:12px;line-height:1.25;}
+  .sp-title .v{color:#ffd166;}
+  .sp-text{font-size:15px;line-height:1.75;color:#e7defb;}
+  .sp-name{width:100%;margin:20px 0 4px;padding:15px 16px;border:2px solid #ffffff44;border-radius:14px;
+    background:#ffffff16;color:#fff;font-size:17px;text-align:center;font-family:inherit;font-weight:700;}
+  .sp-name::placeholder{color:#ffffff80;font-weight:400;}
+  .story-next{margin-top:26px;padding:15px 32px;border:none;border-radius:999px;font-size:16px;font-weight:900;
+    color:#2a1840;background:linear-gradient(135deg,#ffd166,#ff8aa6);cursor:pointer;font-family:inherit;box-shadow:0 8px 22px rgba(0,0,0,.35);}
+  .story-next:active{transform:scale(.97);}
+  .story-dots{display:flex;gap:7px;justify-content:center;margin-top:24px;}
+  .story-dots i{width:8px;height:8px;border-radius:50%;background:#ffffff44;transition:.3s;}
+  .story-dots i.on{background:#ffd166;width:22px;border-radius:999px;}
+  .story-skip{position:absolute;top:18px;right:18px;color:#ffffffaa;font-size:13px;font-weight:700;background:none;border:none;cursor:pointer;z-index:2;}
+
+  /* header */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 4px 6px;}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:900;font-size:17px;color:var(--pink-d);}
+  .brand .logo{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#bfe3ff,#8fc7ff);
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .tag{font-size:11px;font-weight:800;color:#fff;background:var(--space2);padding:5px 10px;border-radius:999px;}
+
+  /* hero */
+  .hero{text-align:center;padding:8px 0 4px;}
+  .kicker{font-size:12px;font-weight:900;letter-spacing:2.5px;color:var(--mint-d);text-transform:uppercase;margin-bottom:6px;}
+  .bubble{display:inline-block;background:#fff;border:2px solid #e0ecff;color:var(--ink);font-weight:800;font-size:15px;
+    padding:10px 16px;border-radius:18px;box-shadow:var(--shadow);position:relative;margin-bottom:8px;animation:floaty 3s ease-in-out infinite;}
+  .bubble:after{content:'';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);width:0;height:0;border:9px solid transparent;border-top-color:#fff;}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .mascot{width:190px;height:175px;margin:2px auto 2px;display:block;animation:bob 2.6s ease-in-out infinite;cursor:pointer;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+  .mascot.happy{animation:jump .5s ease;}
+  @keyframes jump{0%{transform:translateY(0)}30%{transform:translateY(-26px) scale(1.05)}100%{transform:translateY(0)}}
+  h1{font-size:26px;font-weight:900;margin-top:4px;line-height:1.25;}
+  h1 .hl{color:var(--pink-d);}
+  .lead{font-size:13.5px;color:var(--soft);margin-top:8px;line-height:1.6;}
+  .steps{display:flex;justify-content:center;gap:8px;margin-top:14px;font-weight:900;font-size:11.5px;color:var(--mint-d);letter-spacing:.5px;}
+  .steps span{background:#fff;padding:6px 12px;border-radius:999px;box-shadow:0 3px 10px rgba(90,58,120,.08);}
+
+  /* briefing */
+  .briefing{background:linear-gradient(135deg,#2c2150,#5a3a78);color:#fff;border-radius:20px;padding:16px 18px;margin-top:20px;
+    display:flex;gap:13px;align-items:center;box-shadow:var(--shadow);}
+  .briefing .b-ic{font-size:30px;flex-shrink:0;}
+  .briefing .b-t{font-weight:900;font-size:14px;}
+  .briefing .b-d{font-size:12px;opacity:.88;margin-top:3px;line-height:1.45;}
+
+  /* boss */
+  .boss{margin-top:14px;border-radius:22px;padding:16px;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 28% 18%,#3a2a5a,#160f2b);color:#fff;box-shadow:var(--shadow);}
+  .boss:before{content:'';position:absolute;inset:0;background-image:radial-gradient(#ffffff55 1px,transparent 1px);background-size:22px 22px;opacity:.25;}
+  .boss-av{position:relative;width:64px;height:64px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:34px;z-index:1;
+    background:radial-gradient(circle at 35% 30%,#8b5be6,#2a1840);box-shadow:0 0 18px #9b6bffaa, inset 0 0 12px #00000080;animation:glow 2.6s ease-in-out infinite;}
+  .boss-av:before{content:'';position:absolute;inset:-5px;border-radius:50%;z-index:-1;
+    background:conic-gradient(from 0deg,#ffffff00,#b58bffaa,#ffffff00 55%);animation:rot 4s linear infinite;}
+  @keyframes glow{0%,100%{box-shadow:0 0 16px #9b6bff88, inset 0 0 12px #00000080}50%{box-shadow:0 0 28px #b58bffdd, inset 0 0 12px #00000080}}
+  .boss-av.hit{animation:shake .45s;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px) rotate(-7deg)}40%{transform:translateX(7px) rotate(7deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .boss-info{flex:1;min-width:0;z-index:1;}
+  .boss-name{font-weight:900;font-size:14px;}
+  .boss-name span{font-weight:600;opacity:.7;font-size:11px;}
+  .hpbar{height:12px;background:#ffffff22;border-radius:999px;margin:8px 0 6px;overflow:hidden;}
+  .hpbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff8aa6,#ff3b3b);transition:width .7s cubic-bezier(.3,1.1,.5,1);}
+  .boss-say{font-size:12px;opacity:.92;font-style:italic;line-height:1.4;}
+  .boss.defeated .boss-av{box-shadow:0 0 26px #ffd16699;}
+  .boss.defeated .hpbar i{background:#5a5a6a;}
+
+  /* friends to rescue */
+  .friends-wrap{margin-top:14px;background:#fff;border-radius:22px;padding:16px;box-shadow:var(--shadow);}
+  .friends-wrap h2{font-size:15px;font-weight:900;}
+  .friends-wrap .sub{font-size:11.5px;color:var(--soft);margin:3px 0 14px;}
+  .friends-row{display:flex;gap:10px;}
+  .friend{flex:1;position:relative;background:#f4f8ff;border-radius:16px;padding:12px 6px 10px;text-align:center;overflow:hidden;}
+  .friend svg{width:62px;height:56px;display:block;margin:0 auto;transition:filter .5s;animation:bob 3s ease-in-out infinite;}
+  .friend.trapped svg{filter:grayscale(1) brightness(.82);animation:none;}
+  .friend .cage{position:absolute;left:0;right:0;top:8px;height:64px;display:flex;align-items:center;justify-content:center;transition:.55s;
+    background:repeating-linear-gradient(90deg,#6b6b7a 0 4px,transparent 4px 17px);}
+  .friend .cage:after{content:'🔒';font-size:18px;filter:drop-shadow(0 1px 2px #0005);}
+  .friend.freed .cage{opacity:0;transform:translateY(-12px) scale(1.1);}
+  .friend.freed svg{animation:freedom .65s ease;}
+  @keyframes freedom{0%{transform:scale(.55) rotate(-14deg)}55%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .fname{font-size:11.5px;font-weight:800;margin-top:8px;}
+  .fstat{font-size:10px;color:var(--soft);font-weight:700;}
+  .friend.freed .fstat{color:var(--mint-d);}
+  .friend .yay{position:absolute;top:2px;left:50%;font-size:11px;font-weight:900;color:var(--mint-d);opacity:0;}
+  .friend.freed .yay{animation:yay 1.5s ease;}
+  @keyframes yay{0%{opacity:0;transform:translate(-50%,8px)}20%{opacity:1;transform:translate(-50%,-2px)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+
+  /* stamps */
+  .stamp-card{background:#fff;border-radius:24px;padding:20px;margin-top:18px;box-shadow:var(--shadow);}
+  .stamp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .stamp-head h2{font-size:16px;font-weight:900;}
+  .stamp-count{font-size:13px;font-weight:800;color:var(--mint-d);}
+  .stamps{display:flex;gap:10px;justify-content:center;}
+  .stamp{flex:1;aspect-ratio:1;border-radius:18px;background:#eef5ff;border:2px dashed #bcd6ff;
+    display:flex;align-items:center;justify-content:center;font-size:30px;transition:.35s;color:#bcd6ff;}
+  .stamp.done{background:linear-gradient(135deg,#fff,#eafaf5);border:2px solid var(--mint);color:initial;animation:pop .45s ease;}
+  @keyframes pop{0%{transform:scale(.4) rotate(-15deg);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+  /* missions */
+  .sec-title{font-size:13px;font-weight:900;color:var(--soft);letter-spacing:1px;margin:24px 4px 10px;text-transform:uppercase;}
+  .missions{display:flex;flex-direction:column;gap:12px;}
+  .mission{background:#fff;border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;
+    box-shadow:0 4px 14px rgba(90,58,120,.07);border:2px solid transparent;transition:.25s;cursor:pointer;}
+  .mission:active{transform:scale(.97);}
+  .mission.cleared{border-color:var(--mint);background:#f3fffb;}
+  .m-emoji{width:52px;height:52px;border-radius:15px;background:#eef5ff;display:flex;align-items:center;justify-content:center;font-size:27px;flex-shrink:0;}
+  .mission.cleared .m-emoji{background:#dff7f0;}
+  .m-body{flex:1;min-width:0;}
+  .m-title{font-weight:800;font-size:15px;}
+  .m-badge{font-size:9.5px;font-weight:900;color:#fff;background:var(--mint-d);padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;letter-spacing:.5px;}
+  .m-desc{font-size:12px;color:var(--soft);margin-top:4px;line-height:1.4;}
+  .m-go{font-size:12px;font-weight:800;color:#fff;background:var(--pink-d);padding:8px 15px;border-radius:999px;flex-shrink:0;}
+  .mission.cleared .m-go{background:var(--mint-d);}
+
+  /* reward */
+  .reward{margin-top:22px;background:linear-gradient(150deg,#e7f1ff,#eafaf5);border-radius:24px;padding:26px 20px;text-align:center;box-shadow:var(--shadow);display:none;}
+  .reward.show{display:block;animation:pop .5s ease;}
+  .reward .big{font-size:40px;}
+  .reward h3{font-size:20px;font-weight:900;margin:8px 0 4px;}
+  .reward p{font-size:13px;color:var(--soft);line-height:1.6;}
+  .awards{display:flex;flex-direction:column;gap:18px;margin-top:18px;}
+  .award canvas{width:100%;border-radius:14px;box-shadow:0 6px 18px rgba(90,58,120,.16);display:block;}
+  .dl{display:inline-block;margin-top:10px;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:800;color:#fff;background:var(--mint-d);border:none;cursor:pointer;font-family:inherit;text-decoration:none;}
+  .coupon{margin-top:20px;background:#fff;border:2px dashed var(--pink-d);border-radius:16px;padding:14px;font-weight:900;font-size:19px;letter-spacing:1.5px;color:var(--pink-d);}
+  .coupon small{display:block;font-size:11px;font-weight:700;color:var(--soft);letter-spacing:0;margin-top:4px;}
+  .give{margin-top:16px;text-align:left;}
+  .give label{font-size:12px;font-weight:800;}
+  .give input{width:100%;margin:6px 0 10px;padding:12px 14px;border:2px solid #cfe0ff;border-radius:12px;font-size:14px;font-family:inherit;background:#fff;}
+  .give input:focus{outline:none;border-color:var(--pink-d);}
+  .give button{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--pink-d),var(--sun));cursor:pointer;font-family:inherit;}
+  .give .fine{font-size:10.5px;color:var(--soft);margin-top:8px;line-height:1.5;text-align:center;}
+  .entered{display:none;text-align:center;font-weight:900;color:var(--mint-d);font-size:15px;margin-top:6px;}
+  .entered.show{display:block;animation:pop .4s ease;}
+
+  /* info */
+  .info{margin-top:22px;background:#fff;border-radius:20px;padding:18px 20px;box-shadow:0 4px 14px rgba(90,58,120,.07);}
+  .info h4{font-size:14px;font-weight:900;margin-bottom:12px;}
+  .info .row{display:flex;gap:10px;font-size:13px;padding:7px 0;border-top:1px solid #eef0f6;}
+  .info .row:first-of-type{border-top:none;}
+  .info .k{color:var(--mint-d);font-weight:800;width:64px;flex-shrink:0;}
+  .info .v{line-height:1.5;}
+  .share{display:flex;gap:10px;margin-top:14px;}
+  .share a{flex:1;text-align:center;padding:12px;border-radius:14px;font-size:13px;font-weight:800;text-decoration:none;color:var(--ink);background:#fff;box-shadow:0 3px 10px rgba(90,58,120,.07);}
+  .footer{text-align:center;font-size:11px;color:#bfb8cc;margin-top:24px;line-height:1.6;}
+  .footer .star{color:var(--space2);}
+  .confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:120;border-radius:2px;pointer-events:none;}
+
+  /* character illustrations (PNG) */
+  .mascot{width:172px;height:172px;border-radius:30%;object-fit:cover;background:#fff;box-shadow:0 10px 26px rgba(90,58,120,.22);}
+  .charimg{border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 5px 14px rgba(90,58,120,.16);}
+  .friend .charimg{width:64px;height:64px;animation:bob 3s ease-in-out infinite;}
+  .friend.trapped .charimg{filter:grayscale(1) brightness(.82);animation:none;}
+  .friend.freed .charimg{animation:freedom .65s ease;}
+  .m-emoji img{width:100%;height:100%;border-radius:12px;object-fit:cover;}
+  .boss-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  .stamp img{width:100%;height:100%;border-radius:14px;object-fit:cover;animation:pop .45s ease;}
+  .sp-char,.sc-char{width:128px;height:128px;border-radius:32%;object-fit:cover;display:inline-block;margin-bottom:14px;
+    background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.32);animation:bob 2.6s ease-in-out infinite;}
+
+  /* camera modal */
+  .modal{position:fixed;inset:0;z-index:90;background:#0b0b12;display:none;flex-direction:column;}
+  .modal.show{display:flex;}
+  .cam-wrap{position:relative;flex:1;overflow:hidden;}
+  #mVideo,#mCanvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  #mVideo{background:#0b0b12;}
+  .mirror{transform:scaleX(-1);}
+  .m-top{position:absolute;top:0;left:0;right:0;padding:16px;display:flex;gap:12px;align-items:flex-start;z-index:5;background:linear-gradient(#000a,transparent);}
+  .m-title2{color:#fff;font-weight:900;font-size:16px;flex:1;text-shadow:0 1px 6px rgba(0,0,0,.6);line-height:1.3;}
+  .m-title2 small{display:block;font-weight:700;font-size:12px;opacity:.85;margin-top:2px;}
+  .m-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;border:none;font-size:20px;flex-shrink:0;backdrop-filter:blur(6px);}
+  .reticle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;border:4px dashed #ffffffcc;border-radius:28px;z-index:4;display:none;box-shadow:0 0 0 9999px rgba(0,0,0,.18);}
+  .reticle.show{display:block;}
+  .swatch{position:absolute;top:86px;right:16px;z-index:6;width:48px;height:48px;border-radius:50%;border:3px solid #fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.45);display:none;background:#888;}
+  .swatch span{position:absolute;bottom:-17px;right:0;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;text-shadow:0 1px 4px #000;}
+  .status{position:absolute;left:16px;right:16px;bottom:150px;z-index:5;text-align:center;color:#fff;font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.7);line-height:1.4;}
+  .status .spin{display:inline-block;width:16px;height:16px;border:3px solid #ffffff66;border-top-color:#fff;border-radius:50%;animation:rot .8s linear infinite;vertical-align:middle;margin-right:6px;}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .meter{position:absolute;left:40px;right:40px;bottom:118px;height:12px;background:rgba(255,255,255,.25);border-radius:999px;z-index:5;display:none;overflow:hidden;}
+  .meter.show{display:block;}
+  .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--sun));transition:width .12s linear;}
+  .controls{position:absolute;left:0;right:0;bottom:0;padding:22px 16px 34px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:12px;background:linear-gradient(transparent,#000b);}
+  .shutter{width:74px;height:74px;border-radius:50%;background:#fff;border:5px solid #ffffff80;cursor:pointer;display:none;}
+  .shutter.show{display:block;}
+  .shutter:active{transform:scale(.92);}
+  .fallback{color:#fff;font-size:12.5px;font-weight:700;text-decoration:underline;opacity:.85;background:none;border:none;cursor:pointer;}
+  .mPhoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:6;display:none;}
+  .win-ov{position:absolute;inset:0;z-index:10;background:rgba(10,10,18,.62);backdrop-filter:blur(3px);
+    display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;text-align:center;padding:24px;}
+  .win-ov.show{display:flex;animation:pop .4s ease;}
+  .win-ov .chk{font-size:60px;}
+  .win-ov h3{font-size:22px;font-weight:900;}
+  .win-ov p{font-size:14px;opacity:.92;}
+  .win-ov .fact{margin-top:14px;background:#ffffff1a;border:1px solid #ffffff33;border-radius:14px;padding:14px 16px;max-width:350px;font-size:13.5px;line-height:1.55;}
+  .win-ov .fact b{display:block;color:#ffd166;margin-bottom:5px;font-size:13px;}
+  /* mission briefing overlay */
+  .brief{position:absolute;inset:0;z-index:11;background:linear-gradient(160deg,#160f2bf2,#3a2a5af2);backdrop-filter:blur(3px);
+    display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;text-align:center;padding:28px;}
+  .brief.show{display:flex;animation:pop .4s ease;}
+  .brief .be{font-size:74px;animation:bob 2.4s ease-in-out infinite;}
+  .brief h3{font-size:22px;font-weight:900;}
+  .brief p{font-size:14.5px;line-height:1.65;opacity:.92;max-width:340px;}
+  /* locked / shake mission */
+  .mission.locked{opacity:.5;}
+  .mission.locked .m-go{background:#b9b3c6;}
+  .mission.shakex{animation:shake .4s;}
+</style>
+</head>
+<body>
+
+<!-- ambient decorations -->
+<div class="deco" aria-hidden="true">
+  <span class="d d-rocket" style="animation-delay:1s">🎈</span>
+  <span class="d d-cloud" style="top:14%;animation-duration:30s">☁️</span>
+  <span class="d d-cloud" style="top:46%;animation-duration:42s;animation-delay:8s;font-size:22px">☁️</span>
+  <span class="d d-cloud" style="top:72%;animation-duration:36s;animation-delay:4s">☁️</span>
+  <span class="d d-tw" style="left:12%;top:20%;font-size:16px">✨</span>
+  <span class="d d-tw" style="left:84%;top:16%;font-size:14px;animation-delay:.6s">⭐</span>
+  <span class="d d-tw" style="left:22%;top:62%;font-size:13px;animation-delay:1.1s">✨</span>
+  <span class="d d-tw" style="left:78%;top:58%;font-size:16px;animation-delay:1.6s">⭐</span>
+  <span class="d d-tw" style="left:50%;top:84%;font-size:14px;animation-delay:.3s">✨</span>
+</div>
+
+<!-- splash -->
+<div id="splash">
+  <div class="nfc-wave">📲</div>
+  <div class="nfc-txt">Tag detected!</div>
+  <div class="nfc-sub">Mungi is waiting to share some feelings…</div>
+</div>
+
+<!-- story -->
+<div id="story" class="hide">
+  <button class="story-skip" id="storySkip">Skip ▶</button>
+  <div class="story-stage">
+    <div class="story-panel show" data-p="0">
+      <img class="sp-char" src="assets/characters/mungi.png" alt="Mungi">
+      <div class="sp-title">Meet <span class="v">Mungi</span></div>
+      <div class="sp-text">A little feelings-cloud who lives in Monggle Town, where everyone loves to share their hearts. 💛</div>
+    </div>
+    <div class="story-panel" data-p="1">
+      <img class="sp-char" src="assets/characters/grumble.png" alt="The Grumble">
+      <div class="sp-title">Oh no… the <span class="v">Grumble!</span></div>
+      <div class="sp-text">A grumpy little rain cloud swooped in and <b>stole everyone's feelings</b> — the whole town turned gray and quiet! 🌫️</div>
+    </div>
+    <div class="story-panel" data-p="2">
+      <img class="sp-char" src="assets/characters/mungi.png" alt="Mungi">
+      <div class="sp-title">Mungi needs a <span class="v">Heart Hero</span></div>
+      <div class="sp-text">Mungi's friends are locked in gray cages and can't share their hearts. Mungi needs one brave Heart Hero… that's YOU!</div>
+    </div>
+    <div class="story-panel" data-p="3">
+      <span class="sp-emoji">⭐</span>
+      <div class="sp-title">Every hero needs a <span class="v">name</span></div>
+      <div class="sp-text">What should Mungi call you, Heart Hero?</div>
+      <input class="sp-name" id="heroName" maxlength="16" placeholder="Type your hero name" autocomplete="off">
+    </div>
+    <button class="story-next" id="storyNext">Next ▶</button>
+    <div class="story-dots" id="storyDots"><i class="on"></i><i></i><i></i><i></i></div>
+  </div>
+</div>
+
+<!-- cutscene (story beats between chapters) -->
+<div id="scene" class="hide">
+  <div class="story-stage">
+    <img class="sc-char" id="scImg" alt="" style="display:none">
+    <span class="sp-emoji" id="scEmoji">✨</span>
+    <div class="sp-title" id="scTitle"></div>
+    <div class="sp-text" id="scText"></div>
+    <button class="story-next" id="scNext">Next ▶</button>
+    <div class="story-dots" id="scDots"></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span class="logo">☁️</span>Monggle Kids</div>
+    <span class="tag">⭐ TEXAS POP-UP</span>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Tap · Feel · Save the Day</div>
+    <div class="bubble" id="bubble">Howdy! I'm Mungi ☁️</div>
+    <!-- Mungi mascot (PNG illustration) -->
+    <img class="mascot" id="mascot" src="assets/characters/mungi.png" alt="Mungi">
+
+    <h1>Mungi's<br><span class="hl">Heart Hero Adventure</span></h1>
+    <p class="lead">Help Mungi with 3 AI missions, learn a friendship tip in each,<br>and bring everyone's feelings &amp; colors back to Monggle Town! 💛</p>
+    <div class="steps"><span>1 · HELLO</span><span>2 · SMILE</span><span>3 · COLORS</span></div>
+  </div>
+
+  <!-- briefing -->
+  <div class="briefing">
+    <span class="b-ic">🎯</span>
+    <div>
+      <div class="b-t">Hero Briefing</div>
+      <div class="b-d">Each mission frees a friend, brings feelings back <b>and</b> teaches a friendship tip. Help all 3 to earn your <b>Heart Hero Certificate</b> + <b>Heart Crew ID</b>!</div>
+    </div>
+  </div>
+
+  <!-- boss -->
+  <div class="boss" id="boss">
+    <div class="boss-av" id="bossAv"><img id="bossImg" src="assets/characters/grumble.png" alt="The Grumble"></div>
+    <div class="boss-info">
+      <div class="boss-name">The Grumble <span>· Feelings Thief</span></div>
+      <div class="hpbar"><i id="hpFill"></i></div>
+      <div class="boss-say" id="bossSay">"Hmph! I locked away ALL the feelings!"</div>
+    </div>
+  </div>
+
+  <!-- friends to rescue -->
+  <div class="friends-wrap">
+    <h2>💛 Friends Who Lost Their Feelings</h2>
+    <div class="sub">The Grumble locked their hearts in gray cages. Clear a mission to bring one back!</div>
+    <div class="friends-row">
+      <div class="friend trapped" data-f="0">
+        <span class="yay">Freed! 🎉</span>
+        <img class="charimg" src="assets/characters/hugo.png" alt="Hugo">
+        <div class="cage"></div>
+        <div class="fname">Hugo 🤗</div><div class="fstat">Heart locked</div>
+      </div>
+      <div class="friend trapped" data-f="1">
+        <span class="yay">Freed! 🎉</span>
+        <img class="charimg" src="assets/characters/joy.png" alt="Joy">
+        <div class="cage"></div>
+        <div class="fname">Joy 😊</div><div class="fstat">Heart locked</div>
+      </div>
+      <div class="friend trapped" data-f="2">
+        <span class="yay">Freed! 🎉</span>
+        <img class="charimg" src="assets/characters/iris.png" alt="Iris">
+        <div class="cage"></div>
+        <div class="fname">Iris 🌈</div><div class="fstat">Heart locked</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- stamps -->
+  <div class="stamp-card">
+    <div class="stamp-head">
+      <h2>🌟 Mission Stamps</h2>
+      <span class="stamp-count"><span id="cnt">0</span> / 3</span>
+    </div>
+    <div class="stamps">
+      <div class="stamp" data-s="0">🛰️</div>
+      <div class="stamp" data-s="1">🛰️</div>
+      <div class="stamp" data-s="2">🛰️</div>
+    </div>
+  </div>
+
+  <!-- missions -->
+  <div class="sec-title">🚀 Your Rescue Missions</div>
+  <div class="missions" id="missions">
+    <div class="mission" data-m="0">
+      <div class="m-emoji"><img src="assets/characters/hugo.png" alt="Hugo"></div>
+      <div class="m-body">
+        <div class="m-title">Mission 1 · Say Hello<span class="m-badge">HAND AI</span></div>
+        <div class="m-desc">Wave hello to Hugo to send a warm welcome and lift his spirits!</div>
+      </div>
+      <div class="m-go">START</div>
+    </div>
+    <div class="mission" data-m="1">
+      <div class="m-emoji"><img src="assets/characters/joy.png" alt="Joy"></div>
+      <div class="m-body">
+        <div class="m-title">Mission 2 · Share a Smile<span class="m-badge">FACE AI</span></div>
+        <div class="m-desc">Give your biggest smile to bring Joy's happiness back — and snap a photo!</div>
+      </div>
+      <div class="m-go">START</div>
+    </div>
+    <div class="mission" data-m="2">
+      <div class="m-emoji"><img src="assets/characters/iris.png" alt="Iris"></div>
+      <div class="m-body">
+        <div class="m-title">Mission 3 · Colors of Feelings<span class="m-badge">VISION AI</span></div>
+        <div class="m-desc">Find the colors of feelings with your camera to color the town back in!</div>
+      </div>
+      <div class="m-go">START</div>
+    </div>
+  </div>
+
+  <!-- reward -->
+  <div class="reward" id="reward">
+    <div class="big">🎉💛🎉</div>
+    <h3>The Grumble learned to smile!</h3>
+    <p>You did it, <b><span id="rwName">Hero</span></b>! Everyone's feelings and colors are back, and the town is full of hugs.<br>You're now an official Monggle Heart Hero! 💛🌈</p>
+    <div class="awards">
+      <div class="award">
+        <canvas id="certCanvas" width="900" height="640"></canvas>
+        <a class="dl" id="dlCert" download="monggle-heart-certificate.png">⬇ Save Certificate</a>
+      </div>
+      <div class="award">
+        <canvas id="idCanvas" width="860" height="540"></canvas>
+        <a class="dl" id="dlId" download="monggle-heart-crew-id.png">⬇ Save Heart Crew ID (마음 대원증)</a>
+      </div>
+    </div>
+    <div class="coupon">MONGGLE-TX-2026<small>In-store gift · One per guest</small></div>
+    <div class="give" id="giveForm">
+      <h3 style="font-size:15px;margin:18px 0 8px;text-align:center;">🎟️ Enter the Grand Prize Giveaway</h3>
+      <p style="text-align:center;margin-bottom:12px;">Win a Mungi plushie bundle + a $100 gift card!</p>
+      <label>Parent / Guardian Name</label>
+      <input id="gName" type="text" placeholder="Jane Smith" autocomplete="name">
+      <label>Email</label>
+      <input id="gEmail" type="email" placeholder="you@email.com" autocomplete="email">
+      <button id="enterBtn">Enter to Win 💛</button>
+      <p class="fine">No purchase necessary. Open to TX residents 18+. By entering you agree to receive event updates. Winner drawn Aug 5, 2026.</p>
+    </div>
+    <div class="entered" id="entered">✅ You're entered! Good luck, Hero! 🍀</div>
+  </div>
+
+  <!-- info -->
+  <div class="info">
+    <h4>📍 Pop-Up Event Info</h4>
+    <div class="row"><span class="k">Dates</span><span class="v">July 1 – July 31, 2026</span></div>
+    <div class="row"><span class="k">Location</span><span class="v">Monggle Kids Pop-Up · The Domain, Austin, TX</span></div>
+    <div class="row"><span class="k">Hours</span><span class="v">Mon–Sun, 10:00 AM – 8:00 PM</span></div>
+    <div class="row"><span class="k">Who</span><span class="v">Free & family-friendly — kids of all ages welcome</span></div>
+    <div class="row"><span class="k">Start</span><span class="v">Just tap your phone on a Mungi NFC tag in store!</span></div>
+  </div>
+  <div class="share">
+    <a id="shareBtn" href="#">📤 Share</a>
+    <a href="https://maps.google.com/?q=The+Domain+Austin+TX" target="_blank" rel="noopener">🗺️ Get Directions</a>
+  </div>
+  <div class="footer">
+    © 2026 Monggle Kids · Mungi Heart Pop-Up <span class="star">★</span> Made in Texas with lots of 💛<br>
+    All AI runs privately on your device — no photos are uploaded
+  </div>
+</div>
+
+<!-- camera modal -->
+<div class="modal" id="modal">
+  <div class="cam-wrap">
+    <video id="mVideo" playsinline muted></video>
+    <canvas id="mCanvas"></canvas>
+    <img id="mPhoto" class="mPhoto" alt="selfie">
+    <div class="reticle" id="reticle"></div>
+    <div class="swatch" id="mSwatch"><span>camera sees</span></div>
+    <div class="m-top">
+      <div class="m-title2" id="mTitle">Mission</div>
+      <button class="m-close" id="mClose">✕</button>
+    </div>
+    <div class="status" id="mStatus"></div>
+    <div class="meter" id="mMeter"><i id="mMeterFill"></i></div>
+    <div class="controls">
+      <button class="shutter" id="mShutter" aria-label="Take photo"></button>
+      <button class="fallback" id="mFallback" style="display:none;">Camera trouble? Tap to complete →</button>
+    </div>
+    <div class="brief" id="mBrief">
+      <div class="be" id="mbEmoji">☀️</div>
+      <h3 id="mbTitle">Rescue</h3>
+      <p id="mbText"></p>
+      <button class="story-next" id="mbStart" style="margin-top:20px;">Start ▶</button>
+    </div>
+    <div class="win-ov" id="mWin">
+      <div class="chk">🎉</div>
+      <h3>Mission Complete!</h3>
+      <p id="mWinSub"></p>
+      <div class="fact"><b>💛 Friendship Tip</b><span id="mFact"></span></div>
+      <button class="story-next" id="mWinNext" style="margin-top:18px;">Continue ▶</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { FilesetResolver, HandLandmarker, FaceLandmarker }
+  from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+
+const WASM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+const HAND_URL = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const FL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+
+/* ---------- mascot + names ---------- */
+const mascot=document.getElementById('mascot'), bubble=document.getElementById('bubble');
+const lines=["Let's bring the feelings back! 💛","Hugo feels loved! 🤗","Joy is smiling! 😊","One friend to go! 🌈","We did it! 💛"];
+function cheer(){mascot.classList.remove('happy');void mascot.offsetWidth;mascot.classList.add('happy');}
+mascot.addEventListener('click',cheer);
+
+let heroName='Brave Hero';
+let crewNo='HH-'+String(Math.floor(1000+Math.random()*9000));
+let cadetPhoto=null;   // selfie captured in Mission 2 (helmet photo)
+
+setTimeout(()=>document.getElementById('splash').classList.add('hide'),1700);
+setTimeout(()=>document.getElementById('story').classList.remove('hide'),2000);
+
+(function storyFlow(){
+  const story=document.getElementById('story');
+  const panels=[...document.querySelectorAll('.story-panel')];
+  const dots=[...document.querySelectorAll('#storyDots i')];
+  const nextBtn=document.getElementById('storyNext');
+  const nameInput=document.getElementById('heroName');
+  let p=0;
+  function render(){
+    panels.forEach((el,i)=>el.classList.toggle('show',i===p));
+    dots.forEach((el,i)=>el.classList.toggle('on',i===p));
+    nextBtn.textContent = p===panels.length-1 ? 'Blast Off 🚀' : 'Next ▶';
+    if(p===panels.length-1) setTimeout(()=>nameInput.focus(),200);
+  }
+  function finish(){
+    const v=nameInput.value.trim();
+    heroName = v ? v.slice(0,16) : 'Brave Hero';
+    bubble.textContent=`Howdy ${heroName}! ☁️`;
+    story.classList.add('hide');
+    playScene(chapterIntro(), ()=>openMission(0));   // straight into the story
+  }
+  nextBtn.addEventListener('click',()=>{ if(p<panels.length-1){p++;render();} else finish(); });
+  document.getElementById('storySkip').addEventListener('click',finish);
+  nameInput.addEventListener('keydown',e=>{if(e.key==='Enter')finish();});
+  render();
+})();
+
+/* ---------- cutscene engine ---------- */
+const scene=document.getElementById('scene');
+const scEmoji=document.getElementById('scEmoji'), scTitle=document.getElementById('scTitle'),
+      scText=document.getElementById('scText'), scNext=document.getElementById('scNext'), scDots=document.getElementById('scDots');
+let sceneSteps=[],sceneIdx=0,sceneDone=null;
+const scImg=document.getElementById('scImg');
+function renderScene(){
+  const st=sceneSteps[sceneIdx];
+  if(st.c){ scImg.src='assets/characters/'+st.c+'.png'; scImg.style.display='inline-block'; scEmoji.style.display='none'; }
+  else { scImg.style.display='none'; scEmoji.style.display='block'; scEmoji.textContent=st.e; }
+  scTitle.innerHTML=st.t; scText.innerHTML=st.x;
+  scNext.textContent = sceneIdx<sceneSteps.length-1 ? 'Next ▶' : (st.btn||'Continue ▶');
+  scDots.innerHTML = sceneSteps.map((_,k)=>`<i class="${k===sceneIdx?'on':''}"></i>`).join('');
+}
+function playScene(steps,onDone){
+  sceneSteps=steps; sceneIdx=0; sceneDone=onDone||null;
+  scene.classList.remove('hide'); renderScene();
+}
+scNext.addEventListener('click',()=>{
+  if(sceneIdx<sceneSteps.length-1){ sceneIdx++; renderScene(); }
+  else { scene.classList.add('hide'); const d=sceneDone; sceneDone=null; if(d) d(); }
+});
+
+/* ---------- story beats ---------- */
+function chapterIntro(){ return [
+  {c:'mungi',t:'Chapter 1 · <span class="v">A Lonely Friend</span>',x:`Hold on, Hugo! Heart Hero <b>${heroName}</b> and Mungi are here. Hugo feels all alone — let's send him a big friendly hello! 🤗`,btn:'Start Chapter 1 ▶'}
+]; }
+function postSunny(){ return [
+  {c:'hugo',t:'Hugo smiles again!',x:`"You said hello… I don't feel lonely anymore. Thank you, ${heroName}!" — Hugo`},
+  {c:'grumble',t:'The Grumble grumbles',x:`"W-what's this warm feeling? Stop it!" The Grumble is losing his grip on the town's feelings…`},
+  {c:'mungi',t:'Chapter 2 · <span class="v">Bring Back Joy</span>',x:`Mungi: "Two friends to go! Joy forgot how to feel happy — let's share a great big smile."`,btn:'Start Chapter 2 ▶'}
+]; }
+function postCosmo(){ return [
+  {c:'joy',t:'Joy is happy again!',x:`"Hehe! Your smile reminded me how good it feels!" — Joy`},
+  {c:'grumble',t:'The Grumble softens',x:`"I… I think I'm starting to feel something too…" The Grumble doesn't seem so grumpy now.`},
+  {c:'mungi',t:'Chapter 3 · <span class="v">Colors of Feelings</span>',x:`Mungi: "Last one! Iris lost the colors of her heart. Let's find them and paint her feelings back!"`,btn:'Start Chapter 3 ▶'}
+]; }
+function finaleScene(){ return [
+  {c:'iris',t:'Iris glows again!',x:`"My colors are back — now I can show everyone how I feel!" — Iris`},
+  {c:'grumble_happy',t:'The Grumble <span class="v">learns to smile</span>',x:`"You showed me how to feel again… maybe I don't want to be grumpy. Thank you!" The Grumble smiles for the very first time!`},
+  {e:'🎉',t:'Monggle Town feels again',x:`Every feeling and color is back — the whole town is sharing hugs and smiles!`},
+  {c:'mungi',t:`Heart Hero ${heroName}!`,x:`Mungi: "You brought everyone's hearts back together. Here are your hero rewards!" 💛`,btn:'Get My Rewards 🎁'}
+]; }
+function afterMission(i){
+  if(cleared>=3){ playScene(finaleScene(), ()=>finishAll()); return; }
+  playScene(i===0?postSunny():postCosmo(), ()=>openMission(cleared));
+}
+
+/* ---------- boss gamification ---------- */
+const boss=document.getElementById('boss'), bossAv=document.getElementById('bossAv'),
+      bossSay=document.getElementById('bossSay'), hpFill=document.getElementById('hpFill');
+const BOSS_SAY=[
+  "You showed me how to smile again… thank you! 😊",
+  "I… I think I'm starting to feel something…",
+  "W-what's this warm feeling? Stop it!",
+  "Hmph! I locked away ALL the feelings!"
+];
+function bossHit(){
+  const remaining=3-cleared;
+  hpFill.style.width=(remaining/3*100)+'%';
+  bossSay.textContent='"'+BOSS_SAY[remaining]+'"';
+  document.getElementById('bossImg').src = remaining===0 ? 'assets/characters/grumble_happy.png' : 'assets/characters/grumble.png';
+  bossAv.classList.remove('hit'); void bossAv.offsetWidth; bossAv.classList.add('hit');
+  if(remaining===0) boss.classList.add('defeated');
+}
+
+/* ---------- progress ---------- */
+let cleared=0; const done=[false,false,false];
+function markStamp(i){
+  if(done[i]) return;
+  done[i]=true; cleared++;
+  const m=document.querySelector(`.mission[data-m="${i}"]`);
+  m.classList.add('cleared'); m.querySelector('.m-go').textContent='DONE ✓';
+  const faces=['hugo','joy','iris'];
+  const st=document.querySelector(`.stamp[data-s="${i}"]`);
+  st.innerHTML=`<img src="assets/characters/${faces[i]}.png" alt="">`; st.classList.add('done');
+  document.getElementById('cnt').textContent=cleared;
+  bubble.textContent=lines[Math.min(cleared,lines.length-1)]; cheer();
+  bossHit(); freeFriend(i); refreshLocks();
+  afterMission(i);
+}
+function freeFriend(i){
+  const f=document.querySelector(`.friend[data-f="${i}"]`);
+  if(!f) return;
+  f.classList.remove('trapped'); f.classList.add('freed');
+  const s=f.querySelector('.fstat'); if(s) s.textContent='Heart back! 💛';
+}
+function finishAll(){
+  const r=document.getElementById('reward'); r.classList.add('show');
+  document.getElementById('rwName').textContent=heroName;
+  buildAwards();
+  setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),500); blast();
+}
+
+/* ---------- giveaway / share ---------- */
+document.getElementById('enterBtn').addEventListener('click',()=>{
+  const n=document.getElementById('gName').value.trim();
+  const e=document.getElementById('gEmail').value.trim();
+  if(!n||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){alert('Please enter your name and a valid email to enter.');return;}
+  document.getElementById('giveForm').style.display='none';
+  document.getElementById('entered').classList.add('show'); blast();
+});
+document.getElementById('shareBtn').addEventListener('click',async e=>{
+  e.preventDefault();
+  const data={title:'Monggle Kids × Mungi Heart Pop-Up',text:'Become a Heart Hero with Mungi at the Texas pop-up! 💛',url:location.href};
+  if(navigator.share){try{await navigator.share(data);}catch(_){}}
+  else alert('Share this link:\n'+location.href);
+});
+
+/* ---------- confetti ---------- */
+function blast(){
+  const colors=['#ff6f91','#8fe3cf','#ffb02e','#8fc7ff','#c79bff'];
+  for(let i=0;i<90;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw'; c.style.background=colors[i%colors.length];
+    document.body.appendChild(c); const dur=1800+Math.random()*1400;
+    c.animate([{transform:'translateY(0) rotate(0)',opacity:1},
+      {transform:`translateY(110vh) rotate(${Math.random()*720}deg)`,opacity:.9}],
+      {duration:dur,easing:'cubic-bezier(.3,.6,.5,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+/* ============================================================
+   Camera mission engine
+============================================================ */
+const modal=document.getElementById('modal');
+const video=document.getElementById('mVideo'), canvas=document.getElementById('mCanvas');
+const photo=document.getElementById('mPhoto'), reticle=document.getElementById('reticle');
+const titleEl=document.getElementById('mTitle'), statusEl=document.getElementById('mStatus');
+const meter=document.getElementById('mMeter'), meterFill=document.getElementById('mMeterFill');
+const shutter=document.getElementById('mShutter'), fallbackBtn=document.getElementById('mFallback');
+const winOv=document.getElementById('mWin'), winSub=document.getElementById('mWinSub'),
+      factEl=document.getElementById('mFact'), winNext=document.getElementById('mWinNext');
+const closeBtn=document.getElementById('mClose');
+
+const WINSUB=[
+  "You said hello — Hugo feels loved again! 🤗 The Grumble softened!",
+  "Your big smile cheered up Joy! 😊 The Grumble is melting!",
+  "Colors of feelings restored — Iris is glowing! 🌈"
+];
+const BRIEFS=[
+  {e:'🤗',t:'Help Hugo',x:"Hugo feels lonely and gray. Wave your hand to send him a big friendly hello and bring his smile back!",b:'Wave Hello ▶'},
+  {e:'😊',t:'Cheer up Joy',x:"Joy forgot how to feel happy. Show your biggest smile — your happy face will remind Joy how good it feels!",b:'Share a Smile ▶'},
+  {e:'🌈',t:'Color in Iris',x:"Iris lost the colors of her feelings. Find each color around you — red, then yellow, then blue — to paint them back!",b:'Find the Colors ▶'}
+];
+const FACTS=[
+  "Saying 'hi' or giving a wave tells a friend you're happy to see them — it's the very first step of friendship! 🤗",
+  "Smiles are contagious! When you smile, your face shares the feeling and helps the people around you feel happy too. 😊",
+  "We match colors to feelings — warm red for excited, calm blue for relaxed. Sharing how you feel helps friends understand you! 🌈"
+];
+
+let stream=null, loopId=null, fallbackTimer=null, activeMission=-1, settled=false;
+let handRec=null, faceRec=null;
+
+function setStatus(html,loading){ statusEl.innerHTML=(loading?'<span class="spin"></span>':'')+html; }
+function setMeter(p){ meter.classList.add('show'); meterFill.style.width=Math.max(0,Math.min(100,p))+'%'; }
+function resetUI(){
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  meter.classList.remove('show'); meterFill.style.width='0%';
+  reticle.classList.remove('show'); shutter.classList.remove('show');
+  photo.style.display='none'; photo.removeAttribute('src');
+  winOv.classList.remove('show'); document.getElementById('mBrief').classList.remove('show');
+  fallbackBtn.style.display='none';
+  video.classList.remove('mirror'); canvas.classList.remove('mirror');
+  shutter.onclick=null; setStatus('');
+  const sw=document.getElementById('mSwatch'); if(sw) sw.style.display='none';
+}
+async function startCam(facing){
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:720}},audio:false});
+  video.srcObject=stream; await video.play();
+  canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+}
+function stopCam(){
+  if(loopId){cancelAnimationFrame(loopId);loopId=null;}
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+}
+function openMission(i){
+  activeMission=i; settled=false; resetUI();
+  modal.classList.add('show');
+  const b=BRIEFS[i];
+  document.getElementById('mbEmoji').textContent=b.e;
+  document.getElementById('mbTitle').textContent='Mission '+(i+1)+' · '+b.t;
+  document.getElementById('mbText').textContent=b.x;
+  document.getElementById('mbStart').textContent=b.b;
+  titleEl.innerHTML=b.e+' '+b.t;
+  document.getElementById('mBrief').classList.add('show');
+}
+function startMission(i){
+  document.getElementById('mBrief').classList.remove('show');
+  fallbackTimer=setTimeout(()=>{fallbackBtn.style.display='inline';},22000);
+  fallbackBtn.onclick=()=>win();
+  if(i===0) runSunbeams(); else if(i===1) runCadetCheck(); else runRainbow();
+}
+document.getElementById('mbStart').addEventListener('click',()=>startMission(activeMission));
+function closeMission(){
+  stopCam(); clearTimeout(fallbackTimer);
+  modal.classList.remove('show'); resetUI(); activeMission=-1;
+}
+closeBtn.addEventListener('click',closeMission);
+
+function refreshLocks(){
+  document.querySelectorAll('.mission').forEach(m=>{
+    const i=+m.dataset.m, locked = i>cleared && !done[i];
+    m.classList.toggle('locked', locked);
+    const go=m.querySelector('.m-go');
+    go.textContent = done[i] ? 'DONE ✓' : (locked ? '🔒' : 'START');
+  });
+}
+document.querySelectorAll('.mission').forEach(m=>{
+  m.addEventListener('click',()=>{
+    const i=+m.dataset.m;
+    if(done[i]) return;
+    if(i>cleared){
+      m.classList.remove('shakex'); void m.offsetWidth; m.classList.add('shakex');
+      bubble.textContent='Free the friend before this one first! 🔒';
+      return;
+    }
+    openMission(i);
+  });
+});
+refreshLocks();
+function win(){
+  if(settled) return; settled=true;
+  if(loopId){cancelAnimationFrame(loopId);loopId=null;}
+  const idx=activeMission;
+  winSub.textContent=WINSUB[idx]||'Great job!';
+  factEl.textContent=' '+(FACTS[idx]||'');
+  winOv.classList.add('show'); blast();
+  winNext.onclick=()=>{ closeMission(); markStamp(idx); };
+}
+function failCam(){
+  setStatus("⚠️ Camera not available.<br>Use a phone & allow camera, or tap below.");
+  fallbackBtn.style.display='inline';
+}
+
+/* shared star path */
+function drawStar(ctx,x,y,r,fill){ctx.beginPath();for(let i=0;i<5;i++){const a=-Math.PI/2+i*2*Math.PI/5;ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);const a2=a+Math.PI/5;ctx.lineTo(x+Math.cos(a2)*r*0.45,y+Math.sin(a2)*r*0.45);}ctx.closePath();ctx.fillStyle=fill;ctx.fill();}
+
+/* ---------- Mission 1: Rescue Sunny — catch sunbeams (hand tracking) ---------- */
+async function runSunbeams(){
+  setStatus('Loading hand AI…',true);
+  try{
+    if(!handRec){
+      const fs=await FilesetResolver.forVisionTasks(WASM);
+      handRec=await HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:HAND_URL},runningMode:'VIDEO',numHands:1});
+    }
+    await startCam('user');
+  }catch(err){ failCam(); return; }
+  video.classList.add('mirror'); canvas.classList.add('mirror');
+  setStatus('Show your hand and grab the sunbeams! ☀️');
+  setMeter(0);
+  const ctx=canvas.getContext('2d');
+  const NEED=6; let got=0,last=-1,tipx=-1,tipy=-1;
+  const beams=[];
+  function spawn(){ beams.push({x:0.15+Math.random()*0.7,y:0.22+Math.random()*0.56,vx:(Math.random()-.5)*0.006,vy:(Math.random()-.5)*0.006}); }
+  for(let k=0;k<3;k++) spawn();
+  const tick=()=>{
+    if(video.readyState>=2){
+      if(video.currentTime!==last){ last=video.currentTime;
+        const res=handRec.detectForVideo(video,performance.now());
+        const lm=res.landmarks&&res.landmarks[0];
+        if(lm){ tipx=lm[8].x; tipy=lm[8].y; } else tipx=-1;
+      }
+      const w=canvas.width,h=canvas.height; ctx.clearRect(0,0,w,h);
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='44px serif';
+      beams.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; if(b.x<0.1||b.x>0.9)b.vx*=-1; if(b.y<0.16||b.y>0.84)b.vy*=-1;
+        ctx.fillText('☀️',b.x*w,b.y*h); });
+      if(tipx>=0){ const cx=tipx*w,cy=tipy*h;
+        ctx.beginPath(); ctx.arc(cx,cy,28,0,7); ctx.fillStyle='rgba(255,209,102,.35)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx,cy,11,0,7); ctx.fillStyle='#fff'; ctx.fill();
+        for(let i=beams.length-1;i>=0;i--){ const dx=beams[i].x*w-cx, dy=beams[i].y*h-cy;
+          if(Math.hypot(dx,dy)<48){ beams.splice(i,1); got++; setMeter(got/NEED*100); spawn();
+            if(got>=NEED){ win(); return; } } }
+        setStatus(`Sunbeams: ${got}/${NEED} — keep grabbing! ☀️`);
+      } else setStatus('Show your open hand to the camera ☀️');
+    }
+    loopId=requestAnimationFrame(tick);
+  };
+  loopId=requestAnimationFrame(tick);
+}
+
+/* ---------- Mission 2: Suit Up (face → space helmet) ---------- */
+function drawHelmet(ctx,lm,W,H){
+  const top=lm[10],chin=lm[152],L=lm[234],R=lm[454];
+  const cx=((L.x+R.x)/2)*W, cy=((top.y+chin.y)/2)*H;
+  const fw=Math.abs(R.x-L.x)*W, fh=Math.abs(chin.y-top.y)*H;
+  const r=Math.max(fw,fh)*0.82;
+  ctx.save();
+  // glass dome
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.fillStyle='rgba(150,205,255,0.16)'; ctx.fill();
+  // rims
+  ctx.lineWidth=Math.max(9,r*0.11); ctx.strokeStyle='#eef6ff'; ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.stroke();
+  ctx.lineWidth=Math.max(3,r*0.04); ctx.strokeStyle='#9cc4ff'; ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.stroke();
+  // shine
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.8,Math.PI*1.02,Math.PI*1.36); ctx.lineWidth=r*0.12; ctx.lineCap='round'; ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.stroke();
+  // antenna + star
+  ctx.beginPath(); ctx.moveTo(cx,cy-r); ctx.lineTo(cx,cy-r-r*0.2); ctx.lineWidth=Math.max(3,r*0.045); ctx.strokeStyle='#eef6ff'; ctx.stroke();
+  drawStar(ctx,cx,cy-r-r*0.26,r*0.13,'#ffd166');
+  ctx.restore();
+}
+async function runCadetCheck(){
+  setStatus('Loading face AI…',true);
+  try{
+    if(!faceRec){
+      const fs=await FilesetResolver.forVisionTasks(WASM);
+      faceRec=await FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:FL_URL},runningMode:'VIDEO',numFaces:1,outputFaceBlendshapes:true});
+    }
+    await startCam('user');
+  }catch(err){ failCam(); return; }
+  video.classList.add('mirror'); canvas.classList.add('mirror');
+  setStatus('Put on your helmet… then smile big! 😄');
+  shutter.classList.add('show'); setMeter(0);
+  const ctx=canvas.getContext('2d'); let last=-1,haveFace=false,smile=0,hold=0;
+  function snap(){
+    const out=document.createElement('canvas'); out.width=canvas.width; out.height=canvas.height;
+    const o=out.getContext('2d'); o.translate(out.width,0); o.scale(-1,1);
+    o.drawImage(video,0,0,out.width,out.height); o.drawImage(canvas,0,0);
+    cadetPhoto=out.toDataURL('image/png');           // save for the Crew ID
+    photo.src=cadetPhoto; photo.style.display='block'; win();
+  }
+  const tick=()=>{
+    if(video.readyState>=2 && video.currentTime!==last){
+      last=video.currentTime;
+      const res=faceRec.detectForVideo(video,performance.now());
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const lm=res.faceLandmarks&&res.faceLandmarks[0]; haveFace=!!lm;
+      if(lm) drawHelmet(ctx,lm,canvas.width,canvas.height);
+      smile=0; const bs=res.faceBlendshapes&&res.faceBlendshapes[0];
+      if(bs){ const cats=bs.categories; const get=n=>{const c=cats.find(c=>c.categoryName===n);return c?c.score:0;};
+        smile=(get('mouthSmileLeft')+get('mouthSmileRight'))/2; }
+      hold = smile>0.4 ? hold+1.5 : Math.max(0,hold-1.2);
+      setMeter(hold/40*100);
+      if(!haveFace) setStatus("Come closer — I can't see your face 👀");
+      else setStatus(smile>0.4 ? 'Awesome smile! Hold it… 😄' : 'Now give a BIG smile, Hero! 😁');
+      if(hold>=40){ snap(); return; }
+    }
+    loopId=requestAnimationFrame(tick);
+  };
+  loopId=requestAnimationFrame(tick);
+  shutter.onclick=()=>{
+    if(!haveFace){ setStatus("I can't see your face yet 👀 — come closer!"); return; }
+    if(smile<0.35){ setStatus('Smile big first, Hero! 😄'); return; }
+    snap();
+  };
+}
+
+/* ---------- Mission 3: Bring Back the Rainbow (color vision) ---------- */
+function rgb2hsv(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;
+  if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360;}
+  return{h,s:mx?d/mx:0,v:mx};}
+async function runRainbow(){
+  // per-color tuned ranges — BLUE is widened a lot (cameras desaturate/shift blues indoors)
+  const SEQ=[
+    {n:'RED',    h:0,   tol:24, sMin:0.30, vMin:0.20, e:'🔴', col:'#ff5a5a'},
+    {n:'YELLOW', h:50,  tol:22, sMin:0.32, vMin:0.32, e:'🟡', col:'#ffd400'},
+    {n:'BLUE',   h:210, tol:62, sMin:0.16, vMin:0.16, e:'🔵', col:'#4a8bff'}
+  ];
+  setStatus('Loading camera…',true);
+  try{ await startCam('environment'); }catch(err){ failCam(); return; }
+  reticle.classList.add('show'); setMeter(0);
+  const swatch=document.getElementById('mSwatch'); if(swatch) swatch.style.display='block';
+  const ctx=canvas.getContext('2d');
+  const off=document.createElement('canvas'); off.width=40; off.height=40;
+  const octx=off.getContext('2d',{willReadFrequently:true});
+  let idx=0,hold=0,frames=0,lastKey='';
+  function stat(key,html){ if(key!==lastKey){ lastKey=key; setStatus(html); } }
+  function drawProgress(){
+    const w=canvas.width; ctx.clearRect(0,0,w,150);
+    SEQ.forEach((c,i)=>{ ctx.beginPath(); ctx.arc(w/2,140,120-i*15,Math.PI,2*Math.PI);
+      ctx.lineWidth=12; ctx.strokeStyle=i<idx?c.col:'rgba(255,255,255,.22)'; ctx.stroke(); });
+  }
+  drawProgress();
+  const tick=()=>{
+    if(video.readyState>=2){
+      frames++;
+      const vw=video.videoWidth,vh=video.videoHeight,bx=Math.min(vw,vh)*0.55;
+      octx.drawImage(video,(vw-bx)/2,(vh-bx)/2,bx,bx,0,0,40,40);
+      const d=octx.getImageData(0,0,40,40).data;
+      const tgt=SEQ[idx];
+      // kid-friendly assist: the longer they try, the easier it gets
+      let reqFrac=0.22, tolB=0, sB=0;
+      if(frames>540){ reqFrac=0.10; tolB=30; sB=-0.07; }
+      else if(frames>270){ reqFrac=0.15; tolB=16; sB=-0.04; }
+      let match=0,n=0,ar=0,ag=0,ab=0;
+      for(let i=0;i<d.length;i+=4){ const r=d[i],g=d[i+1],b=d[i+2]; ar+=r;ag+=g;ab+=b;n++;
+        const c=rgb2hsv(r,g,b);
+        const dh=Math.min(Math.abs(c.h-tgt.h),360-Math.abs(c.h-tgt.h));
+        if(c.s>tgt.sMin+sB && c.v>tgt.vMin && dh<tgt.tol+tolB) match++;
+      }
+      const frac=match/n;
+      if(swatch) swatch.style.background=`rgb(${ar/n|0},${ag/n|0},${ab/n|0})`;
+      const good=frac>=reqFrac;
+      hold=good?hold+1.6:Math.max(0,hold-1.0);
+      setMeter(Math.min(100,hold/30*100));
+      reticle.style.borderColor=good?tgt.col:'#ffffffcc';
+      if(good)            stat('hold'+idx,  `${tgt.e} Yes! Hold it on <b>${tgt.n}</b>…`);
+      else if(frac>0.05)  stat('near'+idx,  `${tgt.e} Almost! Move closer so <b>${tgt.n}</b> fills the circle.`);
+      else if(frames>270) stat('assist'+idx,`${tgt.e} Find <b>any ${tgt.n}</b> thing — even a small one works!`);
+      else                stat('find'+idx,  `${tgt.e} Find something <b>${tgt.n}</b> and fill the circle!`);
+      drawProgress();
+      if(hold>=30){ idx++; hold=0; frames=0; lastKey=''; setMeter(0); blast();
+        if(idx>=SEQ.length){ drawProgress(); if(swatch) swatch.style.display='none'; win(); return; }
+      }
+    }
+    loopId=requestAnimationFrame(tick);
+  };
+  loopId=requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   Awards: certificate + space cadet ID (canvas)
+============================================================ */
+function todayStr(){ return new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); }
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* cloud Mungi seal */
+function drawMungiSeal(ctx,cx,cy,s){
+  ctx.save(); ctx.translate(cx,cy); ctx.scale(s,s);
+  ctx.fillStyle='#ffffff';
+  ctx.beginPath();
+  ctx.arc(-26,4,22,0,7); ctx.arc(2,-10,30,0,7); ctx.arc(28,2,19,0,7);
+  ctx.ellipse(0,14,46,22,0,0,7); ctx.fill();
+  ctx.fillStyle='#e6f1ff'; ctx.beginPath(); ctx.ellipse(0,24,40,11,0,0,7); ctx.fill();
+  // eyes / cheeks / smile
+  ctx.fillStyle='#3b3550'; ctx.beginPath(); ctx.arc(-12,4,4.6,0,7); ctx.arc(12,4,4.6,0,7); ctx.fill();
+  ctx.fillStyle='rgba(255,155,179,.7)'; ctx.beginPath(); ctx.ellipse(-23,12,6,4,0,0,7); ctx.ellipse(23,12,6,4,0,0,7); ctx.fill();
+  ctx.strokeStyle='#3b3550'; ctx.lineWidth=2.3; ctx.beginPath(); ctx.moveTo(-6,12); ctx.quadraticCurveTo(0,18,6,12); ctx.stroke();
+  drawStar(ctx,30,-26,7,'#ffd166');
+  ctx.restore();
+}
+
+const mungiImg=new Image(); let mungiReady=false;
+mungiImg.onload=()=>{mungiReady=true;}; mungiImg.src='assets/characters/mungi.png';
+function imgReady(img){ return new Promise(r=>{ if(img.complete&&img.naturalWidth) return r(); img.addEventListener('load',()=>r(),{once:true}); img.addEventListener('error',()=>r(),{once:true}); }); }
+function drawCircImg(ctx,img,cx,cy,r){
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.clip();
+  const ir=img.width/img.height; let dw,dh; if(ir>1){dh=2*r;dw=2*r*ir;}else{dw=2*r;dh=2*r/ir;}
+  ctx.drawImage(img,cx-dw/2,cy-dh/2,dw,dh); ctx.restore();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.lineWidth=4; ctx.strokeStyle='#fff'; ctx.stroke();
+  ctx.lineWidth=2; ctx.strokeStyle='#8fc7ff'; ctx.stroke();
+}
+
+function drawCertificate(cv){
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  ctx.fillStyle='#f4f8ff'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#3fc4a8'; ctx.lineWidth=10; ctx.strokeRect(24,24,W-48,H-48);
+  ctx.strokeStyle='#8fc7ff'; ctx.lineWidth=3; ctx.strokeRect(40,40,W-80,H-80);
+  [[60,60],[W-60,60],[60,H-60],[W-60,H-60]].forEach(p=>drawStar(ctx,p[0],p[1],12,'#ffb02e'));
+  ctx.textAlign='center';
+  ctx.fillStyle='#3fc4a8'; ctx.font='900 22px Poppins,sans-serif';
+  ctx.fillText('★  MONGGLE KIDS  ·  HEART POP-UP  ·  TEXAS  ★', W/2, 92);
+  ctx.fillStyle='#3b3550'; ctx.font='900 44px Poppins,sans-serif';
+  ctx.fillText('Heart Hero Certificate', W/2, 150);
+  ctx.fillStyle='#9a93ad'; ctx.font='600 17px Poppins,sans-serif';
+  ctx.fillText('This certificate is proudly awarded to', W/2, 205);
+  ctx.fillStyle='#ff6f91'; ctx.font='900 52px Poppins,sans-serif';
+  ctx.fillText(heroName, W/2, 270);
+  ctx.strokeStyle='#bcd6ff'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W/2-220,288); ctx.lineTo(W/2+220,288); ctx.stroke();
+  ctx.fillStyle='#3b3550'; ctx.font='500 17px Poppins,sans-serif';
+  ctx.fillText('for a big, brave heart as a Monggle Heart Hero —', W/2, 330);
+  ctx.fillText('bringing feelings and colors back to every friend in', W/2, 356);
+  ctx.fillText('Monggle Town, and teaching the Grumble to smile! 💛', W/2, 382);
+  if(mungiReady) drawCircImg(ctx,mungiImg,W/2,472,54); else drawMungiSeal(ctx,W/2,476,1.0);
+  ctx.fillStyle='#3b3550'; ctx.font='700 16px Poppins,sans-serif';
+  ctx.fillText('Mungi', 235, 545); ctx.fillText(todayStr(), W-235, 545);
+  ctx.strokeStyle='#c9c2d6'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(150,560); ctx.lineTo(320,560); ctx.moveTo(W-320,560); ctx.lineTo(W-150,560); ctx.stroke();
+  ctx.fillStyle='#9a93ad'; ctx.font='500 13px Poppins,sans-serif';
+  ctx.fillText('Captain, Monggle Heart Crew', 235, 582); ctx.fillText('Date Awarded', W-235, 582);
+  ctx.fillStyle='#3fc4a8'; ctx.font='700 13px Poppins,sans-serif';
+  ctx.fillText('Hero No. '+crewNo, W/2, 600);
+}
+
+function drawIdCard(cv){
+  return new Promise(resolve=>{
+    const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+    roundRect(ctx,0,0,W,H,28); ctx.fillStyle='#fff'; ctx.fill();
+    roundRect(ctx,0,0,W,120,28); ctx.fillStyle='#2a1840'; ctx.fill(); ctx.fillRect(0,80,W,40);
+    for(let i=0;i<8;i++) drawStar(ctx,40+i*40,30,2.5,'#ffffff66');
+    ctx.textAlign='left';
+    ctx.fillStyle='#ffd166'; ctx.font='900 30px Poppins,sans-serif';
+    ctx.fillText('MONGGLE HEART CREW', 36, 58);
+    ctx.fillStyle='#ffffff'; ctx.font='700 18px Poppins,sans-serif';
+    ctx.fillText('Heart Hero ID  ·  마음 대원증', 36, 92);
+    drawStar(ctx,W-56,56,20,'#ffd166');
+
+    // fields (name comes from the cadet's typed name)
+    const fx=250; let fy=180;
+    function field(label,val,big){
+      ctx.textAlign='left';
+      ctx.fillStyle='#9a93ad'; ctx.font='700 13px Poppins,sans-serif'; ctx.fillText(label.toUpperCase(),fx,fy);
+      ctx.fillStyle='#3b3550'; ctx.font=(big?'900 30px':'700 20px')+' Poppins,sans-serif';
+      ctx.fillText(val,fx,fy+(big?34:26)); fy+=big?72:60;
+    }
+    field('Hero Name', heroName, true);
+    field('Hero No.', crewNo);
+    field('Rank', 'Junior Heart Hero 💛');
+    ctx.fillStyle='#9a93ad'; ctx.font='700 13px Poppins,sans-serif'; ctx.fillText('TOWN',fx,fy); ctx.fillText('ISSUED',fx+170,fy);
+    ctx.fillStyle='#3b3550'; ctx.font='700 17px Poppins,sans-serif';
+    ctx.fillText('Monggle Town, TX',fx,fy+24); ctx.fillText(todayStr(),fx+170,fy+24);
+    ctx.fillStyle='#3b3550';
+    for(let x=fx,i=0;x<W-40;x+=6,i++){ if(i%3){ ctx.fillRect(x,H-46,(i%2?2:4),30); } }
+    ctx.strokeStyle='#2a1840'; ctx.lineWidth=3; roundRect(ctx,2,2,W-4,H-4,27); ctx.stroke();
+
+    // photo box — use the Mission-2 selfie if we have it, else cloud avatar
+    const bx=36,by=156,bw=180,bh=200,br=18;
+    const label=()=>{ ctx.textAlign='center'; ctx.fillStyle='#3fc4a8'; ctx.font='700 13px Poppins,sans-serif'; ctx.fillText('JUNIOR HERO',bx+bw/2,by+bh+22); };
+    const frame=()=>{ ctx.strokeStyle='#8fc7ff'; ctx.lineWidth=3; roundRect(ctx,bx,by,bw,bh,br); ctx.stroke(); };
+    function placeholder(){ roundRect(ctx,bx,by,bw,bh,br); ctx.fillStyle='#eef5ff'; ctx.fill();
+      if(mungiReady) drawCircImg(ctx,mungiImg,bx+bw/2,by+bh/2,72); else drawMungiSeal(ctx,bx+bw/2,by+bh/2,1.25);
+      frame(); label(); resolve(); }
+
+    if(cadetPhoto){
+      const img=new Image();
+      img.onload=()=>{
+        ctx.save(); roundRect(ctx,bx,by,bw,bh,br); ctx.clip();
+        const ir=img.width/img.height, brr=bw/bh; let dw,dh;
+        if(ir>brr){ dh=bh; dw=bh*ir; } else { dw=bw; dh=bw/ir; }
+        ctx.drawImage(img, bx+(bw-dw)/2, by+(bh-dh)/2, dw, dh);
+        ctx.restore(); frame(); label(); resolve();
+      };
+      img.onerror=placeholder;
+      img.src=cadetPhoto;
+    } else placeholder();
+  });
+}
+
+let awardsBuilt=false;
+async function buildAwards(){
+  if(awardsBuilt) return; awardsBuilt=true;
+  await imgReady(mungiImg);
+  const cert=document.getElementById('certCanvas'), id=document.getElementById('idCanvas');
+  drawCertificate(cert);
+  await drawIdCard(id);
+  document.getElementById('dlCert').href=cert.toDataURL('image/png');
+  document.getElementById('dlId').href=id.toDataURL('image/png');
+}
+</script>
+</body>
+</html>

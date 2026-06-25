@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#bfe3ff">
+<title>Monggle Kids — A Heart Hero Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fff8f0; --sky:#bfe3ff; --sky-d:#8fc7ff; --sun:#ffd45e;
+    --peach:#ffb59e; --pink:#ff8fb3; --mint:#8fe3cf; --violet:#b9a7ff;
+    --ink:#3b3550; --soft:#8a83a0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-snap-type:y proximity;}
+  body{font-family:'Poppins',sans-serif;color:var(--ink);background:var(--cream);overflow-x:hidden;}
+  h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.5px;line-height:1.02;}
+  a{color:inherit;text-decoration:none;}
+
+  /* progress + nav */
+  .progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:60;
+    background:linear-gradient(90deg,var(--pink),var(--sun),var(--mint));transition:width .1s linear;}
+  .nav{position:fixed;top:0;left:0;right:0;z-index:55;display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;}
+  .nav .logo{display:flex;align-items:center;gap:10px;font-family:'Fredoka';font-weight:700;font-size:20px;}
+  .nav .logo img{width:38px;height:38px;border-radius:30%;box-shadow:0 4px 12px rgba(90,58,120,.18);}
+  .nav .meta{font-size:12.5px;font-weight:700;color:var(--soft);background:#ffffffcc;backdrop-filter:blur(8px);
+    padding:8px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(90,58,120,.1);}
+
+  /* side chapter index */
+  .index{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:16px;}
+  .index a{display:flex;align-items:center;gap:10px;justify-content:flex-end;opacity:.5;transition:.35s;}
+  .index a .n{font-family:'Fredoka';font-weight:600;font-size:12px;color:var(--ink);}
+  .index a .dot{width:9px;height:9px;border-radius:50%;background:var(--ink);transition:.35s;}
+  .index a.on{opacity:1;}
+  .index a.on .dot{background:var(--pink);transform:scale(1.5);box-shadow:0 0 0 5px rgba(255,143,179,.2);}
+  .index a .lbl{font-size:11px;font-weight:700;color:var(--soft);opacity:0;transform:translateX(6px);transition:.35s;white-space:nowrap;}
+  .index a:hover .lbl,.index a.on .lbl{opacity:1;transform:none;}
+
+  /* sections */
+  section{position:relative;min-height:100svh;scroll-snap-align:start;display:flex;align-items:center;
+    padding:96px 7vw 64px;overflow:hidden;}
+  .wrap{width:100%;max-width:1120px;margin:0 auto;position:relative;z-index:2;}
+
+  /* floating decorative blobs */
+  .blob{position:absolute;border-radius:50%;filter:blur(8px);opacity:.55;z-index:0;animation:drift 14s ease-in-out infinite;}
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-26px) scale(1.08)}}
+  .twirl{position:absolute;z-index:0;opacity:.85;animation:bob 5s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-16px) rotate(3deg)}}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(46px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+  .eyebrow{font-weight:800;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--pink);margin-bottom:18px;}
+
+  /* HERO */
+  #hero{background:
+    radial-gradient(70% 55% at 78% 18%, #fff3c4 0%, transparent 60%),
+    linear-gradient(165deg,#d4ecff 0%, #fff8f0 58%, #ffe9f0 100%);}
+  #hero h1{font-size:clamp(48px,9vw,128px);}
+  #hero h1 .grad{background:linear-gradient(95deg,var(--pink),var(--violet) 45%,var(--sky-d));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  #hero .sub{font-size:clamp(15px,1.8vw,20px);color:var(--soft);max-width:540px;margin-top:22px;line-height:1.6;font-weight:500;}
+  .hero-cast{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .hero-cast img{position:absolute;border-radius:32%;box-shadow:0 18px 40px rgba(90,58,120,.22);background:#fff;}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:34px;padding:18px 34px;border-radius:999px;
+    font-family:'Fredoka';font-weight:600;font-size:18px;color:#fff;
+    background:linear-gradient(135deg,var(--pink),var(--sun));box-shadow:0 14px 30px rgba(255,143,179,.4);
+    transition:transform .25s,box-shadow .25s;}
+  .cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 20px 40px rgba(255,143,179,.5);}
+  .cta.ghost{background:#fff;color:var(--ink);box-shadow:0 10px 24px rgba(90,58,120,.12);}
+  .scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;color:var(--soft);
+    font-size:12px;font-weight:700;letter-spacing:1px;text-align:center;animation:bob 2.4s ease-in-out infinite;}
+  .scrollcue .m{font-size:22px;display:block;}
+
+  /* marquee strip */
+  .strip{background:var(--ink);color:#fff;padding:18px 0;overflow:hidden;white-space:nowrap;min-height:auto;}
+  .strip .track{display:inline-block;animation:marq 22s linear infinite;}
+  .strip span{font-family:'Fredoka';font-weight:600;font-size:30px;margin:0 26px;opacity:.9;}
+  .strip span .e{color:var(--sun);}
+  @keyframes marq{to{transform:translateX(-50%)}}
+
+  /* STORY */
+  #story{background:linear-gradient(165deg,#ece6ff 0%, #fff8f0 70%);}
+  #story h2{font-size:clamp(34px,5.5vw,72px);max-width:14ch;}
+  #story .lead{font-size:clamp(16px,2vw,21px);color:var(--soft);max-width:520px;margin-top:22px;line-height:1.7;font-weight:500;}
+  #story .grumble{position:absolute;right:4vw;top:50%;transform:translateY(-50%);width:min(38vw,360px);
+    border-radius:34%;box-shadow:0 24px 60px rgba(90,58,120,.28);z-index:1;}
+
+  /* FRIENDS */
+  #friends{background:linear-gradient(165deg,#dff7f0 0%,#fff8f0 75%);}
+  .friends-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:42px;}
+  #friends h2{font-size:clamp(34px,5.5vw,68px);}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .card{background:#fff;border-radius:28px;padding:24px 18px;text-align:center;box-shadow:0 12px 30px rgba(90,58,120,.1);
+    transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;cursor:default;}
+  .card:hover{transform:translateY(-10px) rotate(-1.5deg);box-shadow:0 24px 50px rgba(90,58,120,.18);}
+  .card img{width:108px;height:108px;border-radius:32%;object-fit:cover;box-shadow:0 8px 20px rgba(90,58,120,.16);animation:bob 4s ease-in-out infinite;}
+  .card:nth-child(2) img{animation-delay:.4s}.card:nth-child(3) img{animation-delay:.8s}.card:nth-child(4) img{animation-delay:1.2s}
+  .card h3{font-size:22px;margin-top:16px;}
+  .card .role{font-size:12.5px;font-weight:700;color:var(--pink);margin-top:4px;letter-spacing:.5px;}
+  .card p{font-size:12.5px;color:var(--soft);margin-top:10px;line-height:1.55;}
+
+  /* EXPERIENCE */
+  #play{background:linear-gradient(165deg,#fff0d6 0%,#fff8f0 70%);}
+  .play-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:50px;align-items:center;}
+  #play h2{font-size:clamp(32px,5vw,64px);}
+  .steps{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
+  .step{display:flex;gap:16px;align-items:center;background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 8px 22px rgba(90,58,120,.08);}
+  .step .num{font-family:'Fredoka';font-weight:700;font-size:26px;color:#fff;width:46px;height:46px;flex-shrink:0;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;}
+  .step:nth-child(1) .num{background:var(--pink)}.step:nth-child(2) .num{background:var(--sun)}.step:nth-child(3) .num{background:var(--mint)}
+  .step b{font-family:'Fredoka';font-weight:600;font-size:17px;}
+  .step p{font-size:12.5px;color:var(--soft);margin-top:2px;}
+  .phone{justify-self:center;width:min(74vw,300px);aspect-ratio:9/18.5;border-radius:42px;background:#fff;
+    border:10px solid var(--ink);box-shadow:0 30px 70px rgba(90,58,120,.28);position:relative;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(80% 50% at 50% 12%,#fff3c4,transparent),linear-gradient(170deg,#d4ecff,#ffe9f0);}
+  .phone .pill{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:80px;height:7px;border-radius:99px;background:var(--ink);opacity:.25;}
+  .phone img{width:118px;height:118px;border-radius:34%;box-shadow:0 12px 26px rgba(90,58,120,.2);animation:bob 3.4s ease-in-out infinite;}
+  .phone .tag{font-family:'Fredoka';font-weight:600;font-size:16px;}
+  .phone .ai{font-size:11px;font-weight:700;color:#fff;background:var(--violet);padding:5px 12px;border-radius:999px;}
+
+  /* CHAPTERS (story ↔ mission) */
+  .chapter .wrap{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;}
+  .chapter.flip .ch-visual{order:2;}
+  .ch-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:300px;}
+  .ch-visual .bignum{position:absolute;font-family:'Fredoka';font-weight:700;font-size:clamp(150px,24vw,300px);color:var(--ac);opacity:.16;z-index:0;line-height:1;}
+  .ch-blob{position:absolute;width:76%;aspect-ratio:1;border-radius:50%;filter:blur(8px);opacity:.5;z-index:1;animation:drift 12s ease-in-out infinite;}
+  .ch-visual .friend{width:min(44vw,290px);border-radius:34%;object-fit:cover;box-shadow:0 26px 60px rgba(90,58,120,.28);position:relative;z-index:2;animation:bob 4.5s ease-in-out infinite;}
+  .ch-eyebrow{font-weight:800;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+  .chapter h2{font-size:clamp(30px,4.8vw,60px);}
+  .lost{display:block;margin-top:14px;font-weight:600;color:var(--soft);font-size:14px;}
+  .lost b{color:var(--ink);}
+  .mission-row{margin-top:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .ai-badge{font-size:11px;font-weight:800;color:#fff;padding:7px 13px;border-radius:999px;letter-spacing:.5px;}
+  .mission-name{font-family:'Fredoka';font-weight:600;font-size:21px;}
+  .how{margin-top:14px;color:var(--soft);font-size:15px;line-height:1.75;max-width:440px;font-weight:500;}
+  .restored{margin-top:20px;display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 18px;
+    font-weight:700;font-size:13px;box-shadow:0 8px 20px rgba(90,58,120,.12);}
+  /* REWARD */
+  .reward-cards{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+  .rcard{background:#fff;border-radius:24px;padding:26px 28px;min-width:230px;box-shadow:0 14px 34px rgba(90,58,120,.14);
+    display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .rcard .rc-top{font-size:46px;margin-bottom:6px;}
+  .rcard b{font-family:'Fredoka';font-weight:600;font-size:17px;}
+  .rcard span{font-size:12px;color:var(--soft);font-weight:600;}
+  @media (max-width:860px){ .chapter .wrap{grid-template-columns:1fr;gap:24px;} .chapter.flip .ch-visual{order:0;} .ch-visual{min-height:220px;} }
+
+  /* CTA */
+  #go{background:radial-gradient(75% 60% at 50% 30%,#fff3c4 0%,transparent 60%),linear-gradient(165deg,#ffe1ec,#d4ecff);
+    text-align:center;flex-direction:column;justify-content:center;}
+  #go h2{font-size:clamp(40px,8vw,104px);}
+  #go h2 .grad{background:linear-gradient(95deg,var(--pink),var(--violet),var(--sky-d));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  #go .sub{color:var(--soft);font-size:clamp(15px,2vw,20px);margin-top:18px;font-weight:500;}
+  .go-cast{display:flex;gap:-10px;justify-content:center;margin:34px 0 6px;}
+  .go-cast img{width:74px;height:74px;border-radius:32%;object-fit:cover;margin:0 -8px;border:4px solid #fff;
+    box-shadow:0 10px 24px rgba(90,58,120,.18);animation:bob 4s ease-in-out infinite;}
+  .go-cast img:nth-child(2){animation-delay:.3s}.go-cast img:nth-child(3){animation-delay:.6s}
+  .go-cast img:nth-child(4){animation-delay:.9s}.go-cast img:nth-child(5){animation-delay:1.2s}
+  footer{margin-top:40px;font-size:12.5px;color:var(--soft);line-height:1.8;}
+  footer b{color:var(--ink);}
+
+  @media (max-width:860px){
+    .index{display:none;}
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .play-grid{grid-template-columns:1fr;gap:32px;}
+    #story .grumble{position:static;transform:none;width:min(60vw,260px);margin-top:28px;}
+    section{padding:90px 7vw 56px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav class="nav">
+  <a class="logo" href="#hero"><img src="assets/characters/mungi.png" alt="">Monggle Kids</a>
+  <span class="meta">⭐ Texas Pop-Up · Jul 2026</span>
+</nav>
+
+<div class="index" id="index">
+  <a href="#hero"  data-s="hero"><span class="lbl">Welcome</span><span class="n">00</span><span class="dot"></span></a>
+  <a href="#story" data-s="story"><span class="lbl">The Story</span><span class="n">01</span><span class="dot"></span></a>
+  <a href="#ch1"   data-s="ch1"><span class="lbl">Hugo · Hello</span><span class="n">02</span><span class="dot"></span></a>
+  <a href="#ch2"   data-s="ch2"><span class="lbl">Joy · Smile</span><span class="n">03</span><span class="dot"></span></a>
+  <a href="#ch3"   data-s="ch3"><span class="lbl">Iris · Colors</span><span class="n">04</span><span class="dot"></span></a>
+  <a href="#reward"data-s="reward"><span class="lbl">Reward</span><span class="n">05</span><span class="dot"></span></a>
+  <a href="#go"    data-s="go"><span class="lbl">Start</span><span class="n">06</span><span class="dot"></span></a>
+</div>
+
+<!-- 00 HERO -->
+<section id="hero">
+  <div class="blob" style="width:300px;height:300px;background:var(--mint);left:-60px;top:20%;"></div>
+  <div class="blob" style="width:220px;height:220px;background:var(--pink);right:8%;bottom:12%;animation-delay:3s;"></div>
+  <div class="hero-cast" id="heroCast">
+    <img src="assets/characters/hugo.png"  style="width:120px;left:6%;top:24%"  data-depth="0.5">
+    <img src="assets/characters/joy.png"   style="width:96px;right:30%;top:16%" data-depth="0.9">
+    <img src="assets/characters/iris.png"  style="width:108px;right:9%;top:46%" data-depth="0.7">
+    <img src="assets/characters/grumble.png" style="width:80px;left:18%;bottom:16%" data-depth="1.1">
+  </div>
+  <div class="wrap">
+    <div class="eyebrow reveal in">Monggle Kids presents</div>
+    <h1 class="reveal in d1">A <span class="grad">Heart Hero</span><br>Adventure</h1>
+    <p class="sub reveal in d2">Mungi the feelings-cloud needs YOU. Play camera mini-games powered by friendly AI,
+      free your friends, and bring all the feelings back to Monggle Town.</p>
+    <a class="cta reveal in d3" href="monggle_event.html">Start the Adventure ✨</a>
+  </div>
+  <div class="scrollcue"><span class="m">↓</span>scroll</div>
+</section>
+
+<!-- marquee -->
+<section class="strip">
+  <div class="track">
+    <span>PLAY <span class="e">✦</span> FEEL <span class="e">✦</span> SHARE <span class="e">✦</span> SMILE <span class="e">✦</span> HELLO <span class="e">✦</span> COLORS <span class="e">✦</span> FRIENDS <span class="e">✦</span> </span>
+    <span>PLAY <span class="e">✦</span> FEEL <span class="e">✦</span> SHARE <span class="e">✦</span> SMILE <span class="e">✦</span> HELLO <span class="e">✦</span> COLORS <span class="e">✦</span> FRIENDS <span class="e">✦</span> </span>
+  </div>
+</section>
+
+<!-- 01 STORY -->
+<section id="story">
+  <div class="blob" style="width:260px;height:260px;background:var(--violet);left:-40px;bottom:8%;"></div>
+  <img class="grumble twirl reveal" src="assets/characters/grumble.png" alt="The Grumble">
+  <div class="wrap" style="max-width:640px;">
+    <div class="eyebrow reveal">Chapter 01 — The Story</div>
+    <h2 class="reveal d1">When the <span style="color:var(--violet)">Grumble</span> stole all the feelings…</h2>
+    <p class="lead reveal d2">One gray morning, a grumpy little rain cloud drifted into Monggle Town and locked
+      everyone's feelings away. Colors faded. Friends went quiet. Hugs stopped.</p>
+    <p class="lead reveal d3" style="margin-top:14px;">But feelings are stronger than gloom — and every great rescue needs
+      a brave new <b style="color:var(--ink)">Heart Hero</b>.</p>
+  </div>
+</section>
+
+<!-- 02 CHAPTER 1 · Hugo / Say Hello -->
+<section id="ch1" class="chapter" style="--ac:#ff7aa8;background:linear-gradient(165deg,#ffe6ef 0%,#fff8f0 70%);">
+  <div class="wrap">
+    <div class="ch-visual reveal">
+      <div class="bignum">01</div>
+      <div class="ch-blob" style="background:#ff8fb3;"></div>
+      <img class="friend" src="assets/characters/hugo.png" alt="Hugo">
+    </div>
+    <div class="ch-text">
+      <div class="ch-eyebrow reveal" style="color:var(--ac)">Chapter 01 — Friendship</div>
+      <h2 class="reveal d1">Hugo feels<br>all alone</h2>
+      <div class="lost reveal d1">Feeling locked away · <b>Friendship 🤗</b></div>
+      <div class="mission-row reveal d2">
+        <span class="ai-badge" style="background:var(--ac)">HAND AI</span>
+        <span class="mission-name">Your mission · Say Hello</span>
+      </div>
+      <p class="how reveal d2">Wave your open hand at the camera to send Hugo a big friendly hello. The AI follows your hand in real time — one warm wave wakes him right up.</p>
+      <div class="restored reveal d3">💛 You free Hugo — and the Grumble softens</div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 CHAPTER 2 · Joy / Share a Smile -->
+<section id="ch2" class="chapter flip" style="--ac:#f4a316;background:linear-gradient(165deg,#fff1d4 0%,#fff8f0 70%);">
+  <div class="wrap">
+    <div class="ch-visual reveal">
+      <div class="bignum">02</div>
+      <div class="ch-blob" style="background:#ffd45e;"></div>
+      <img class="friend" src="assets/characters/joy.png" alt="Joy">
+    </div>
+    <div class="ch-text">
+      <div class="ch-eyebrow reveal" style="color:var(--ac)">Chapter 02 — Happiness</div>
+      <h2 class="reveal d1">Joy forgot<br>how to smile</h2>
+      <div class="lost reveal d1">Feeling locked away · <b>Happiness 😊</b></div>
+      <div class="mission-row reveal d2">
+        <span class="ai-badge" style="background:var(--ac)">FACE AI</span>
+        <span class="mission-name">Your mission · Share a Smile</span>
+      </div>
+      <p class="how reveal d2">Give your biggest grin! The AI reads your smile and reminds Joy how wonderful happy feels — then snaps a keepsake photo for your Hero ID.</p>
+      <div class="restored reveal d3">😊 You free Joy — and the Grumble warms up</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 CHAPTER 3 · Iris / Find the Colors -->
+<section id="ch3" class="chapter" style="--ac:#2bbfa0;background:linear-gradient(165deg,#dcf7ef 0%,#fff8f0 72%);">
+  <div class="wrap">
+    <div class="ch-visual reveal">
+      <div class="bignum">03</div>
+      <div class="ch-blob" style="background:#8fe3cf;"></div>
+      <img class="friend" src="assets/characters/iris.png" alt="Iris">
+    </div>
+    <div class="ch-text">
+      <div class="ch-eyebrow reveal" style="color:var(--ac)">Chapter 03 — Colors</div>
+      <h2 class="reveal d1">Iris lost<br>her rainbow</h2>
+      <div class="lost reveal d1">Feeling locked away · <b>Colors 🌈</b></div>
+      <div class="mission-row reveal d2">
+        <span class="ai-badge" style="background:var(--ac)">VISION AI</span>
+        <span class="mission-name">Your mission · Find the Colors</span>
+      </div>
+      <p class="how reveal d2">Hunt real red, yellow &amp; blue things around you — point the camera and fill the circle to paint each band of Iris's rainbow back. <b style="color:var(--ink)">Blue is made extra easy</b> for little explorers, with live hints and a “camera sees” color dot.</p>
+      <div class="restored reveal d3">🌈 You free Iris — and the Grumble learns to smile</div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 REWARD -->
+<section id="reward" style="background:linear-gradient(165deg,#ece6ff 0%,#fff8f0 75%);">
+  <div class="blob" style="width:240px;height:240px;background:var(--violet);left:-40px;top:18%;"></div>
+  <div class="wrap" style="text-align:center;max-width:880px;">
+    <div class="eyebrow reveal" style="text-align:center;">The Reward</div>
+    <h2 class="reveal d1" style="font-size:clamp(32px,5.4vw,66px);">Three friends free,<br>one Heart Hero born</h2>
+    <p class="reveal d2" style="color:var(--soft);max-width:540px;margin:18px auto 0;font-weight:500;line-height:1.7;">
+      Free all three feelings and the Grumble finally smiles again. You earn a personalized certificate and an
+      official Heart Crew ID — printed with <b style="color:var(--ink)">your name</b> and <b style="color:var(--ink)">your smile photo</b> from Mission 2.</p>
+    <div class="reward-cards">
+      <div class="rcard reveal d2"><div class="rc-top">🏆</div><b>Heart Hero Certificate</b><span>Printable · your name</span></div>
+      <div class="rcard reveal d3"><div class="rc-top">🪪</div><b>Heart Crew ID · 마음 대원증</b><span>Your photo &amp; hero name</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 CTA -->
+<section id="go">
+  <div class="wrap">
+    <div class="eyebrow reveal" style="text-align:center;">Ready, Hero?</div>
+    <h2 class="reveal d1">Let's bring the<br><span class="grad">feelings back</span></h2>
+    <p class="sub reveal d2">Tap below to start your adventure with Mungi.</p>
+    <div class="go-cast reveal d2">
+      <img src="assets/characters/mungi.png"><img src="assets/characters/hugo.png">
+      <img src="assets/characters/joy.png"><img src="assets/characters/iris.png">
+      <img src="assets/characters/grumble_happy.png">
+    </div>
+    <div class="reveal d3" style="margin-top:18px;">
+      <a class="cta" href="monggle_event.html">Start the Adventure ✨</a>
+    </div>
+    <footer class="reveal d3">
+      <b>Monggle Kids · Mungi Heart Pop-Up</b><br>
+      The Domain, Austin, TX · Jul 1–31, 2026 · 10AM–8PM · Free & family-friendly<br>
+      Tap a Mungi NFC tag in store to begin 💛
+    </footer>
+  </div>
+</section>
+
+<script>
+/* progress bar */
+const progress=document.getElementById('progress');
+function onScroll(){
+  const h=document.documentElement;
+  const p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  progress.style.width=(p*100)+'%';
+  // hero parallax
+  const y=h.scrollTop;
+  document.querySelectorAll('#heroCast img').forEach(img=>{
+    const d=parseFloat(img.dataset.depth||1);
+    img.style.transform=`translateY(${y*d*0.18}px)`;
+  });
+}
+addEventListener('scroll',()=>requestAnimationFrame(onScroll),{passive:true}); onScroll();
+
+/* reveal on scroll */
+const ro=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+},{threshold:.18});
+document.querySelectorAll('.reveal:not(.in)').forEach(el=>ro.observe(el));
+
+/* active chapter index */
+const links=[...document.querySelectorAll('.index a')];
+const byId=id=>links.find(l=>l.dataset.s===id);
+const ao=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.remove('on')); const a=byId(e.target.id); if(a)a.classList.add('on'); } });
+},{threshold:.5});
+['hero','story','ch1','ch2','ch3','reward','go'].forEach(id=>{ const s=document.getElementById(id); if(s) ao.observe(s); });
+</script>
+</body>
+</html>
