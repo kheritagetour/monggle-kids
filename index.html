@@ -29,6 +29,10 @@
   .nav .logo img{width:38px;height:38px;border-radius:30%;box-shadow:0 4px 12px rgba(90,58,120,.18);}
   .nav .meta{font-size:12.5px;font-weight:700;color:var(--soft);background:#ffffffcc;backdrop-filter:blur(8px);
     padding:8px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(90,58,120,.1);}
+  .lang-btn{font-family:'Fredoka';font-weight:600;font-size:13px;color:#fff;background:linear-gradient(135deg,var(--pink),var(--sun));
+    border:none;border-radius:999px;padding:8px 15px;cursor:pointer;box-shadow:0 4px 14px rgba(255,143,179,.3);}
+  .lang-btn:active{transform:scale(.96);}
+  @media (max-width:560px){ .nav .meta{display:none;} }
 
   /* side chapter index */
   .index{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:16px;}
@@ -180,7 +184,10 @@
 
 <nav class="nav">
   <a class="logo" href="#hero"><img src="assets/characters/mungi.png" alt="">Monglekids</a>
-  <span class="meta">💛 Heart Hero Adventure</span>
+  <div style="display:flex;gap:9px;align-items:center;">
+    <button id="langToggle" class="lang-btn">한국어</button>
+    <span class="meta">💛 Heart Hero Adventure</span>
+  </div>
 </nav>
 
 <div class="index" id="index">
@@ -207,7 +214,7 @@
   <div class="wrap">
     <div class="eyebrow reveal in">Monglekids presents</div>
     <h1 class="reveal in d1">A <span class="grad">Heart Hero</span><br>Adventure</h1>
-    <p class="sub reveal in d2">Mungi the feelings-cloud needs YOU. Play camera mini-games powered by friendly AI,
+    <p class="sub reveal in d2">Moong the feelings-cloud needs YOU. Play camera mini-games powered by friendly AI,
       free your friends, and bring all the feelings back to Mongle Town.</p>
     <a class="cta reveal in d3" href="monggle_event.html">Start the Adventure ✨</a>
   </div>
@@ -295,8 +302,8 @@
         <span class="ai-badge" style="background:var(--ac)">VISION AI</span>
         <span class="mission-name">Your mission · Find the Colors</span>
       </div>
-      <p class="how reveal d2">Hunt real red, yellow &amp; blue things around you — fill the circle to paint each band of the rainbow back. Then <b style="color:var(--ink)">Mungi blasts the rainbow to defeat the Grumble!</b> <b style="color:var(--ink)">Blue is made extra easy</b> for little explorers, with live hints and a “camera sees” color dot.</p>
-      <div class="restored reveal d3">🌈 You free Iris — Mungi defeats the Grumble!</div>
+      <p class="how reveal d2">Hunt real red, yellow &amp; blue things around you — fill the circle to paint each band of the rainbow back. Then <b style="color:var(--ink)">Moong blasts the rainbow to defeat the Grumble!</b> <b style="color:var(--ink)">Blue is made extra easy</b> for little explorers, with live hints and a “camera sees” color dot.</p>
+      <div class="restored reveal d3">🌈 You free Iris — Moong defeats the Grumble!</div>
     </div>
   </div>
 </section>
@@ -329,7 +336,7 @@
       <div class="ch-eyebrow reveal" style="color:var(--ac)">Bonus Quest — Crop Creatures</div>
       <h2 class="reveal d1">Build a creature<br>from real veggies</h2>
       <div class="lost reveal d1">Make it for real · <b>then bring it to life 🌱</b></div>
-      <p class="how reveal d2">Use cucumbers, zucchini, tomatoes &amp; toothpicks to build a silly creature — a dino, a doggo, a hedgehog. Snap a photo and watch Mungi’s magic make it <b style="color:var(--ink)">come alive</b> and hop around!</p>
+      <p class="how reveal d2">Use cucumbers, zucchini, tomatoes &amp; toothpicks to build a silly creature — a dino, a doggo, a hedgehog. Snap a photo and watch Moong’s magic make it <b style="color:var(--ink)">come alive</b> and hop around!</p>
       <div class="reveal d3" style="margin-top:22px;">
         <a class="cta" href="crop_creature.html" style="background:linear-gradient(135deg,#4ca64c,#8ccf6b);box-shadow:0 14px 30px rgba(76,166,76,.36);">Make a Crop Creature 🥒</a>
       </div>
@@ -342,7 +349,7 @@
   <div class="wrap">
     <div class="eyebrow reveal" style="text-align:center;">Ready, Hero?</div>
     <h2 class="reveal d1">Let's bring the<br><span class="grad">feelings back</span></h2>
-    <p class="sub reveal d2">Tap below to start your adventure with Mungi.</p>
+    <p class="sub reveal d2">Tap below to start your adventure with Moong.</p>
     <div class="go-cast reveal d2">
       <img src="assets/characters/mungi.png"><img src="assets/characters/hugo.png">
       <img src="assets/characters/joy.png"><img src="assets/characters/iris.png">
@@ -355,9 +362,8 @@
       🔒 <b style="color:var(--ink)">For grown-ups:</b> Camera is used only for this activity. Photos are not uploaded or stored.
       We never save a child's name or photo — everything runs locally on the device, and saving is optional with parental consent.</p>
     <footer class="reveal d3">
-      <b>Monglekids · Mungi Heart Adventure</b><br>
+      <b>Monglekids · Moong Heart Adventure</b><br>
       Free & family-friendly · A playful AI adventure for kids<br>
-      Tap a Mungi NFC tag to begin 💛
     </footer>
   </div>
 </section>
@@ -398,5 +404,88 @@ const SRC=new URLSearchParams(qs).get('src')||'direct';
 window.dataLayer=window.dataLayer||[]; window.dataLayer.push({event:'landing_open',src:SRC});
 if(qs){ document.querySelectorAll('a[href="monggle_event.html"],a[href="crop_creature.html"]').forEach(a=>{ a.href=a.getAttribute('href')+qs; }); }
 </script>
+<script>
+(function(){
+  const KO={
+    'nav .meta':`💛 하트 히어로 어드벤처`,
+    '#hero .eyebrow':`몽글키즈 프레젠츠`,
+    '#hero h1':`<span class="grad">하트 히어로</span><br>어드벤처`,
+    '#hero .sub':`감정 구름 Moong에게 네가 필요해! 친근한 AI 카메라 미니게임을 즐기고, 친구들을 구하고, 몽글 마을에 모든 감정을 되찾아 줘.`,
+    '#hero .cta':`모험 시작하기 ✨`,
+    '#hero .scrollcue':`<span class="m">↓</span>스크롤`,
+    '#story .eyebrow':`챕터 01 — 이야기`,
+    '#story h2':`<span style="color:var(--violet)">그럼블</span>이 모든 감정을 훔쳤을 때…`,
+    '#story p.lead:first-of-type':`어느 흐린 아침, 음침한 괴물이 몽글 마을에 들이닥쳐 모두의 감정을 가둬버렸어요. 색이 사라지고, 친구들은 조용해지고, 포옹도 멈췄죠.`,
+    '#story p.lead:last-of-type':`하지만 감정은 우울함보다 강해요 — 모든 멋진 구출엔 용감한 새 <b style="color:var(--ink)">하트 히어로</b>가 필요하죠.`,
+    '#ch1 .ch-eyebrow':`챕터 01 — 우정`,
+    '#ch1 h2':`휴고가<br>외로워해요`,
+    '#ch1 .lost':`갇힌 감정 · <b>우정 🤗</b>`,
+    '#ch1 .mission-name':`미션 · 인사하기`,
+    '#ch1 .how':`카메라에 손을 펴서 흔들어 휴고에게 반갑게 인사해요. AI가 실시간으로 손을 따라가요 — 따뜻한 손 인사 한 번이면 휴고가 깨어나요.`,
+    '#ch1 .restored':`💛 휴고를 구하면 — 그럼블이 약해져요`,
+    '#ch2 .ch-eyebrow':`챕터 02 — 행복`,
+    '#ch2 h2':`조이가 웃는 법을<br>잊어버렸어요`,
+    '#ch2 .lost':`갇힌 감정 · <b>행복 😊</b>`,
+    '#ch2 .mission-name':`미션 · 미소 짓기`,
+    '#ch2 .how':`활짝 웃어 보세요! AI가 미소를 읽어 조이에게 행복이 얼마나 좋은지 알려주고, Hero ID에 담을 기념 사진을 찍어줘요.`,
+    '#ch2 .restored':`😊 조이를 구하면 — 그럼블의 힘이 빠져요`,
+    '#ch3 .ch-eyebrow':`챕터 03 — 색깔`,
+    '#ch3 h2':`아이리스가 무지개를<br>잃어버렸어요`,
+    '#ch3 .lost':`갇힌 감정 · <b>색깔 🌈</b>`,
+    '#ch3 .mission-name':`미션 · 색깔 찾기`,
+    '#ch3 .how':`주변에서 빨강·노랑·파랑 물건을 찾아 원을 채워 무지개 띠를 하나씩 칠해요. 그러면 <b style="color:var(--ink)">Moong이 무지개를 쏘아 그럼블을 물리쳐요!</b> <b style="color:var(--ink)">파랑은 아이들도 쉽게</b> 찾도록 실시간 힌트와 "카메라가 보는 색" 점을 보여줘요.`,
+    '#ch3 .restored':`🌈 아이리스를 구하면 — Moong이 그럼블을 물리쳐요!`,
+    '#reward .eyebrow':`보상`,
+    '#reward h2':`세 친구를 구하면,<br>너는 하트 히어로!`,
+    '#reward .wrap > p':`세 가지 감정을 모두 구하면 그럼블은 영영 물러나요. <b style="color:var(--ink)">너의 이름</b>과 Mission 2에서 찍은 <b style="color:var(--ink)">웃는 사진</b>이 담긴 맞춤 상장과 공식 Heart Crew ID를 받아요.`,
+    '#reward .rcard:nth-of-type(1) b':`하트 히어로 상장`,
+    '#reward .rcard:nth-of-type(1) span':`인쇄 가능 · 이름 포함`,
+    '#reward .rcard:nth-of-type(2) b':`하트 크루 ID`,
+    '#reward .rcard:nth-of-type(2) span':`사진 & 히어로 이름`,
+    '#bonus .ch-eyebrow':`보너스 퀘스트 — 농작물 크리쳐`,
+    '#bonus h2':`진짜 채소로<br>크리쳐 만들기`,
+    '#bonus .lost':`직접 만들고 · <b>살아나게 해요 🌱</b>`,
+    '#bonus .how':`오이·애호박·토마토·이쑤시개로 엉뚱한 크리쳐를 만들어요 — 공룡, 강아지, 고슴도치 등. 사진을 찍으면 Moong의 마법으로 크리쳐가 <b style="color:var(--ink)">살아 움직여요!</b>`,
+    '#bonus .cta':`농작물 크리쳐 만들기 🥒`,
+    '#go .eyebrow':`준비됐나요, 히어로?`,
+    '#go h2':`함께 감정을<br><span class="grad">되찾아요</span>`,
+    '#go .sub':`아래를 눌러 Moong과 함께 모험을 시작해요.`,
+    '#go .cta':`모험 시작하기 ✨`,
+    '#go p[style*="560px"]':`🔒 <b style="color:var(--ink)">보호자님께:</b> 카메라는 이 활동에만 사용됩니다. 사진은 업로드·저장되지 않아요. 아이의 이름이나 사진은 절대 저장하지 않으며 모든 처리는 기기 안에서만 이뤄집니다. 저장은 선택이며 보호자 동의가 필요해요.`,
+    '#go footer':`<b>Monglekids · Moong Heart Adventure</b><br>무료 · 가족 친화 · 아이들을 위한 즐거운 AI 모험<br>`,
+    '#index a[data-s="hero"] .lbl':`환영`,
+    '#index a[data-s="story"] .lbl':`이야기`,
+    '#index a[data-s="ch1"] .lbl':`휴고 · 인사`,
+    '#index a[data-s="ch2"] .lbl':`조이 · 미소`,
+    '#index a[data-s="ch3"] .lbl':`아이리스 · 색깔`,
+    '#index a[data-s="reward"] .lbl':`보상`,
+    '#index a[data-s="bonus"] .lbl':`농작물 크리쳐`,
+    '#index a[data-s="go"] .lbl':`시작`
+  };
+  const items=[];
+  for(const sel in KO){ const el=document.querySelector(sel); if(el){ items.push({el:el, ko:KO[sel], en:el.innerHTML}); } }
+  const btn=document.getElementById('langToggle');
+  function setExpLang(l){
+    document.querySelectorAll('a[href^="monggle_event.html"],a[href^="crop_creature.html"]').forEach(function(a){
+      var base=a.getAttribute('href').split('?')[0];
+      var p=new URLSearchParams(location.search); p.set('lang',l);
+      a.setAttribute('href', base+'?'+p.toString());
+    });
+  }
+  function apply(l){
+    items.forEach(function(x){ x.el.innerHTML=(l==='ko')?x.ko:x.en; });
+    document.documentElement.lang=l;
+    if(btn) btn.textContent=(l==='ko')?'EN':'한국어';
+    setExpLang(l);
+    try{ localStorage.setItem('mk_lang',l); }catch(e){}
+  }
+  var lang=new URLSearchParams(location.search).get('lang');
+  if(lang!=='ko'&&lang!=='en'){ try{ lang=localStorage.getItem('mk_lang'); }catch(e){} }
+  if(lang!=='ko'&&lang!=='en') lang='en';
+  apply(lang);
+  if(btn) btn.onclick=function(){ lang=(lang==='ko')?'en':'ko'; apply(lang); };
+})();
+</script>
+
 </body>
 </html>
