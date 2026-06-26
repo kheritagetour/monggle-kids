@@ -295,6 +295,25 @@
   .mission.locked{opacity:.5;}
   .mission.locked .m-go{background:#b9b3c6;}
   .mission.shakex{animation:shake .4s;}
+  @media (max-width:430px){
+    .app{padding:0 14px 38px;}
+    .topbar{flex-wrap:wrap;gap:6px;}
+    .topbar .tag{display:none;}
+    .lang-btn{font-size:11px;padding:5px 10px;}
+    h1{font-size:23px;}
+    .hero .lead{font-size:12.5px;}
+    .steps{font-size:10px;gap:5px;}
+    .steps span{padding:5px 9px;}
+    .friend .charimg{width:52px;height:52px;}
+    .fname{font-size:11px;} .fstat{font-size:9px;}
+    .m-title{font-size:14px;} .m-desc{font-size:11.5px;}
+    .costumes{top:58px;} .costumes button{font-size:12px;padding:6px 10px;}
+    .reward{padding:22px 14px;}
+    .boss{padding:13px;} .boss-av{width:56px;height:56px;font-size:28px;}
+  }
+  @media (max-height:680px){
+    .status{bottom:128px;} .meter{bottom:100px;}
+  }
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 <script src="assets/tts/manifest.js"></script>
@@ -597,8 +616,16 @@ function charOf(c){ if(!c) return 'narrator';
   if(c.indexOf('iris')===0) return 'iris'; if(c.indexOf('grumble')===0) return 'grumble';
   if(c.indexOf('mungi')===0) return 'mungi'; return 'narrator'; }
 const TTS_CACHE={};
+function pickVoice(lang){ try{ const vs=speechSynthesis.getVoices(); if(!vs||!vs.length) return null;
+  const pref = lang==='ko' ? ['Yuna','Google','한국','Heami'] : ['Samantha','Google US English','Aria','Jenny','Natural','Daniel'];
+  for(const pn of pref){ const f=vs.find(v=> v.name.indexOf(pn)>=0 && (lang==='ko'? /ko/i.test(v.lang) : /en/i.test(v.lang))); if(f) return f; }
+  return vs.find(v=> lang==='ko'? /ko/i.test(v.lang) : /en[-_]?US/i.test(v.lang)) || null;
+}catch(e){ return null; } }
 function browserSpeak(txt,lang,v){ if(!window.speechSynthesis) return;
-  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang=lang==='ko'?'ko-KR':'en-US'; u.rate=(v&&v.rate)||0.98; u.pitch=(v&&v.pitch)||1.05; speechSynthesis.speak(u);}catch(e){} }
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang=lang==='ko'?'ko-KR':'en-US';
+    const vo=pickVoice(lang); if(vo) u.voice=vo;
+    u.rate=((v&&v.rate)?v.rate:0.98)*0.95; u.pitch=(v&&v.pitch)||1.05; speechSynthesis.speak(u);}catch(e){} }
+if(window.speechSynthesis) speechSynthesis.onvoiceschanged=()=>{};
 function stopAudio(){ if(currentAudio){ try{currentAudio.pause();}catch(e){} currentAudio=null; } try{ if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){} }
 async function speak(t,who){
   if(!voiceOn) return;
@@ -622,6 +649,7 @@ async function speak(t,who){
   }
   browserSpeak(txt,lang,v);
 }
+document.addEventListener('pointerdown',e=>{ if(e.target.closest('.story-next,.costumes button,.mission,.m-go,#mbStart,.m-close,#langToggle,#voiceToggle,.dl,#enterBtn')) sfx('tap'); },true);
 (function(){ const vb=document.getElementById('voiceToggle'); if(!vb) return;
   vb.onclick=()=>{ voiceOn=!voiceOn; vb.textContent=voiceOn?'🔊':'🔇'; if(!voiceOn) stopAudio(); }; })();
 const linesEN=["Let's bring the feelings back! 💛","Hugo feels loved! 🤗","Joy is smiling! 😊","One friend to go! 🌈","We did it! 💛"];
@@ -750,6 +778,7 @@ function bossHit(){
   boss.classList.remove('weak1','weak2');
   if(remaining===2) boss.classList.add('weak1'); else if(remaining===1) boss.classList.add('weak2');
   try{ if(navigator.vibrate) navigator.vibrate([60,40,90]); }catch(e){}
+  sfx('hit');
   if(remaining===0) boss.classList.add('defeated');
 }
 
@@ -771,7 +800,7 @@ function markStamp(i){
 function freeFriend(i){
   const f=document.querySelector(`.friend[data-f="${i}"]`);
   if(!f) return;
-  f.classList.remove('trapped'); f.classList.add('freed');
+  f.classList.remove('trapped'); f.classList.add('freed'); sfx('sparkle');
   const s=f.querySelector('.fstat'); if(s) s.textContent=(window.MK_LANG==='ko'?'마음 회복! 💛':'Heart back! 💛');
   const _free={0:'hugo_free',1:'joy_free',2:'iris_free'}[i]; if(_free){ const im=f.querySelector('img.charimg'); if(im) im.src='assets/characters/'+_free+'.png'; }
 }
@@ -790,6 +819,7 @@ document.getElementById('enterBtn').addEventListener('click',()=>{
   if(!n||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){alert(LANG()==='ko'?'이름과 올바른 이메일을 입력해 주세요.':'Please enter your name and a valid email to enter.');return;}
   document.getElementById('giveForm').style.display='none';
   try{window.dataLayer.push({event:'waitlist_join',src:SRC});}catch(_){}
+  sfx('success');
   document.getElementById('entered').classList.add('show'); blast();
 });
 
@@ -817,6 +847,20 @@ document.getElementById('shareBtn').addEventListener('click',async e=>{
 });
 
 /* ---------- confetti ---------- */
+let _actx=null;
+function sfx(type){ try{ _actx=_actx||new (window.AudioContext||window.webkitAudioContext)(); if(_actx.state==='suspended') _actx.resume();
+  const t=_actx.currentTime;
+  function tone(f,dur,vol,wave,f2,delay){ const o=_actx.createOscillator(),g=_actx.createGain(); o.type=wave||'sine'; const ts=t+(delay||0);
+    o.frequency.setValueAtTime(f,ts); if(f2)o.frequency.exponentialRampToValueAtTime(f2,ts+dur);
+    g.gain.setValueAtTime(0.0001,ts); g.gain.exponentialRampToValueAtTime(vol||0.14,ts+0.01); g.gain.exponentialRampToValueAtTime(0.0001,ts+dur);
+    o.connect(g).connect(_actx.destination); o.start(ts); o.stop(ts+dur+0.02); }
+  if(type==='success'){ [523,659,784,1047].forEach((f,i)=>tone(f,.2,.16,'triangle',null,i*0.085)); }
+  else if(type==='pop'){ tone(440,.13,.18,'sine',980); }
+  else if(type==='hit'){ tone(170,.2,.2,'sawtooth',55); }
+  else if(type==='sparkle'){ [1100,1500,1900].forEach((f,i)=>tone(f,.12,.1,'sine',null,i*0.05)); }
+  else if(type==='tap'){ tone(680,.06,.1,'square'); }
+  else if(type==='whoosh'){ tone(280,.28,.12,'sine',1300); }
+}catch(e){} }
 function blast(){
   const colors=['#ff6f91','#8fe3cf','#ffb02e','#8fc7ff','#c79bff'];
   for(let i=0;i<90;i++){
@@ -963,7 +1007,7 @@ function win(){
   const idx=activeMission;
   winSub.textContent=WINSUB[LANG()][idx]||(LANG()==='ko'?'잘했어요!':'Great job!');
   factEl.textContent=' '+(FACTS[LANG()][idx]||'');
-  winOv.classList.add('show'); blast(); speak(winSub.textContent+'. '+factEl.textContent,'mungi');
+  winOv.classList.add('show'); blast(); sfx('success'); speak(winSub.textContent+'. '+factEl.textContent,'mungi');
   winNext.onclick=()=>{ closeMission(); markStamp(idx); };
 }
 function failCam(){
@@ -1133,7 +1177,7 @@ function playRainbowBattle(onDone){
   title.textContent=(LANG()==='ko'?'무지개 발사! 🌈':'Moong fires the rainbow! 🌈');
   text.textContent=(LANG()==='ko'?'색깔이 그럼블에게 곧장 날아가요!':'The colors zoom straight at the Grumble!');
   ov.classList.add('show'); void beam.offsetWidth;
-  setTimeout(()=>{ beam.classList.add('fire'); proj.classList.add('fire'); },350);
+  setTimeout(()=>{ beam.classList.add('fire'); proj.classList.add('fire'); sfx('whoosh'); },350);
   setTimeout(()=>{ gr.classList.add('hit'); title.textContent=(LANG()==='ko'?'명중! 💥':'Direct hit! 💥'); text.textContent=(LANG()==='ko'?'우울함이 색 속에서 녹아내려요…':'The gloom melts away in the colors…'); },1300);
   setTimeout(()=>{ gr.classList.remove('hit'); gr.src='assets/characters/grumble_happy.png'; gr.classList.add('won');
     title.textContent=(LANG()==='ko'?'그럼블을 물리쳤어요! 💫':'The Grumble is defeated! 💫'); text.textContent=(LANG()==='ko'?'무지개가 우울함을 날려버렸어요!':'The rainbow zapped his gloom away!'); blast(); },2300);
@@ -1202,7 +1246,7 @@ async function runRainbow(){
       else if(frames>270) stat('assist'+idx,_ko?`${tgt.e} <b>${_cn}</b> 아무거나 찾아봐요 — 작아도 좋아요!`:`${tgt.e} Find <b>any ${tgt.n}</b> thing — even a small one works!`);
       else                stat('find'+idx,  _ko?`${tgt.e} <b>${_cn}</b> 물건을 찾아 원을 채워요!`:`${tgt.e} Find something <b>${tgt.n}</b> and fill the circle!`);
       drawProgress();
-      if(hold>=30){ idx++; hold=0; frames=0; lastKey=''; setMeter(0); blast();
+      if(hold>=30){ idx++; hold=0; frames=0; lastKey=''; setMeter(0); blast(); sfx('pop');
         if(idx>=SEQ.length){ drawProgress(); if(swatch) swatch.style.display='none';
           settled=true; if(loopId){cancelAnimationFrame(loopId);loopId=null;}
           playRainbowBattle(()=>{ closeMission(); markStamp(2); });
