@@ -154,6 +154,17 @@
   .rcard b{font-family:'Fredoka';font-weight:600;font-size:17px;}
   .rcard span{font-size:12px;color:var(--soft);font-weight:600;}
   @media (max-width:860px){ .chapter .wrap{grid-template-columns:1fr;gap:24px;} .chapter.flip .ch-visual{order:0;} .ch-visual{min-height:220px;} }
+  @media (max-width:560px){
+    .nav{padding:14px 16px;}
+    #hero h1{font-size:clamp(40px,13vw,66px);}
+    #hero .sub{font-size:14px;}
+    .hero-cast img:nth-child(3),.hero-cast img:nth-child(4){display:none;}
+    .strip span{font-size:22px;margin:0 16px;}
+    .ch-visual .friend{width:min(62vw,240px);}
+    .chapter h2,#story h2,#reward h2,#go h2{font-size:clamp(28px,8vw,46px);}
+    section{padding:84px 6vw 52px;}
+    .go-cast img{width:62px;height:62px;}
+  }
 
   /* CTA */
   #go{background:radial-gradient(75% 60% at 50% 30%,#fff3c4 0%,transparent 60%),linear-gradient(165deg,#ffe1ec,#d4ecff);
