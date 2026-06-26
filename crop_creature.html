@@ -109,7 +109,9 @@
   .feat{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:3;}
   .feat:active{cursor:grabbing;}
   .eye{width:19%;aspect-ratio:1;background:#fff;border:3px solid #2b2b3a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.18);}
-  .pupil{width:44%;height:44%;background:#2b2b3a;border-radius:50%;animation:googly 1.8s ease-in-out infinite;}
+  .pupil{position:relative;width:44%;height:44%;background:#2b2b3a;border-radius:50%;animation:googly 1.8s ease-in-out infinite;}
+  .pupil::after{content:'';position:absolute;top:14%;left:20%;width:36%;height:36%;background:#fff;border-radius:50%;}
+  .nose{width:9%;aspect-ratio:1.05;background:radial-gradient(circle at 35% 30%,#ffc2d4,#ff8fb3);border:2.5px solid #2b2b3a;border-radius:46% 46% 54% 54%;}
   @keyframes googly{0%,100%{transform:translate(0,1px)}25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
   .mouth{width:24%;height:12%;border:3px solid #2b2b3a;border-top:none;border-radius:0 0 999px 999px;background:#ff7a9b;}
   .presets{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
@@ -155,9 +157,10 @@
     <div class="card">
       <img class="guide" src="assets/crop/build-guide.jpg" alt="Crop creature examples">
       <ul class="how">
-        <li><span class="n">1</span><div>Grab veggies &amp; fruit — cucumbers, zucchini, tomatoes, apples, peppers.</div></li>
-        <li><span class="n">2</span><div>Use toothpicks to join them into legs, ears, eyes &amp; a tail.</div></li>
-        <li><span class="n">3</span><div>Make a dino, a doggo, a hedgehog… anything you imagine!</div></li>
+        <li><span class="n">1</span><div><b>Pick a body.</b> A big zucchini, cucumber or potato makes a great body.</div></li>
+        <li><span class="n">2</span><div><b>Add legs &amp; ears.</b> Push toothpicks into small veggies (cherry tomatoes, beans, pepper bits) and attach them.</div></li>
+        <li><span class="n">3</span><div><b>Shape your creature.</b> A spiky dino, a doggo, a hedgehog — anything you imagine!</div></li>
+        <li><span class="n">4</span><div><b>Snap a photo</b> on a plain background — the app adds eyes, a nose &amp; a mouth and brings it to life! ✨</div></li>
       </ul>
     </div>
     <button class="btn" id="toSnap">I built my creature ▶</button>
@@ -191,7 +194,8 @@
         <img class="creature-cut" id="creatureCut" alt="your creature">
         <div class="feat eye" data-f="eyeL" style="left:30%;top:28%"><span class="pupil"></span></div>
         <div class="feat eye" data-f="eyeR" style="left:55%;top:28%"><span class="pupil"></span></div>
-        <div class="feat mouth" data-f="mouth" style="left:42%;top:54%"></div>
+        <div class="feat nose" data-f="nose" style="left:42%;top:44%"></div>
+        <div class="feat mouth" data-f="mouth" style="left:42%;top:56%"></div>
       </div>
       <div class="polaroid" id="polaroid"><img id="polaImg" alt="your build"><span>my build</span></div>
       <div class="poet">Drag the eyes &amp; mouth, then tap to hop! 🦘</div>
@@ -282,13 +286,13 @@ function cropToSubject(blob){ return new Promise(res=>{
       const band=(y0,y1)=>{ let mn=bw,mx=0,sx=0,n=0; for(let y=Math.floor(y0*bh);y<Math.floor(y1*bh);y++)for(let xx=0;xx<bw;xx++){ if(od[(y*bw+xx)*4+3]>40){ if(xx<mn)mn=xx; if(xx>mx)mx=xx; sx+=xx;n++; } } return n?{mn:mn/bw,mx:mx/bw,cx:(sx/n)/bw}:null; };
       const eb=band(0.20,0.42), mb=band(0.46,0.64);
       if(eb){ const sp=Math.min(0.26,Math.max(0.12,(eb.mx-eb.mn)*0.24));
-        pos={ eyeL:[Math.max(8,(eb.cx-sp)*100),30], eyeR:[Math.min(92,(eb.cx+sp)*100),30], mouth:[((mb?mb.cx:eb.cx))*100,54] }; }
+        pos={ eyeL:[Math.max(8,(eb.cx-sp)*100),30], eyeR:[Math.min(92,(eb.cx+sp)*100),30], nose:[(eb.cx)*100,44], mouth:[((mb?mb.cx:eb.cx))*100,56] }; }
     }catch(e){}
     res({url:o.toDataURL('image/png'),pos:pos});
   }; img.onerror=()=>res(null); img.src=URL.createObjectURL(blob);
 });}
 function applyPos(p){ const set=(id,a)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); if(e){e.style.left=a[0]+'%'; e.style.top=a[1]+'%';}};
-  if(p.eyeL)set('eyeL',p.eyeL); if(p.eyeR)set('eyeR',p.eyeR); if(p.mouth)set('mouth',p.mouth); }
+  if(p.eyeL)set('eyeL',p.eyeL); if(p.eyeR)set('eyeR',p.eyeR); if(p.nose)set('nose',p.nose); if(p.mouth)set('mouth',p.mouth); }
 /* expression presets */
 const PRESETS=['happy','wow','cool','sad','sleepy'];
 function setPreset(name){ const box=document.getElementById('creatureBox'); PRESETS.forEach(p=>box.classList.remove('p-'+p)); box.classList.add('p-'+name);
@@ -322,7 +326,7 @@ document.getElementById('again').onclick=()=>{
   document.getElementById('creatureCut').removeAttribute('src');
   document.getElementById('saveConsent').checked=false; refreshLock();
   const setp=(id,l,t)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); e.style.left=l; e.style.top=t;};
-  setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('mouth','42%','54%'); setPreset('happy');
+  setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('nose','42%','44%'); setp('mouth','42%','56%'); setPreset('happy');
   go(0);
 };
 
@@ -405,7 +409,8 @@ function drawFeaturesOnCard(c,dx,dy,dw,dh,pdx,pdy){
     c.lineWidth=Math.max(2,r*0.2); c.strokeStyle='#2b2b3a'; c.lineCap='round';
     if(pr==='sleepy'){ c.beginPath(); c.arc(cx,cy,r,0.15*Math.PI,0.85*Math.PI); c.stroke(); return; }
     c.beginPath();c.arc(cx,cy,r,0,7); c.fillStyle=(pr==='cool')?'#23232f':'#fff'; c.fill(); c.stroke();
-    if(pr!=='cool'){ c.beginPath();c.arc(cx+pdx*r,cy+r*0.12+pdy*r,r*0.42,0,7);c.fillStyle='#2b2b3a';c.fill(); } });
+    if(pr!=='cool'){ const px=cx+pdx*r,py=cy+r*0.12+pdy*r; c.beginPath();c.arc(px,py,r*0.42,0,7);c.fillStyle='#2b2b3a';c.fill(); c.beginPath();c.arc(px-r*0.15,py-r*0.15,r*0.16,0,7);c.fillStyle='#fff';c.fill(); } });
+  const ns=document.querySelector('.feat[data-f="nose"]'); if(ns){ const nx=dx+_pct(ns.style.left)*dw, ny=dy+_pct(ns.style.top)*dh, nr=0.045*dw; c.beginPath(); c.ellipse(nx,ny,nr,nr*1.12,0,0,7); c.fillStyle='#ff8fb3'; c.fill(); c.lineWidth=Math.max(2,dw*0.008); c.strokeStyle='#2b2b3a'; c.stroke(); }
   const m=document.querySelector('.feat[data-f="mouth"]'); const mx=dx+_pct(m.style.left)*dw, my=dy+_pct(m.style.top)*dh, mw=0.24*dw;
   c.lineWidth=Math.max(3,dw*0.014); c.strokeStyle='#2b2b3a'; c.lineCap='round'; c.fillStyle='#ff7a9b';
   if(pr==='wow'){ c.beginPath();c.arc(mx,my,mw*0.32,0,7);c.fill();c.stroke(); }
@@ -441,7 +446,7 @@ document.getElementById('shareBtn').addEventListener('click',async ()=>{
 
 <script>
 (function(){
-  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "오이·애호박·토마토·사과·피망 등 채소와 과일을 모아요.", "#s1 .how li:nth-child(2) div": "이쑤시개로 다리·귀·눈·꼬리를 이어 붙여요.", "#s1 .how li:nth-child(3) div": "공룡, 강아지, 고슴도치… 상상하는 무엇이든 만들어요!", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "눈·입을 드래그하고, 크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#gifBtn": "🎞️ GIF 저장", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
+  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "<b>몸통을 골라요.</b> 큰 애호박·오이·감자가 멋진 몸통이 돼요.", "#s1 .how li:nth-child(2) div": "<b>다리와 귀를 붙여요.</b> 작은 채소(방울토마토·콩·피망 조각)에 이쑤시개를 꽂아 이어 붙여요.", "#s1 .how li:nth-child(3) div": "<b>크리쳐를 만들어요.</b> 오이 가시 공룡, 강아지, 고슴도치 — 상상하는 무엇이든!", "#s1 .how li:nth-child(4) div": "<b>사진을 찍어요.</b> 단순한 배경에서 찍으면 — 앱이 눈·코·입을 달아 살아나게 해줘요! ✨", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "눈·입을 드래그하고, 크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#gifBtn": "🎞️ GIF 저장", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
   var nodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
   var tb=document.getElementById('langToggle');
   function apply(l){

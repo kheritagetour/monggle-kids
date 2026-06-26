@@ -548,6 +548,8 @@
       <button data-c="flower">🌸 Flowers</button>
       <button data-c="bunny">🐰 Bunny</button>
       <button data-c="crown">👑 Crown</button>
+      <button data-c="cat">🐱 Cat</button>
+      <button data-c="shades">😎 Shades</button>
     </div>
     <div class="m-top">
       <div class="m-title2" id="mTitle">Mission</div>
@@ -1111,7 +1113,62 @@ function drawCrown(ctx,lm,W,H){
   const gems=['#ff5a5a','#4a8bff','#ff5a5a'];
   [-half*0.5,0,half*0.5].forEach((dx,i)=>{ ctx.fillStyle=gems[i]; ctx.beginPath(); ctx.arc(m.cx+dx,y-h*0.12,m.fw*0.032,0,7); ctx.fill(); });
 }
-const COSTUMES={crew:drawHelmet,flower:drawFlowerCrown,bunny:drawBunnyEars,crown:drawCrown};
+/* ----- richer AR (head-roll aware, gradients, blush) ----- */
+function faceData(lm,W,H){ const P=i=>({x:lm[i].x*W,y:lm[i].y*H});
+  const le=P(33),re=P(263),top=P(10),chin=P(152),L=P(234),R=P(454),nose=P(1);
+  const cx=(le.x+re.x)/2, cy=(le.y+re.y)/2;
+  const fw=Math.hypot(R.x-L.x,R.y-L.y), fh=Math.hypot(chin.x-top.x,chin.y-top.y);
+  return {le,re,top,chin,nose,cx,cy,fw,fh,roll:Math.atan2(re.y-le.y,re.x-le.x),lcheek:P(205),rcheek:P(425),eyeW:Math.hypot(re.x-le.x,re.y-le.y)};
+}
+function drawBlush(ctx,d){ [d.lcheek,d.rcheek].forEach(pt=>{ ctx.save(); ctx.translate(pt.x,pt.y); ctx.rotate(d.roll);
+  ctx.fillStyle='rgba(255,130,170,0.45)'; ctx.beginPath(); ctx.ellipse(0,0,d.fw*0.1,d.fw*0.06,0,0,7); ctx.fill(); ctx.restore(); }); }
+function drawHelmet2(ctx,lm,W,H){ const d=faceData(lm,W,H), r=Math.max(d.fw,d.fh)*0.92; ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  const g=ctx.createRadialGradient(-r*0.3,-r*0.3,r*0.15,0,0,r); g.addColorStop(0,'rgba(190,228,255,0.10)'); g.addColorStop(1,'rgba(120,180,255,0.30)');
+  ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fillStyle=g;ctx.fill();
+  ctx.lineWidth=Math.max(10,r*0.12);ctx.strokeStyle='#eef6ff';ctx.stroke(); ctx.lineWidth=Math.max(3,r*0.04);ctx.strokeStyle='#9cc4ff';ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,r*0.82,Math.PI*1.04,Math.PI*1.4);ctx.lineWidth=r*0.1;ctx.lineCap='round';ctx.strokeStyle='rgba(255,255,255,.6)';ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(0,-r-r*0.2);ctx.lineWidth=Math.max(3,r*0.04);ctx.strokeStyle='#eef6ff';ctx.stroke(); drawStar(ctx,0,-r-r*0.27,r*0.12,'#ffd166');
+  ctx.restore(); drawBlush(ctx,d); }
+function drawFlowerCrown2(ctx,lm,W,H){ const d=faceData(lm,W,H); ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  const yb=-d.fh*0.52, half=d.fw*0.6, pr=d.fw*0.085, cols=['#ff8fb3','#ffd45e','#ffffff','#b9a7ff','#8fe3cf'];
+  for(let i=0;i<5;i++){ const t=i/4, x=-half+2*half*t, y=yb-Math.sin(Math.PI*t)*d.fw*0.12; ctx.fillStyle=cols[i%5];
+    for(let q=0;q<5;q++){ const a=q/5*2*Math.PI; ctx.beginPath(); ctx.arc(x+Math.cos(a)*pr,y+Math.sin(a)*pr,pr*0.6,0,7); ctx.fill(); }
+    ctx.fillStyle='#ffe14d'; ctx.beginPath(); ctx.arc(x,y,pr*0.48,0,7); ctx.fill(); }
+  ctx.restore(); drawBlush(ctx,d); }
+function drawBunnyEars2(ctx,lm,W,H){ const d=faceData(lm,W,H); ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  const baseY=-d.fh*0.45, earH=d.fw*1.0, earW=d.fw*0.26;
+  [[-d.fw*0.22,-0.16],[d.fw*0.22,0.16]].forEach(a=>{ ctx.save(); ctx.translate(a[0],baseY); ctx.rotate(a[1]);
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(0,-earH/2,earW/2,earH/2,0,0,7); ctx.fill();
+    ctx.fillStyle='#ffb6cf'; ctx.beginPath(); ctx.ellipse(0,-earH/2,earW*0.24,earH*0.34,0,0,7); ctx.fill(); ctx.restore(); });
+  ctx.restore();
+  ctx.save(); ctx.translate(d.nose.x,d.nose.y); ctx.rotate(d.roll); ctx.fillStyle='#ff7aa8';
+  ctx.beginPath(); ctx.ellipse(0,0,d.fw*0.05,d.fw*0.04,0,0,7); ctx.fill();
+  ctx.strokeStyle='rgba(60,53,80,.55)'; ctx.lineWidth=Math.max(1.5,d.fw*0.01); ctx.lineCap='round';
+  for(const sgn of [-1,1]) for(const yy of [-0.04,0,0.04]){ ctx.beginPath(); ctx.moveTo(sgn*d.fw*0.08,yy*d.fw); ctx.lineTo(sgn*d.fw*0.26,yy*1.5*d.fw); ctx.stroke(); }
+  ctx.restore(); drawBlush(ctx,d); }
+function drawCrown2(ctx,lm,W,H){ const d=faceData(lm,W,H); ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  const y=-d.fh*0.5, half=d.fw*0.5, h=d.fw*0.34; const g=ctx.createLinearGradient(0,y-h,0,y); g.addColorStop(0,'#ffe79a'); g.addColorStop(1,'#f6b73c');
+  ctx.fillStyle=g; ctx.strokeStyle='#e0a000'; ctx.lineWidth=Math.max(2,d.fw*0.012);
+  ctx.beginPath(); ctx.moveTo(-half,y); ctx.lineTo(-half*0.5,y-h); ctx.lineTo(-half*0.22,y-h*0.4); ctx.lineTo(0,y-h*1.2); ctx.lineTo(half*0.22,y-h*0.4); ctx.lineTo(half*0.5,y-h); ctx.lineTo(half,y); ctx.closePath(); ctx.fill(); ctx.stroke();
+  const gems=['#ff5a5a','#4a8bff','#ff5a5a']; [-half*0.5,0,half*0.5].forEach((dx,i)=>{ ctx.fillStyle=gems[i]; ctx.beginPath(); ctx.arc(dx,y-h*0.12,d.fw*0.035,0,7); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke(); });
+  ctx.restore(); drawBlush(ctx,d); }
+function drawCat2(ctx,lm,W,H){ const d=faceData(lm,W,H); ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  const baseY=-d.fh*0.42, ew=d.fw*0.34;
+  [-d.fw*0.28,d.fw*0.28].forEach(dx=>{ ctx.beginPath(); ctx.moveTo(dx-ew/2,baseY); ctx.lineTo(dx,baseY-ew*0.9); ctx.lineTo(dx+ew/2,baseY); ctx.closePath(); ctx.fillStyle='#3b3550'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(dx-ew*0.22,baseY-ew*0.12); ctx.lineTo(dx,baseY-ew*0.6); ctx.lineTo(dx+ew*0.22,baseY-ew*0.12); ctx.closePath(); ctx.fillStyle='#ff9bc7'; ctx.fill(); });
+  ctx.restore();
+  ctx.save(); ctx.translate(d.nose.x,d.nose.y); ctx.rotate(d.roll);
+  ctx.fillStyle='#ff7aa8'; ctx.beginPath(); ctx.moveTo(-d.fw*0.05,-d.fw*0.02); ctx.lineTo(d.fw*0.05,-d.fw*0.02); ctx.lineTo(0,d.fw*0.035); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(60,53,80,.6)'; ctx.lineWidth=Math.max(1.5,d.fw*0.011); ctx.lineCap='round';
+  for(const sgn of [-1,1]) for(const yy of [-0.03,0.01,0.05]){ ctx.beginPath(); ctx.moveTo(sgn*d.fw*0.07,yy*d.fw); ctx.lineTo(sgn*d.fw*0.28,yy*1.4*d.fw); ctx.stroke(); }
+  ctx.restore(); drawBlush(ctx,d); }
+function drawShades2(ctx,lm,W,H){ const d=faceData(lm,W,H), ew=d.eyeW, lr=ew*0.42; ctx.save(); ctx.translate(d.cx,d.cy); ctx.rotate(d.roll);
+  [-ew*0.5,ew*0.5].forEach(x=>{ ctx.beginPath(); ctx.ellipse(x,0,lr,lr*0.8,0,0,7); ctx.fillStyle='#23232f'; ctx.fill(); ctx.lineWidth=ew*0.06; ctx.strokeStyle='#0d0d14'; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x-lr*0.3,-lr*0.3,lr*0.3,lr*0.16,-0.5,0,7); ctx.fillStyle='rgba(255,255,255,.28)'; ctx.fill(); });
+  ctx.strokeStyle='#23232f'; ctx.lineWidth=ew*0.07; ctx.beginPath(); ctx.moveTo(-ew*0.5+lr,0); ctx.lineTo(ew*0.5-lr,0);
+  ctx.moveTo(-ew*0.5-lr,-lr*0.2); ctx.lineTo(-ew*0.95,-lr*0.45); ctx.moveTo(ew*0.5+lr,-lr*0.2); ctx.lineTo(ew*0.95,-lr*0.45); ctx.stroke();
+  ctx.restore(); drawBlush(ctx,d); }
+const COSTUMES={crew:drawHelmet2,flower:drawFlowerCrown2,bunny:drawBunnyEars2,crown:drawCrown2,cat:drawCat2,shades:drawShades2};
 
 async function runCadetCheck(){
   setStatus('Loading face AI…',true);
@@ -1389,7 +1446,7 @@ async function buildAwards(){
 }
 
 /* ===== i18n: static DOM + toggle ===== */
-const I18N_KO={"#splash .nfc-txt": "태그 인식!", "#splash .nfc-sub": "뭉이가 감정을 나누려고 기다려요…", "#story .story-panel[data-p=\"0\"] .sp-title": "<span class=\"v\">Moong</span>을 만나요", "#story .story-panel[data-p=\"0\"] .sp-text": "몽글 마을에 사는 작은 감정 구름이에요. 모두가 마음을 나누는 곳이죠. 💛", "#story .story-panel[data-p=\"1\"] .sp-title": "이런… <span class=\"v\">그럼블!</span>", "#story .story-panel[data-p=\"1\"] .sp-text": "음침한 <b>괴물</b>이 들이닥쳐 <b>모두의 감정을 훔쳤어요</b> — 온 마을이 잿빛으로 조용해졌죠!", "#story .story-panel[data-p=\"2\"] .sp-title": "뭉이에게 <span class=\"v\">하트 히어로</span>가 필요해요", "#story .story-panel[data-p=\"2\"] .sp-text": "뭉이의 친구들이 잿빛 감옥에 갇혀 마음을 못 나눠요. 용감한 하트 히어로가 필요해… 바로 너야!", "#story .story-panel[data-p=\"3\"] .sp-title": "히어로에겐 <span class=\"v\">이름</span>이 필요해요", "#story .story-panel[data-p=\"3\"] .sp-text": "뭉이가 널 뭐라고 부를까, 하트 히어로?", "#storySkip": "건너뛰기 ▶", ".kicker": "두근 · 감정 · 하루를 구해요", ".hero h1": "뭉이의<br><span class=\"hl\">하트 히어로 어드벤처</span>", ".hero .lead": "뭉이와 함께 3가지 AI 미션을 하며 우정 팁을 배우고,<br>몽글 마을에 모두의 감정과 색을 되찾아요! 💛", ".hero .steps": "<span>1 · 인사</span><span>2 · 미소</span><span>3 · 색깔</span>", ".briefing .b-t": "히어로 브리핑", ".briefing .b-d": "각 미션은 친구를 구하고 감정을 되찾으며 <b>우정 팁</b>을 알려줘요. 3개를 모두 도우면 <b>하트 히어로 상장</b>과 <b>하트 크루 ID</b>를 받아요!", ".boss-name": "그럼블 <span>· 감정 도둑</span>", ".friends-wrap h2": "💛 감정을 잃어버린 친구들", ".friends-wrap .sub": "그럼블이 친구들의 마음을 잿빛 감옥에 가뒀어요. 미션을 깨서 한 명씩 구해요!", ".friend[data-f=\"0\"] .fname": "휴고 🤗", ".friend[data-f=\"1\"] .fname": "조이 😊", ".friend[data-f=\"2\"] .fname": "아이리스 🌈", ".friend[data-f=\"0\"] .fstat": "마음 잠김", ".friend[data-f=\"1\"] .fstat": "마음 잠김", ".friend[data-f=\"2\"] .fstat": "마음 잠김", ".friend[data-f=\"0\"] .yay": "구출! 🎉", ".friend[data-f=\"1\"] .yay": "구출! 🎉", ".friend[data-f=\"2\"] .yay": "구출! 🎉", ".stamp-head h2": "🌟 미션 스탬프", ".sec-title": "🚀 너의 구출 미션", ".mission[data-m=\"0\"] .m-title": "미션 1 · 인사하기<span class=\"m-badge\">HAND AI</span>", ".mission[data-m=\"0\"] .m-desc": "휴고에게 손을 흔들어 따뜻하게 인사하고 기운을 북돋아요!", ".mission[data-m=\"1\"] .m-title": "미션 2 · 미소 짓기<span class=\"m-badge\">FACE AI</span>", ".mission[data-m=\"1\"] .m-desc": "활짝 웃어 조이의 행복을 되찾고 — 사진도 찍어요!", ".mission[data-m=\"2\"] .m-title": "미션 3 · 감정의 색깔<span class=\"m-badge\">VISION AI</span>", ".mission[data-m=\"2\"] .m-desc": "카메라로 감정의 색을 찾아 마을에 색을 다시 칠해요!", "#reward h3": "그럼블을 물리쳤어요!", "#reward > p:not(.save-head)": "해냈어요, <b><span id=\"rwName\">Hero</span></b>! 모두의 감정과 색이 돌아오고 마을이 포옹으로 가득해요.<br>이제 너는 공식 몽글 하트 히어로! 💛🌈", ".save-head": "간직하고 싶나요? <b>저장하려면 보호자 동의가 필요해요.</b>", "#reward > label.consent span": "저는 보호자이며 이 상장과 사진을 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#dlCert": "⬇ 상장 저장", "#dlId": "⬇ 하트 크루 ID 저장", ".coupon small": "현장 선물 · 1인 1회", "#giveForm h3": "✨ 몽글키즈 웨이트리스트 신청", "#giveForm > p:not(.fine)": "가장 먼저 정식 출시 소식을 받아보세요 — 새로운 모험, 학습 리포트, 출시 시 무료 체험까지!", "#giveForm .consent span": "저는 보호자이며 이메일로 얼리 액세스·출시 소식을 받는 데 동의합니다. 아이의 이름이나 사진은 수집하지 않아요.", "#enterBtn": "웨이트리스트 신청 💛", "#giveForm .fine": "몽글키즈 얼리 액세스 안내만 보내드려요. 스팸 없음, 언제든 해지 가능.", "#entered": "✅ 웨이트리스트 등록 완료! 가장 먼저 알려드릴게요. 🎉", ".info h4": "ℹ️ 안내", ".info .k": "대상", ".info .v": "무료 · 가족 친화 — 모든 연령 어린이 환영", "#shareBtn": "📤 공유", ".footer": "© 2026 Monglekids · Moong Heart Adventure <span class=\"star\">★</span> 사랑을 담아 💛<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요<br>모든 처리는 기기 안에서만 이뤄져요. 저장은 선택이며 보호자 동의가 필요해요.", "#mSwatch span": "카메라가 보는 색", "#mCostumes button[data-c=\"crew\"]": "🪖 대원", "#mCostumes button[data-c=\"flower\"]": "🌸 꽃", "#mCostumes button[data-c=\"bunny\"]": "🐰 토끼", "#mCostumes button[data-c=\"crown\"]": "👑 왕관", "#mFallback": "카메라가 안 되나요? 눌러서 완료 →", "#mWin h3": "미션 완료!", "#mWin .fact b": "💛 우정 팁", "#mWinNext": "계속 ▶", "#btNext": "계속 ▶"};
+const I18N_KO={"#splash .nfc-txt": "태그 인식!", "#splash .nfc-sub": "뭉이가 감정을 나누려고 기다려요…", "#story .story-panel[data-p=\"0\"] .sp-title": "<span class=\"v\">Moong</span>을 만나요", "#story .story-panel[data-p=\"0\"] .sp-text": "몽글 마을에 사는 작은 감정 구름이에요. 모두가 마음을 나누는 곳이죠. 💛", "#story .story-panel[data-p=\"1\"] .sp-title": "이런… <span class=\"v\">그럼블!</span>", "#story .story-panel[data-p=\"1\"] .sp-text": "음침한 <b>괴물</b>이 들이닥쳐 <b>모두의 감정을 훔쳤어요</b> — 온 마을이 잿빛으로 조용해졌죠!", "#story .story-panel[data-p=\"2\"] .sp-title": "뭉이에게 <span class=\"v\">하트 히어로</span>가 필요해요", "#story .story-panel[data-p=\"2\"] .sp-text": "뭉이의 친구들이 잿빛 감옥에 갇혀 마음을 못 나눠요. 용감한 하트 히어로가 필요해… 바로 너야!", "#story .story-panel[data-p=\"3\"] .sp-title": "히어로에겐 <span class=\"v\">이름</span>이 필요해요", "#story .story-panel[data-p=\"3\"] .sp-text": "뭉이가 널 뭐라고 부를까, 하트 히어로?", "#storySkip": "건너뛰기 ▶", ".kicker": "두근 · 감정 · 하루를 구해요", ".hero h1": "뭉이의<br><span class=\"hl\">하트 히어로 어드벤처</span>", ".hero .lead": "뭉이와 함께 3가지 AI 미션을 하며 우정 팁을 배우고,<br>몽글 마을에 모두의 감정과 색을 되찾아요! 💛", ".hero .steps": "<span>1 · 인사</span><span>2 · 미소</span><span>3 · 색깔</span>", ".briefing .b-t": "히어로 브리핑", ".briefing .b-d": "각 미션은 친구를 구하고 감정을 되찾으며 <b>우정 팁</b>을 알려줘요. 3개를 모두 도우면 <b>하트 히어로 상장</b>과 <b>하트 크루 ID</b>를 받아요!", ".boss-name": "그럼블 <span>· 감정 도둑</span>", ".friends-wrap h2": "💛 감정을 잃어버린 친구들", ".friends-wrap .sub": "그럼블이 친구들의 마음을 잿빛 감옥에 가뒀어요. 미션을 깨서 한 명씩 구해요!", ".friend[data-f=\"0\"] .fname": "휴고 🤗", ".friend[data-f=\"1\"] .fname": "조이 😊", ".friend[data-f=\"2\"] .fname": "아이리스 🌈", ".friend[data-f=\"0\"] .fstat": "마음 잠김", ".friend[data-f=\"1\"] .fstat": "마음 잠김", ".friend[data-f=\"2\"] .fstat": "마음 잠김", ".friend[data-f=\"0\"] .yay": "구출! 🎉", ".friend[data-f=\"1\"] .yay": "구출! 🎉", ".friend[data-f=\"2\"] .yay": "구출! 🎉", ".stamp-head h2": "🌟 미션 스탬프", ".sec-title": "🚀 너의 구출 미션", ".mission[data-m=\"0\"] .m-title": "미션 1 · 인사하기<span class=\"m-badge\">HAND AI</span>", ".mission[data-m=\"0\"] .m-desc": "휴고에게 손을 흔들어 따뜻하게 인사하고 기운을 북돋아요!", ".mission[data-m=\"1\"] .m-title": "미션 2 · 미소 짓기<span class=\"m-badge\">FACE AI</span>", ".mission[data-m=\"1\"] .m-desc": "활짝 웃어 조이의 행복을 되찾고 — 사진도 찍어요!", ".mission[data-m=\"2\"] .m-title": "미션 3 · 감정의 색깔<span class=\"m-badge\">VISION AI</span>", ".mission[data-m=\"2\"] .m-desc": "카메라로 감정의 색을 찾아 마을에 색을 다시 칠해요!", "#reward h3": "그럼블을 물리쳤어요!", "#reward > p:not(.save-head)": "해냈어요, <b><span id=\"rwName\">Hero</span></b>! 모두의 감정과 색이 돌아오고 마을이 포옹으로 가득해요.<br>이제 너는 공식 몽글 하트 히어로! 💛🌈", ".save-head": "간직하고 싶나요? <b>저장하려면 보호자 동의가 필요해요.</b>", "#reward > label.consent span": "저는 보호자이며 이 상장과 사진을 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#dlCert": "⬇ 상장 저장", "#dlId": "⬇ 하트 크루 ID 저장", ".coupon small": "현장 선물 · 1인 1회", "#giveForm h3": "✨ 몽글키즈 웨이트리스트 신청", "#giveForm > p:not(.fine)": "가장 먼저 정식 출시 소식을 받아보세요 — 새로운 모험, 학습 리포트, 출시 시 무료 체험까지!", "#giveForm .consent span": "저는 보호자이며 이메일로 얼리 액세스·출시 소식을 받는 데 동의합니다. 아이의 이름이나 사진은 수집하지 않아요.", "#enterBtn": "웨이트리스트 신청 💛", "#giveForm .fine": "몽글키즈 얼리 액세스 안내만 보내드려요. 스팸 없음, 언제든 해지 가능.", "#entered": "✅ 웨이트리스트 등록 완료! 가장 먼저 알려드릴게요. 🎉", ".info h4": "ℹ️ 안내", ".info .k": "대상", ".info .v": "무료 · 가족 친화 — 모든 연령 어린이 환영", "#shareBtn": "📤 공유", ".footer": "© 2026 Monglekids · Moong Heart Adventure <span class=\"star\">★</span> 사랑을 담아 💛<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요<br>모든 처리는 기기 안에서만 이뤄져요. 저장은 선택이며 보호자 동의가 필요해요.", "#mSwatch span": "카메라가 보는 색", "#mCostumes button[data-c=\"crew\"]": "🪖 대원", "#mCostumes button[data-c=\"flower\"]": "🌸 꽃", "#mCostumes button[data-c=\"bunny\"]": "🐰 토끼", "#mCostumes button[data-c=\"crown\"]": "👑 왕관", "#mCostumes button[data-c=\"cat\"]": "🐱 고양이", "#mCostumes button[data-c=\"shades\"]": "😎 선글라스", "#mFallback": "카메라가 안 되나요? 눌러서 완료 →", "#mWin h3": "미션 완료!", "#mWin .fact b": "💛 우정 팁", "#mWinNext": "계속 ▶", "#btNext": "계속 ▶"};
 const i18nNodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
 function applyI18n(l){
   i18nNodes.forEach(function(x){ x.el.innerHTML = (l==='ko')?x.ko:x.en; });
