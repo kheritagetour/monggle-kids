@@ -22,7 +22,8 @@
   .bar b{font-family:'Fredoka';color:var(--pink);}
   .bar button{font-family:'Fredoka';font-weight:600;border:none;background:linear-gradient(135deg,var(--orange),#f4a94f);color:#fff;
     padding:8px 16px;border-radius:999px;cursor:pointer;}
-  .book{width:1123px;max-width:100%;margin:20px auto;}
+  .book{width:1123px;margin:20px auto;}
+  body{overflow-x:auto;}
   /* landscape A4 page */
   .page{position:relative;display:flex;flex-direction:column;width:1123px;height:794px;background:var(--cream);border-radius:6px;overflow:hidden;
     margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:40px 50px;}
@@ -544,5 +545,14 @@
   </section>
 
 </div>
+<script>
+  // Fit the landscape page to the screen width (so nothing is cut off on-screen).
+  function fitBook(){ var b=document.querySelector('.book'); if(!b) return;
+    b.style.zoom = Math.min(1, (window.innerWidth - 24) / 1123); }
+  window.addEventListener('resize', fitBook);
+  window.addEventListener('beforeprint', function(){ var b=document.querySelector('.book'); if(b) b.style.zoom=1; });
+  window.addEventListener('afterprint', fitBook);
+  fitBook();
+</script>
 </body>
 </html>
