@@ -134,6 +134,9 @@
     .presets button{width:42px;height:42px;font-size:20px;}
     .creature-box{width:min(82vw,300px);}
   }
+  .event-banner{background:linear-gradient(135deg,#4ca64c,#8ccf6b);color:#fff;border-radius:18px;padding:12px 16px;margin-top:12px;text-align:center;box-shadow:var(--shadow);}
+  .event-banner b{font-family:'Fredoka';font-weight:600;font-size:14.5px;display:block;letter-spacing:-.2px;}
+  .event-banner small{display:block;font-size:11.5px;opacity:.95;margin-top:3px;line-height:1.5;}
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
@@ -143,6 +146,10 @@
   <div class="topbar">
     <div class="brand"><img src="assets/characters/mungi.png" alt="">Monglekids</div>
     <div style="display:flex;gap:8px;align-items:center;"><button id="langToggle" class="lang-btn">한국어</button><span class="tag">🥒 CROP CREATURES</span></div>
+  </div>
+  <div class="event-banner">
+    <b>🥕 Monglekids @ Mueller Farmers Market</b>
+    <small>Sun, Jul 12 · 10am–2pm · Build your creature from fresh, locally-grown market veggies!</small>
   </div>
   <div class="steps"><i class="on" data-i="0"></i><i data-i="1"></i><i data-i="2"></i></div>
 
@@ -221,7 +228,7 @@
   </section>
 
   <div class="footer">
-    © 2026 Monglekids · Crop Creatures 🌱<br>
+    © 2026 Monglekids · Crop Creatures 🌱 · Mueller Farmers Market · Jul 12, 2026<br>
     Camera is used only for this activity · Photos are not uploaded or stored · No name or photo is saved to any server
   </div>
 </div>
@@ -446,7 +453,7 @@ document.getElementById('shareBtn').addEventListener('click',async ()=>{
 
 <script>
 (function(){
-  var I18N_KO={".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "<b>몸통을 골라요.</b> 큰 애호박·오이·감자가 멋진 몸통이 돼요.", "#s1 .how li:nth-child(2) div": "<b>다리와 귀를 붙여요.</b> 작은 채소(방울토마토·콩·피망 조각)에 이쑤시개를 꽂아 이어 붙여요.", "#s1 .how li:nth-child(3) div": "<b>크리쳐를 만들어요.</b> 오이 가시 공룡, 강아지, 고슴도치 — 상상하는 무엇이든!", "#s1 .how li:nth-child(4) div": "<b>사진을 찍어요.</b> 단순한 배경에서 찍으면 — 앱이 눈·코·입을 달아 살아나게 해줘요! ✨", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "눈·입을 드래그하고, 크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#gifBtn": "🎞️ GIF 저장", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
+  var I18N_KO={".event-banner b": "🥕 몽글키즈 @ Mueller 파머스 마켓", ".event-banner small": "7월 12일(일) · 오전 10시–오후 2시 · 오늘 마켓 농부님들의 신선한 제철 채소로 크리쳐를 만들어요!", ".tag": "🥒 농작물 크리쳐", "#s1 .bubble": "크리쳐를 길러보자! 🌱", "#s1 h1": "<span class=\"hl\">농작물 크리쳐</span> 만들기", "#s1 .lead": "진짜 과일·채소로 엉뚱한 크리쳐를 만들고 — 살아나는 걸 지켜봐요! 🥒🐛", "#s1 .how li:nth-child(1) div": "<b>몸통을 골라요.</b> 큰 애호박·오이·감자가 멋진 몸통이 돼요.", "#s1 .how li:nth-child(2) div": "<b>다리와 귀를 붙여요.</b> 작은 채소(방울토마토·콩·피망 조각)에 이쑤시개를 꽂아 이어 붙여요.", "#s1 .how li:nth-child(3) div": "<b>크리쳐를 만들어요.</b> 오이 가시 공룡, 강아지, 고슴도치 — 상상하는 무엇이든!", "#s1 .how li:nth-child(4) div": "<b>사진을 찍어요.</b> 단순한 배경에서 찍으면 — 앱이 눈·코·입을 달아 살아나게 해줘요! ✨", "#toSnap": "크리쳐를 만들었어요 ▶", "#s2 .bubble": "우와! 이제 사진을 찍어요 📸", "#s2 h1": "<span class=\"hl\">크리쳐</span> 사진 찍기", "#s2 .lead": "크리쳐가 잘 보이게 사진을 찍어요. 뭉이가 살아나게 해줄 거예요.", "#snapBtn": "📸 사진 찍기 / 선택", "#s2 .note": "📷 <b>카메라는 이 활동에만 사용해요.</b><br>사진은 <b>업로드·저장되지 않고</b> 이 기기에만 있어요.", "#backTo1": "◀ 뒤로", "#s3 .bubble": "아브라카다브라… 🪄", ".alive-title": "<span style=\"color:var(--pink-d)\">살아났다!</span> ✨", "#stage .poet": "눈·입을 드래그하고, 크리쳐를 톡 누르면 폴짝! 🦘", "#polaroid span": "내 작품", "#s3 .consent span": "저는 보호자이며 이 크리쳐 카드를 <b>이 기기에만</b> 저장하는 데 동의합니다. 업로드되지 않아요.", "#saveBtn": "💾 카드 저장", "#shareBtn": "📤 공유", "#gifBtn": "🎞️ GIF 저장", "#again": "🔄 다른 크리쳐 만들기", ".footer": "© 2026 Monglekids · Crop Creatures 🌱 · Mueller 파머스 마켓 · 2026.7.12<br>카메라는 이 활동에만 사용 · 사진은 업로드·저장 안 함 · 어떤 이름·사진도 서버에 저장하지 않아요"};
   var nodes=Object.keys(I18N_KO).map(function(sel){var el=document.querySelector(sel);return el?{el:el,ko:I18N_KO[sel],en:el.innerHTML}:null;}).filter(Boolean);
   var tb=document.getElementById('langToggle');
   function apply(l){
