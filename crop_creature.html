@@ -106,6 +106,7 @@
   .creature-box.live{animation:alive 1.7s ease-in-out infinite;}
   .creature-box.hop{animation:hop .5s ease;}
   .creature-cut{width:100%;display:block;filter:drop-shadow(0 14px 22px rgba(76,166,76,.28));pointer-events:none;}
+  #aliveCanvas{width:min(82vw,300px);max-width:100%;display:block;margin:0 auto;cursor:pointer;filter:drop-shadow(0 14px 22px rgba(76,166,76,.26));}
   .feat{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;z-index:3;}
   .feat:active{cursor:grabbing;}
   .eye{width:19%;aspect-ratio:1;background:#fff;border:3px solid #2b2b3a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.18);}
@@ -204,8 +205,10 @@
         <div class="feat nose" data-f="nose" style="left:42%;top:44%"></div>
         <div class="feat mouth" data-f="mouth" style="left:42%;top:56%"></div>
       </div>
+      <canvas id="aliveCanvas" style="display:none"></canvas>
       <div class="polaroid" id="polaroid"><img id="polaImg" alt="your build"><span>my build</span></div>
       <div class="poet">Drag the eyes &amp; mouth, then tap to hop! 🦘</div>
+      <button class="btn ghost" id="editToggle" style="margin-top:10px;padding:11px;font-size:14px;">✏️ Edit face</button>
       <div id="creatureLoading" style="display:none;font-weight:700;color:var(--leaf-d);margin-top:10px;">✨ Making your creature…</div>
     </div>
 
@@ -303,7 +306,8 @@ function applyPos(p){ const set=(id,a)=>{const e=document.querySelector('.feat[d
 /* expression presets */
 const PRESETS=['happy','wow','cool','sad','sleepy'];
 function setPreset(name){ const box=document.getElementById('creatureBox'); PRESETS.forEach(p=>box.classList.remove('p-'+p)); box.classList.add('p-'+name);
-  document.querySelectorAll('#presets button').forEach(x=>x.classList.toggle('on',x.dataset.p===name)); }
+  document.querySelectorAll('#presets button').forEach(x=>x.classList.toggle('on',x.dataset.p===name));
+  if(document.getElementById('aliveCanvas').style.display==='block') setAnimate(true); }
 document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>setPreset(b.dataset.p));
 function curPreset(){ const m=document.getElementById('creatureBox').className.match(/p-(happy|wow|cool|sad|sleepy)/); return m?m[1]:'happy'; }
 /* drag the eyes & mouth */
@@ -316,11 +320,37 @@ document.querySelectorAll('.feat').forEach(el=>{
   el.addEventListener('pointerup',()=>{drag=false;}); el.addEventListener('pointercancel',()=>{drag=false;});
 });
 
-function comeAlive(){
-  const box=document.getElementById('creatureBox');
-  box.classList.remove('live'); void box.offsetWidth; box.classList.add('live');
-  sparkle(document.getElementById('stage')); blast(); sfx('sparkle'); sfx('success');
+let jellyRAF=null, bakedCanvas=null;
+function bakeCharacter(){ const cutEl=document.getElementById('creatureCut'); if(!cutEl.src||!cutEl.complete) return false;
+  const SQ=360, bk=document.createElement('canvas'); bk.width=SQ;bk.height=SQ; const c=bk.getContext('2d');
+  const iw=cutEl.naturalWidth||cutEl.width, ih=cutEl.naturalHeight||cutEl.height, ir=iw/ih; let dw,dh;
+  if(ir>1){dw=SQ*0.86;dh=dw/ir;}else{dh=SQ*0.86;dw=dh*ir;}
+  const dx=(SQ-dw)/2, dy=(SQ-dh)/2; c.drawImage(cutEl,dx,dy,dw,dh); drawFeaturesOnCard(c,dx,dy,dw,dh);
+  bakedCanvas=bk; return true; }
+function stopJelly(){ if(jellyRAF){cancelAnimationFrame(jellyRAF);jellyRAF=null;} }
+function setAnimate(on){
+  const box=document.getElementById('creatureBox'), cv=document.getElementById('aliveCanvas'), btn=document.getElementById('editToggle');
+  if(on){ if(!bakeCharacter()){ box.style.display=''; return; }
+    const SQ=360; cv.width=SQ; cv.height=SQ; box.style.display='none'; cv.style.display='block';
+    if(btn) btn.textContent = window.MK_LANG==='ko' ? '✏️ 얼굴 수정' : '✏️ Edit face';
+    const ctx=cv.getContext('2d'); let t0=null, hopT=-99999;
+    cv.onclick=()=>{ hopT=performance.now(); sfx('whoosh'); };
+    function frame(ts){ if(!t0)t0=ts; const t=(ts-t0)/1000;
+      ctx.clearRect(0,0,SQ,SQ);
+      const sy=1+0.06*Math.sin(t*3), sx=1-0.05*Math.sin(t*3), lean=0.045*Math.sin(t*1.6);
+      const hp=Math.min(1,Math.max(0,(ts-hopT)/480)); const hopY=(hopT>0&&hp<1)?-72*Math.sin(Math.PI*hp):0;
+      ctx.save(); ctx.translate(SQ/2,SQ); ctx.rotate(lean); ctx.scale(sx,sy); ctx.translate(-SQ/2,-SQ+hopY);
+      const N=46, sh=SQ/N;
+      for(let i=0;i<N;i++){ const yy=i*sh, fy=yy/SQ, wob=(5+fy*12)*Math.sin(t*4.2 - fy*6.5);
+        ctx.drawImage(bakedCanvas,0,yy,SQ,sh, wob,yy, SQ,sh); }
+      ctx.restore();
+      jellyRAF=requestAnimationFrame(frame); }
+    stopJelly(); jellyRAF=requestAnimationFrame(frame);
+  } else { stopJelly(); cv.style.display='none'; box.style.display='';
+    if(btn) btn.textContent = window.MK_LANG==='ko' ? '🎬 움직이기' : '🎬 Animate'; }
 }
+document.getElementById('editToggle').addEventListener('click',()=>{ const cv=document.getElementById('aliveCanvas'); setAnimate(cv.style.display!=='block'); });
+function comeAlive(){ sparkle(document.getElementById('stage')); blast(); sfx('sparkle'); sfx('success'); setAnimate(true); }
 document.getElementById('creatureBox').addEventListener('click',e=>{
   if(e.target.closest('.feat')) return;   // don't hop while placing features
   const b=e.currentTarget; b.classList.remove('hop'); void b.offsetWidth; b.classList.add('hop');
@@ -334,6 +364,7 @@ document.getElementById('again').onclick=()=>{
   document.getElementById('saveConsent').checked=false; refreshLock();
   const setp=(id,l,t)=>{const e=document.querySelector('.feat[data-f="'+id+'"]'); e.style.left=l; e.style.top=t;};
   setp('eyeL','30%','28%'); setp('eyeR','55%','28%'); setp('nose','42%','44%'); setp('mouth','42%','56%'); setPreset('happy');
+  stopJelly(); document.getElementById('aliveCanvas').style.display='none'; document.getElementById('creatureBox').style.display='';
   go(0);
 };
 
@@ -384,15 +415,17 @@ async function exportGIF(){
   const S=300, ws=await gifWorkerURL();
   const gif=new GIF({workers:2,quality:10,width:S,height:S,workerScript:ws});
   const off=document.createElement('canvas'); off.width=S;off.height=S; const c=off.getContext('2d');
-  const ir=img.width/img.height; let bw,bh; if(ir>1){bw=S*0.82;bh=bw/ir;}else{bh=S*0.82;bw=bh*ir;}
-  const N=16;
+  if(!bakeCharacter()){ gifBtn.textContent=old; return; }
+  const N=18;
   for(let i=0;i<N;i++){ const ph=i/N*Math.PI*2;
     const g=c.createLinearGradient(0,0,0,S); g.addColorStop(0,'#eaf7e2'); g.addColorStop(1,'#fffaf2'); c.fillStyle=g; c.fillRect(0,0,S,S);
-    const sx=1+0.045*Math.sin(ph), sy=1-0.045*Math.sin(ph); const by=-7*Math.abs(Math.sin(ph));
-    const cw=bw*sx, chh=bh*sy; const dx=(S-cw)/2, dy=(S-chh)/2+by;
-    c.drawImage(img,dx,dy,cw,chh);
-    drawFeaturesOnCard(c,dx,dy,cw,chh, 0.22*Math.cos(ph), 0.16*Math.sin(ph*1.3));
-    gif.addFrame(c,{copy:true,delay:90});
+    const sy=1+0.06*Math.sin(ph), sx=1-0.05*Math.sin(ph), lean=0.045*Math.sin(ph);
+    c.save(); c.translate(S/2,S); c.rotate(lean); c.scale(sx,sy); c.translate(-S/2,-S);
+    const N2=40, sh=S/N2, k360=360/S;
+    for(let k=0;k<N2;k++){ const yy=k*sh, fy=yy/S, wob=(5+fy*12)*Math.sin(ph - fy*6.5);
+      c.drawImage(bakedCanvas,0,yy*k360,360,sh*k360, wob,yy, S,sh); }
+    c.restore();
+    gif.addFrame(c,{copy:true,delay:80});
   }
   gif.on('finished',blob=>{ const a=document.createElement('a'); a.download='my-crop-creature.gif'; a.href=URL.createObjectURL(blob); a.click(); gifBtn.textContent=old; sfx('success'); });
   gif.render();
