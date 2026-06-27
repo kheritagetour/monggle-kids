@@ -15,7 +15,7 @@
     --violet:#9b7fd6; --violet-bg:#efe9fb; --chip:#f1ece4;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Poppins',sans-serif;color:var(--ink);background:#e9e1d4;}
+  body{font-family:'Poppins',sans-serif;color:var(--ink);background:#e9e1d4;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.3px;}
   .bar{position:sticky;top:0;z-index:10;background:#fff;display:flex;justify-content:space-between;align-items:center;
     padding:10px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -24,7 +24,7 @@
     padding:8px 16px;border-radius:999px;cursor:pointer;}
   .book{width:1123px;max-width:100%;margin:20px auto;}
   /* landscape A4 page */
-  .page{position:relative;width:1123px;height:794px;background:var(--cream);border-radius:6px;overflow:hidden;
+  .page{position:relative;display:flex;flex-direction:column;width:1123px;height:794px;background:var(--cream);border-radius:6px;overflow:hidden;
     margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:40px 50px;}
   .moong-corner{position:absolute;top:26px;right:34px;width:54px;height:54px;border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.1);}
   .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;}
@@ -32,7 +32,7 @@
     background:linear-gradient(135deg,var(--orange),#f4a857);padding:5px 14px;border-radius:999px;}
   .crumb{font-size:12px;color:var(--soft);font-weight:600;margin-left:10px;}
   .title{font-size:34px;line-height:1.1;margin:12px 0 14px;color:var(--ink);}
-  .illus{width:100%;border-radius:14px;display:block;box-shadow:0 6px 16px rgba(90,58,120,.12);}
+  .illus{width:100%;max-height:262px;object-fit:cover;border-radius:14px;display:block;box-shadow:0 6px 16px rgba(90,58,120,.12);}
   .credit{font-size:10px;color:#bcae9e;text-align:right;margin-top:3px;}
   .story{font-size:14px;line-height:1.65;color:var(--story);margin:10px 0;}
   .quote{color:var(--pink);font-weight:700;}
@@ -45,7 +45,7 @@
   .keys{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
   .keys span{background:var(--chip);color:var(--soft);border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:700;}
   /* two-column day layout */
-  .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;height:100%;}
+  .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;flex:1;min-height:0;}
   .lab-head{font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--teal);margin-bottom:8px;}
   .qnum{display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-weight:700;font-size:13.5px;color:var(--ink);}
   .qnum i{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;
@@ -68,7 +68,7 @@
     display:flex;align-items:flex-end;justify-content:center;color:#cdbfa9;font-size:12px;padding-bottom:14px;}
   .infobox{background:#f5efe6;border-radius:14px;padding:12px 14px;}
   .infobox b{color:var(--red);font-size:12px;font-weight:700;display:block;margin-bottom:4px;}
-  .makegrid{display:grid;grid-template-columns:1.9fr 1fr;gap:16px;}
+  .makegrid{display:grid;grid-template-columns:1.9fr 1fr;gap:16px;flex:1;min-height:0;}
   .infocol{display:flex;flex-direction:column;gap:12px;}
   /* cover */
   .cover{background:linear-gradient(150deg,#ffe6d0 0%,#ffd9e0 55%,#ffe9d6 100%);text-align:center;
@@ -97,7 +97,8 @@
     @page{ size:A4 landscape; margin:0; }
     body{background:#fff;} .bar{display:none;} .book{margin:0;width:auto;max-width:none;}
     .page{margin:0;border-radius:0;box-shadow:none;page-break-after:always;width:297mm;height:209mm;padding:13mm 16mm;}
-    .moong-corner{width:13mm;height:13mm;}
+    .moong-corner{width:13mm;height:13mm;top:11mm;right:13mm;}
+    .page:last-child{page-break-after:avoid;}
   }
 </style>
 </head>
@@ -203,7 +204,7 @@
       <div class="mat add"><span class="e">＋</span>Your own!</div>
     </div>
     <p class="step-l" style="margin-top:8px">STEP 2. Combine them and design your machine!</p>
-    <div class="makegrid" style="height:430px">
+    <div class="makegrid" style="flex:1;min-height:0">
       <div class="drawbox">Draw your invention BIG here ✏️</div>
       <div class="infocol">
         <div class="infobox" style="flex:1"><b>Machine name</b></div>
@@ -242,7 +243,7 @@
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 2 · Design your cloud-keeping bag!</h2>
     <p class="story">Bag name <span class="fill"></span> · Price <span class="fill" style="min-width:80px"></span> · Slogan <span class="fill" style="min-width:200px"></span></p>
     <p class="step-l" style="margin-top:6px">Design the 3 sides — add buttons, pockets, gauges and name them.</p>
-    <div class="makegrid" style="grid-template-columns:1fr 1fr 1fr;height:470px">
+    <div class="makegrid" style="grid-template-columns:1fr 1fr 1fr;flex:1;min-height:0">
       <div class="drawbox">Front</div><div class="drawbox">Back</div><div class="drawbox">Side</div>
     </div>
   </section>
@@ -276,7 +277,7 @@
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 3 · Make animal talk-cards!</h2>
     <p class="step-l">Draw an animal, circle its feeling ( 😊 😢 😠 ), and write what it wants to say.</p>
-    <div class="tbl" style="grid-template-columns:1fr 1fr;gap:14px;height:470px;margin-top:8px">
+    <div class="tbl" style="grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0;margin-top:8px">
       <div class="cell" style="min-height:0"><b>Card 1 — 😊 😢 😠</b>What it wants to say:</div>
       <div class="cell" style="min-height:0"><b>Card 2 — 😊 😢 😠</b>What it wants to say:</div>
       <div class="cell" style="min-height:0"><b>Card 3 — 😊 😢 😠</b>What it wants to say:</div>
@@ -310,7 +311,7 @@
   <section class="page">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 4 · Create your shadow friend!</h2>
-    <div class="makegrid" style="height:540px">
+    <div class="makegrid" style="flex:1;min-height:0">
       <div class="drawbox">Draw your shadow character BIG ✏️</div>
       <div class="infocol">
         <div class="infobox" style="flex:1"><b>Shadow Profile</b><br><span style="color:#9a8f82;font-size:12px">Name · Personality · Likes · Special power · A message for me</span></div>
@@ -353,7 +354,7 @@
       <div class="mat add"><span class="e">＋</span>Your own!</div>
     </div>
     <p class="step-l" style="margin-top:8px">STEP 2. Draw the machine & show the wind's path with arrows 💨→→→ ⚡</p>
-    <div class="makegrid" style="height:430px">
+    <div class="makegrid" style="flex:1;min-height:0">
       <div class="drawbox">Draw your wind machine here</div>
       <div class="infocol"><div class="infobox" style="flex:1"><b>Machine name</b></div><div class="infobox" style="flex:1.6"><b>Slogan</b></div></div>
     </div>
@@ -386,7 +387,7 @@
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 6 · A 4-panel comic of the slow world!</h2>
     <p class="story">In a slow world I want to <span class="fill" style="min-width:160px"></span> because usually <span class="fill" style="min-width:160px"></span>.</p>
-    <div class="makegrid" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:470px;margin-top:8px">
+    <div class="makegrid" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;flex:1;min-height:0;margin-top:8px">
       <div class="drawbox">1 · At first…</div><div class="drawbox">2 · But then…</div>
       <div class="drawbox">3 · So…</div><div class="drawbox">4 · In the end!</div>
     </div>
@@ -442,7 +443,7 @@
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 7 · Paint your own swirly Starry Night!</h2>
     <p class="story">“Dear Mr. Van Gogh, when I look at Starry Night I feel <span class="fill" style="min-width:130px"></span> because <span class="fill" style="min-width:150px"></span>.”</p>
     <p class="step-l" style="margin-top:6px">Fill the page with swirls and shining stars — your very own starry night.</p>
-    <div class="makegrid" style="height:430px">
+    <div class="makegrid" style="flex:1;min-height:0">
       <div class="drawbox">Draw your swirly starry night 🌌</div>
       <div class="infocol"><div class="infobox" style="flex:1"><b>Title</b></div><div class="infobox" style="flex:1.6"><b>This painting's feeling</b></div></div>
     </div>
@@ -508,7 +509,7 @@
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <h2 class="title" style="font-size:26px;margin-top:0">DAY 8 · Design your own Korean Mask (Tal)!</h2>
     <p class="step-l">Give your mask big eyes, a mouth, eyebrows & bright patterns. Choose colors that match its feeling — then color it in!</p>
-    <div class="makegrid" style="height:470px">
+    <div class="makegrid" style="flex:1;min-height:0">
       <div class="drawbox">Draw &amp; color your Tal mask here 🎭</div>
       <div class="infocol">
         <div class="infobox" style="flex:1"><b>Mask name</b></div>
