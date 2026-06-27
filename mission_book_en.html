@@ -3,371 +3,505 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mongle Kids — 7-Day Creative Mission Book (English)</title>
+<title>Mongle Kids — 7-Day Creative Mission Book</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --cream:#fff8f0; --ink:#3b3550; --soft:#8a83a0; --pink:#ff8fb3; --pink-d:#ff6f91; --sun:#ffd45e;
-    --mint:#8fe3cf; --mint-d:#3fc4a8; --violet:#b9a7ff; --green:#8ccf6b; --green-d:#4ca64c; }
+  :root{
+    --cream:#fdf6ea; --ink:#34414d; --soft:#9a8f82; --story:#5d564f;
+    --orange:#ee8b3a; --pink:#ef6f86; --red:#e8607a;
+    --green:#6fae4e; --green-bg:#eef6e6; --teal:#46b08a; --teal-bg:#e7f4ee;
+    --violet:#9b7fd6; --violet-bg:#efe9fb; --chip:#f1ece4;
+  }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Poppins',sans-serif;color:var(--ink);background:#efe7db;}
+  body{font-family:'Poppins',sans-serif;color:var(--ink);background:#e9e1d4;}
   h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.3px;}
   .bar{position:sticky;top:0;z-index:10;background:#fff;display:flex;justify-content:space-between;align-items:center;
-    padding:12px 20px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-  .bar b{font-family:'Fredoka';color:var(--pink-d);}
-  .bar button{font-family:'Fredoka';font-weight:600;border:none;background:linear-gradient(135deg,var(--pink),var(--sun));color:#fff;
+    padding:10px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .bar b{font-family:'Fredoka';color:var(--pink);}
+  .bar button{font-family:'Fredoka';font-weight:600;border:none;background:linear-gradient(135deg,var(--orange),#f4a94f);color:#fff;
     padding:8px 16px;border-radius:999px;cursor:pointer;}
-  .book{max-width:820px;margin:24px auto;}
-  .page{background:var(--cream);border-radius:18px;padding:48px 44px;margin:0 auto 22px;box-shadow:0 8px 28px rgba(90,58,120,.12);}
-  .eyebrow{font-weight:800;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink-d);}
-  .day-badge{display:inline-block;font-family:'Fredoka';font-weight:600;font-size:13px;color:#fff;padding:6px 14px;border-radius:999px;margin-bottom:14px;}
-  h2.q{font-size:34px;line-height:1.15;margin:6px 0 4px;}
-  .story{font-size:16px;line-height:1.8;color:var(--ink);margin:16px 0;}
-  .story .quote{color:var(--pink-d);font-weight:700;}
-  .callout{border-radius:14px;padding:16px 18px;margin:14px 0;font-size:14.5px;line-height:1.65;}
-  .know{background:#eafaf0;border-left:5px solid var(--green-d);}
-  .sci{background:#f1ecff;border-left:5px solid var(--violet);}
-  .tip{background:#fff6da;border-left:5px solid var(--sun);}
-  .callout b{display:block;margin-bottom:4px;}
-  .keys{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}
-  .keys span{background:#fff;border:1px solid #eadff2;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--soft);}
-  .lab{margin-top:22px;}
-  .lab h3{font-size:17px;color:var(--mint-d);margin-bottom:10px;}
-  .step{margin:10px 0;font-size:14.5px;line-height:1.6;}
-  .step b{color:var(--ink);}
-  .lines{border-bottom:2px dotted #c9bcd6;height:30px;margin:10px 0;}
-  .box{border:2px dashed #cdbfe0;border-radius:14px;min-height:150px;margin:12px 0;display:flex;align-items:center;justify-content:center;color:#c3b6d6;font-size:13px;}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .pick{font-size:13.5px;color:var(--soft);background:#fff;border-radius:12px;padding:12px 14px;line-height:1.9;}
-  .cover{text-align:center;background:radial-gradient(120% 70% at 50% 0%, #e7f1ff, var(--cream) 60%);}
-  .cover img{width:150px;height:150px;border-radius:30%;object-fit:cover;box-shadow:0 12px 30px rgba(90,58,120,.18);}
-  .cover h1{font-size:46px;margin-top:14px;}
-  .cover .sub{color:var(--soft);margin-top:8px;line-height:1.7;}
-  .fill{display:inline-block;border-bottom:2px solid #c9bcd6;min-width:120px;}
-  .cert{border:6px double var(--mint-d);border-radius:16px;text-align:center;padding:30px;background:#f7fffd;}
-  .recap{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;}
-  .recap div{background:#fff;border-radius:12px;padding:12px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--soft);}
-  .recap b{display:block;font-size:20px;}
-  .korea{background:radial-gradient(120% 70% at 50% 0%, #ffeef0, var(--cream) 60%);}
-  .flags{font-size:13.5px;line-height:1.9;}
-  .cta{display:inline-block;margin-top:14px;background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;
-    font-family:'Fredoka';font-weight:600;padding:12px 22px;border-radius:999px;text-decoration:none;}
-  .illus{width:100%;border-radius:14px;margin:6px 0 16px;box-shadow:0 6px 18px rgba(90,58,120,.14);display:block;}
-  .credit{font-size:10.5px;color:#b3aac4;margin:-8px 0 12px;text-align:right;}
-  .vg-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
-  .vg-gallery img{width:100%;border-radius:10px;box-shadow:0 4px 12px rgba(90,58,120,.12);}
+  .book{width:1123px;max-width:100%;margin:20px auto;}
+  /* landscape A4 page */
+  .page{position:relative;width:1123px;height:794px;background:var(--cream);border-radius:6px;overflow:hidden;
+    margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:40px 50px;}
+  .moong-corner{position:absolute;top:26px;right:34px;width:54px;height:54px;border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.1);}
+  .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;}
+  .day-badge{display:inline-block;font-family:'Fredoka';font-weight:600;font-size:13px;color:#fff;
+    background:linear-gradient(135deg,var(--orange),#f4a857);padding:5px 14px;border-radius:999px;}
+  .crumb{font-size:12px;color:var(--soft);font-weight:600;margin-left:10px;}
+  .title{font-size:34px;line-height:1.1;margin:12px 0 14px;color:var(--ink);}
+  .illus{width:100%;border-radius:14px;display:block;box-shadow:0 6px 16px rgba(90,58,120,.12);}
+  .credit{font-size:10px;color:#bcae9e;text-align:right;margin-top:3px;}
+  .story{font-size:14px;line-height:1.65;color:var(--story);margin:10px 0;}
+  .quote{color:var(--pink);font-weight:700;}
+  .box{border-radius:14px;padding:12px 15px;margin:9px 0;font-size:13px;line-height:1.5;}
+  .box .lab{display:block;font-family:'Fredoka';font-weight:600;font-size:12.5px;margin-bottom:3px;}
+  .know{background:var(--green-bg);} .know .lab{color:var(--green);}
+  .sci{background:var(--teal-bg);} .sci .lab{color:var(--teal);}
+  .tip{background:var(--violet-bg);} .tip .lab{color:var(--violet);}
+  .tell{background:#fff5e9;} .tell .lab{color:var(--orange);}
+  .keys{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+  .keys span{background:var(--chip);color:var(--soft);border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:700;}
+  /* two-column day layout */
+  .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;height:100%;}
+  .lab-head{font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--teal);margin-bottom:8px;}
+  .qnum{display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-weight:700;font-size:13.5px;color:var(--ink);}
+  .qnum i{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka';font-weight:600;font-size:13px;font-style:normal;flex-shrink:0;}
+  .tbl{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .cell{border:1.5px solid #e7ddcf;border-radius:10px;min-height:80px;background:#fffdf8;padding:8px;font-size:11px;color:#cbbfae;}
+  .cell b{display:block;color:var(--soft);font-size:11.5px;margin-bottom:4px;}
+  .rank{border-bottom:1.5px dotted #d8ccba;height:26px;margin:7px 0;position:relative;padding-left:22px;}
+  .rank::before{content:attr(data-n);position:absolute;left:0;top:2px;color:var(--soft);font-weight:700;font-size:12px;}
+  .line{border-bottom:1.5px dotted #d8ccba;height:24px;margin:8px 0;}
+  .fill{display:inline-block;border-bottom:1.5px solid #cdbfa9;min-width:120px;}
+  /* make page */
+  .step-l{color:var(--red);font-weight:700;font-size:14px;}
+  .mats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px;}
+  .mat{width:104px;height:92px;background:#fffdf8;border:1.5px solid #ece3d4;border-radius:14px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--soft);font-weight:600;}
+  .mat .e{font-size:26px;}
+  .mat.add{border-style:dashed;color:#c9bba6;}
+  .drawbox{border:2px dashed #e7c9b8;border-radius:16px;background:linear-gradient(#fffdf8,#fff7ee);
+    display:flex;align-items:flex-end;justify-content:center;color:#cdbfa9;font-size:12px;padding-bottom:14px;}
+  .infobox{background:#f5efe6;border-radius:14px;padding:12px 14px;}
+  .infobox b{color:var(--red);font-size:12px;font-weight:700;display:block;margin-bottom:4px;}
+  .makegrid{display:grid;grid-template-columns:1.9fr 1fr;gap:16px;}
+  .infocol{display:flex;flex-direction:column;gap:12px;}
+  /* cover */
+  .cover{background:linear-gradient(150deg,#ffe6d0 0%,#ffd9e0 55%,#ffe9d6 100%);text-align:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .cover .pill{font-size:12px;letter-spacing:4px;color:#cf9a86;font-weight:700;background:#ffffffaa;padding:6px 16px;border-radius:999px;}
+  .cover .icon{width:140px;height:140px;border-radius:30%;margin:18px 0 8px;box-shadow:0 12px 30px rgba(180,120,90,.22);}
+  .cover h1{font-size:52px;color:var(--pink);}
+  .cover .sub2{font-family:'Fredoka';font-weight:600;color:var(--orange);font-size:20px;margin-top:2px;}
+  .cover .tag{color:#a98e7e;margin-top:14px;line-height:1.7;font-size:14px;}
+  .cover .name{margin-top:22px;color:#a98e7e;font-size:14px;}
+  /* cert */
+  .cert{border:5px double var(--teal);border-radius:14px;text-align:center;padding:24px;background:#f3fbf7;}
+  .recap{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:14px 0;}
+  .recap div{background:#fffdf8;border:1.5px solid #ece3d4;border-radius:10px;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:700;color:var(--soft);}
+  .recap b{display:block;font-size:16px;color:var(--orange);}
+  .korea .day-badge{background:linear-gradient(135deg,var(--pink),#f59ab0);}
+  .cta{display:inline-block;margin-top:8px;background:linear-gradient(135deg,var(--teal),#6fce9f);color:#fff;
+    font-family:'Fredoka';font-weight:600;padding:9px 18px;border-radius:999px;text-decoration:none;font-size:13px;}
   @media print{
-    body{background:#fff;} .bar{display:none;} .book{margin:0;max-width:none;}
-    .page{box-shadow:none;border-radius:0;page-break-after:always;margin:0;padding:36px 30px;}
+    @page{ size:A4 landscape; margin:0; }
+    body{background:#fff;} .bar{display:none;} .book{margin:0;width:auto;max-width:none;}
+    .page{margin:0;border-radius:0;box-shadow:none;page-break-after:always;width:297mm;height:209mm;padding:13mm 16mm;}
+    .moong-corner{width:13mm;height:13mm;}
   }
-  @media (max-width:560px){ .page{padding:30px 20px;} h2.q{font-size:26px;} .recap{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
-<div class="bar"><b>🐣 Mongle Kids · Mission Book (EN)</b><button onclick="window.print()">🖨️ Print / Save PDF</button></div>
+<div class="bar"><b>🐣 Mongle Kids · 7-Day Creative Mission Book (EN)</b><button onclick="window.print()">🖨️ Print as landscape book / Save PDF</button></div>
 <div class="book">
 
   <!-- COVER -->
   <section class="page cover">
-    <div class="eyebrow">© Mongle Kids · do not copy or distribute</div>
-    <img src="assets/characters/mungi.png" alt="Moong">
-    <h1>7-Day Creative<br>Mission Book</h1>
-    <p class="sub">One question a day, one imagination a day.<br>A 7-day adventure where thinking grows. 🌱</p>
-    <p class="sub" style="margin-top:18px;">Name: <span class="fill"></span> &nbsp; Age: <span class="fill" style="min-width:60px"></span><br>
-    <b>Even better with a grown-up!</b></p>
+    <div class="blob" style="width:120px;height:60px;background:#fff;left:8%;top:14%"></div>
+    <div class="blob" style="width:140px;height:70px;background:#fff;right:7%;bottom:18%"></div>
+    <div class="pill">MONGLE KIDS</div>
+    <img class="icon" src="assets/book/moong.jpg" alt="Moong">
+    <h1>Mongle Kids</h1>
+    <div class="sub2">7-Day Creative Mission Book</div>
+    <p class="tag">One question a day, one imagination a day.<br>A 7-day adventure where thinking grows.</p>
+    <p class="name">Name <span class="fill" style="min-width:200px"></span> &nbsp; Age <span class="fill" style="min-width:60px"></span><br>
+      <span style="font-size:12px">Even better together with a grown-up 💛</span></p>
+    <p style="position:absolute;bottom:22px;font-size:10px;color:#c8a994">© Mongle Kids. Unauthorized copying & distribution prohibited.</p>
   </section>
 
-  <!-- HOW TO USE -->
+  <!-- WELCOME -->
   <section class="page">
-    <div class="eyebrow">Welcome</div>
-    <h2 class="q">Hi! I'm Moong.<br>Let's adventure together! ☁️</h2>
-    <p class="story">Read one little story each day and let your thoughts unfold. Observe, imagine, make and tell — and grow your very own creativity!</p>
-    <div class="callout know"><b>🟢 HINT</b> If you get stuck, look at the green “Hint” box.</div>
-    <div class="callout tip"><b>🟡 TIP</b> The yellow “TIP” is a hands-on challenge — try it yourself!</div>
-    <div class="callout sci"><b>🟣 SCIENCE NOTE</b> The purple “Science Note” reveals the hidden principle!</div>
-    <div class="lab">
-      <h3>The 5 steps, every day</h3>
-      <p class="step"><b>1 · Observe</b> — Find what is happening.</p>
-      <p class="step"><b>2 · Imagine</b> — Is there another way? The sillier the better!</p>
-      <p class="step"><b>3 · Explore</b> — Why is it like that? Discover the hidden principle.</p>
-      <p class="step"><b>4 · Make</b> — Draw it, write it, build it!</p>
-      <p class="step"><b>5 · Tell</b> — Say why you thought that way.</p>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge" style="background:linear-gradient(135deg,var(--teal),#6fce9f)">WELCOME</span>
+    <h2 class="title">Hi! I'm Moong. Let's adventure together!</h2>
+    <div class="cols">
+      <div>
+        <p class="story">Read one little story each day and let your thoughts unfold. <b>Observe, imagine, explore, make</b> and <b>tell</b> — and grow your very own creativity!</p>
+        <div class="box know"><span class="lab">🟢 HINT</span>If you get stuck, look at the green “Hint”.</div>
+        <div class="box tip"><span class="lab">🟣 SCIENCE NOTE</span>The purple box reveals the hidden principle.</div>
+        <div class="box tell"><span class="lab">🟡 TIP</span>A hands-on challenge — try it yourself!</div>
+      </div>
+      <div>
+        <div class="lab-head">The 5 steps, every day</div>
+        <div class="qnum"><i>1</i> Observe — Find what is happening.</div>
+        <div class="qnum"><i>2</i> Imagine — Another way? The sillier the better!</div>
+        <div class="qnum"><i>3</i> Explore — Why is it so? Find the hidden principle.</div>
+        <div class="qnum"><i>4</i> Make — Draw it, write it, build it!</div>
+        <div class="qnum"><i>5</i> Tell — Say why you thought that way.</div>
+      </div>
     </div>
   </section>
 
   <!-- PARENT GUIDE -->
   <section class="page">
-    <div class="eyebrow">For Grown-ups</div>
-    <h2 class="q">How to get 200% out of this book</h2>
-    <div class="callout know"><b>🎯 Goal</b> Build the habit of asking and thinking — focus on the <i>process</i> of thought, not the “right” answer. Just 20–30 relaxed minutes a day.</div>
-    <div class="grid2">
-      <div class="callout" style="background:#eafaf0;"><b>✅ Try saying</b>“What do <i>you</i> think?” · “Tell me more.” · “What a fun idea!” · “Why did you choose that?”</div>
-      <div class="callout" style="background:#ffeef0;"><b>🚫 Try to avoid</b>“That’s wrong.” · “Do it like this.” · “Hurry up.” · giving the answer too quickly.</div>
-    </div>
-    <div class="callout sci"><b>💡 Key message</b> Ask back: “How do <i>you</i> think?” The process of a child finding their own way is the biggest learning of all.</div>
-    <div class="lab"><h3>What each day grows</h3>
-      <p class="step"><b>Day 1</b> — What if there’s no bridge? · Problem-solving + Buoyancy</p>
-      <p class="step"><b>Day 2</b> — A cloud in a bag? · Senses + State change</p>
-      <p class="step"><b>Day 3</b> — Talking with animals · Empathy + Animal communication</p>
-      <p class="step"><b>Day 4</b> — A shadow comes alive · Imagination + Light & shadow</p>
-      <p class="step"><b>Day 5</b> — Catch the wind · Invention + Aerodynamics</p>
-      <p class="step"><b>Day 6</b> — Time slows down · Perspective + Speed</p>
-      <p class="step"><b>Day 7</b> — Starry Night · Art appreciation + Emotion</p>
-      <p class="step"><b>Day 8 · Korea Special</b> — The Dancing Mask · Korean culture + Creativity</p>
-    </div>
-  </section>
-
-  <!-- DAY 1 -->
-  <section class="page">
-    <span class="day-badge" style="background:var(--mint-d)">DAY 1 · Problem-solving + Buoyancy</span>
-    <img class="illus" src="assets/book/p04_0.jpg" alt="">
-    <h2 class="q">What if there’s<br>no bridge?</h2>
-    <p class="story">Moong wanted to visit a friend. But the bridge over the river had collapsed. Moong stared at the water for a long time. <span class="quote">“Is there another way?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> Ants grab onto each other’s bodies to build an “ant bridge” and cross the water!</div>
-    <div class="callout sci"><b>🟣 Science Note · Buoyancy</b> Things float because they’re lighter than water. Wood floats, stone sinks. And an <b>arch</b> bridge holds heavy weight thanks to its arch shape!</div>
-    <div class="keys"><span>Problem-solving</span><span>Buoyancy</span><span>Structure</span></div>
-    <div class="lab"><h3>Day 1 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Sort things that <b>float</b> vs <b>sink</b>.</p>
-      <div class="grid2"><div class="box">Floats ☁️</div><div class="box">Sinks 🪨</div></div>
-      <p class="step"><b>2 · Imagine</b> — Think of ways to cross the river and rank your top 3.</p>
-      <div class="lines"></div><div class="lines"></div><div class="lines"></div>
-      <div class="callout tip"><b>🟡 TIP · Try at home</b> Fill a basin with water and drop in different objects. What do the floating ones have in common?</div>
-    </div>
-  </section>
-  <section class="page">
-    <span class="day-badge" style="background:var(--mint-d)">DAY 1 · Make</span>
-    <h2 class="q">Explain your own way!</h2>
-    <p class="story">I will cross the river using <span class="fill" style="min-width:180px"></span><br>because <span class="fill" style="min-width:240px"></span>!</p>
-    <div class="lines"></div><div class="lines"></div>
-    <h3 style="margin-top:18px;color:var(--mint-d)">Invent a river-crossing machine</h3>
-    <p class="pick"><b>Step 1.</b> Circle the materials you’ll use (pick a few!): log · rope · balloon · stone · big leaf · wheel · <b>+ your own:</b> ________</p>
-    <p class="step"><b>Step 2.</b> Combine them and design your machine. Name it & draw it BIG!</p>
-    <p class="story">Name: <span class="fill"></span> · Materials: <span class="fill" style="min-width:180px"></span></p>
-    <div class="box" style="min-height:240px">Draw your invention here ✏️</div>
-  </section>
-
-  <!-- DAY 2 -->
-  <section class="page">
-    <span class="day-badge" style="background:var(--violet)">DAY 2 · Senses + State change</span>
-    <img class="illus" src="assets/book/p07_0.jpg" alt="">
-    <h2 class="q">What if you put a<br>cloud in a bag?</h2>
-    <p class="story">Moong looked up at the sky. Fluffy clouds floated by. <span class="quote">“What if I could touch that cloud? Could I keep one in a bag?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> One cloud can weigh as much as 100 elephants! The water droplets are so tiny that it floats.</div>
-    <div class="callout sci"><b>🟣 Science Note · Condensation</b> Water has 3 forms — freeze it → ice, boil it → vapor. A cloud is water vapor turning back into tiny water droplets. That’s called <b>condensation</b>.</div>
-    <div class="keys"><span>Five senses</span><span>Condensation</span><span>State change</span></div>
-    <div class="lab"><h3>Day 2 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Imagine the cloud with your senses. Score 1–5: <b>Fluffy</b> ▢▢▢▢▢ · <b>Cold</b> ▢▢▢▢▢ · <b>Heavy</b> ▢▢▢▢▢</p>
-      <p class="step"><b>2 · Imagine</b> — What features does a cloud-keeping bag need? (a cloud-sucking straw · a cooler · a cloud-amount window · your own idea)</p>
-      <div class="lines"></div>
-    </div>
-  </section>
-  <section class="page">
-    <span class="day-badge" style="background:var(--violet)">DAY 2 · Make</span>
-    <h2 class="q">Design your cloud bag</h2>
-    <p class="story">Bag name: <span class="fill"></span> · Price: <span class="fill" style="min-width:80px"></span> · Slogan: <span class="fill"></span></p>
-    <p class="step">Explain what features it has and why each one is needed.</p>
-    <div class="lines"></div><div class="lines"></div>
-    <h3 style="margin-top:14px;color:var(--violet)">Blueprint — design 3 sides</h3>
-    <div class="grid2"><div class="box">Front</div><div class="box">Back</div></div>
-    <div class="box">Side</div>
-  </section>
-
-  <!-- DAY 3 -->
-  <section class="page">
-    <span class="day-badge" style="background:#ff9f1c">DAY 3 · Empathy + Animal communication</span>
-    <img class="illus" src="assets/book/p10_0.jpg" alt="">
-    <h2 class="q">Talking with a<br>silent animal</h2>
-    <p class="story">Tori met a little rabbit in the forest. It said nothing, but kept looking at Tori and sniffing its nose. <span class="quote">“What is it trying to say?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> Bees talk with <b>dances</b>, dolphins with <b>sounds</b>, and dogs with their <b>tails</b>!</div>
-    <div class="callout sci"><b>🟣 Science Note · Pheromones</b> Ants leave an invisible chemical trail to show the way. When a dog sniffs, it’s reading information through smell!</div>
-    <div class="keys"><span>Non-verbal communication</span><span>Pheromones</span><span>Empathy</span></div>
-    <div class="lab"><h3>Day 3 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — What might it mean when a rabbit… sniffs its nose? / thumps its back feet? / perks its ears up?</p>
-      <div class="lines"></div><div class="lines"></div>
-      <p class="step"><b>2 · Imagine</b> — Write what the rabbit wants to tell YOU, and your reply.</p>
-      <div class="lines"></div>
-    </div>
-  </section>
-  <section class="page">
-    <span class="day-badge" style="background:#ff9f1c">DAY 3 · Make</span>
-    <h2 class="q">Make animal talk-cards!</h2>
-    <p class="step">On each card, draw an animal, circle its feeling (😊 😢 😠), and write what it wants to say.</p>
-    <div class="grid2">
-      <div class="box">Card 1 — draw + feeling + words</div>
-      <div class="box">Card 2 — draw + feeling + words</div>
-      <div class="box">Card 3 — draw + feeling + words</div>
-      <div class="box">Card 4 — draw + feeling + words</div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge" style="background:linear-gradient(135deg,#8a7fd6,#b9a7ff)">FOR GROWN-UPS</span>
+    <h2 class="title">How to get 200% out of this book</h2>
+    <div class="cols">
+      <div>
+        <div class="box know"><span class="lab">🎯 Goal</span>Build the habit of asking & thinking — focus on the <i>process</i>, not the “right” answer. Just 20–30 relaxed minutes a day.</div>
+        <div class="box sci"><span class="lab">✅ Try saying</span>“What do <i>you</i> think?” · “Tell me more.” · “What a fun idea!” · “Why did you choose that?”</div>
+        <div class="box tip"><span class="lab">🚫 Try to avoid</span>“That’s wrong.” · “Do it like this.” · “Hurry up.” · giving the answer too quickly.</div>
+        <div class="box tell"><span class="lab">💡 Key message</span>Ask back: “How do <i>you</i> think?” A child finding their own way is the biggest learning of all.</div>
+      </div>
+      <div>
+        <div class="lab-head">What each day grows</div>
+        <p class="story" style="margin:4px 0"><b>Day 1</b> · No bridge? — Problem-solving + Buoyancy</p>
+        <p class="story" style="margin:4px 0"><b>Day 2</b> · Cloud in a bag? — Senses + State change</p>
+        <p class="story" style="margin:4px 0"><b>Day 3</b> · Animal talk — Empathy + Communication</p>
+        <p class="story" style="margin:4px 0"><b>Day 4</b> · Living shadow — Imagination + Light</p>
+        <p class="story" style="margin:4px 0"><b>Day 5</b> · Catch the wind — Invention + Aerodynamics</p>
+        <p class="story" style="margin:4px 0"><b>Day 6</b> · Slow time — Perspective + Speed</p>
+        <p class="story" style="margin:4px 0"><b>Day 7</b> · Starry Night — Art + Emotion</p>
+        <p class="story" style="margin:4px 0;color:var(--pink)"><b>Day 8 · Korea Special</b> — The Dancing Mask</p>
+      </div>
     </div>
   </section>
 
-  <!-- DAY 4 -->
+  <!-- ===== DAY 1 ===== -->
   <section class="page">
-    <span class="day-badge" style="background:#5b34b3">DAY 4 · Imagination + Light & shadow</span>
-    <img class="illus" src="assets/book/p12_0.jpg" alt="">
-    <h2 class="q">What if your<br>shadow came alive?</h2>
-    <p class="story">One evening, Lumi’s shadow suddenly began to move on its own — and waved at Lumi! <span class="quote">“What does the shadow want to do?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> When the sun is high, shadows are short; when it’s low, they’re long. Long ago, people told time with sundials!</div>
-    <div class="callout sci"><b>🟣 Science Note · Light travels straight</b> When light meets an object, a dark shadow forms behind it. Move a flashlight closer and the shadow grows; farther and it shrinks. You can even make animal shapes with shadows!</div>
-    <div class="keys"><span>Light travels straight</span><span>Character creation</span><span>Self-understanding</span></div>
-    <div class="lab"><h3>Day 4 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — How are you and your shadow the SAME, and DIFFERENT?</p>
-      <div class="grid2"><div class="box">Me</div><div class="box">My shadow</div></div>
-      <p class="step"><b>2 · Imagine</b> — Fill your shadow’s profile: name, personality, likes, special power.</p>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 1</span><span class="crumb">Problem-solving · Buoyancy</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">What if there's no bridge?</h2>
+        <img class="illus" src="assets/book/p04_0.jpg" alt="">
+        <p class="story">Moong wanted to visit a friend, but the bridge over the river had collapsed. Moong stared at the water. <span class="quote">“Is there another way?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>Ants grab onto each other to build an “ant bridge” and cross the water!</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Buoyancy</span>Things float when lighter than water — wood floats, stone sinks. An arch bridge holds heavy weight thanks to its arch shape!</div>
+        <div class="keys"><span>Problem-solving</span><span>Buoyancy</span><span>Structure</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — Sort what floats vs sinks.</div>
+        <div class="tbl"><div class="cell"><b>Floats ☁️</b></div><div class="cell"><b>Sinks 🪨</b></div></div>
+        <div class="qnum"><i>2</i> Imagine — Ways to cross the river (rank them).</div>
+        <div class="rank" data-n="1"></div><div class="rank" data-n="2"></div><div class="rank" data-n="3"></div>
+        <div class="box tip"><span class="lab">🟡 TIP · Try at home</span>Fill a basin with water and drop in objects. What do the floaters have in common?</div>
+        <div class="box tell"><span class="lab">🗣️ Tell</span>Tell a grown-up which way is best, and why.</div>
+      </div>
     </div>
   </section>
   <section class="page">
-    <span class="day-badge" style="background:#5b34b3">DAY 4 · Make</span>
-    <h2 class="q">Create your shadow friend!</h2>
-    <div class="grid2">
-      <div class="box" style="min-height:240px">Draw your shadow character BIG ✏️</div>
-      <div class="pick"><b>Shadow Profile Card</b><br>Name: ____________<br>Personality: ____________<br>Likes: ____________<br>Special power: ____________<br>What it wants to tell me: ____________</div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 1 · Invent a way to cross the river!</h2>
+    <p class="step-l">STEP 1. Circle the materials you'll use (pick a few!)</p>
+    <div class="mats">
+      <div class="mat"><span class="e">🪵</span>Log</div><div class="mat"><span class="e">🪢</span>Rope</div>
+      <div class="mat"><span class="e">🎈</span>Balloon</div><div class="mat"><span class="e">🪨</span>Stone</div>
+      <div class="mat"><span class="e">🍃</span>Big leaf</div><div class="mat"><span class="e">🛞</span>Wheel</div>
+      <div class="mat add"><span class="e">＋</span>Your own!</div>
+    </div>
+    <p class="step-l" style="margin-top:8px">STEP 2. Combine them and design your machine!</p>
+    <div class="makegrid" style="height:430px">
+      <div class="drawbox">Draw your invention BIG here ✏️</div>
+      <div class="infocol">
+        <div class="infobox" style="flex:1"><b>Machine name</b></div>
+        <div class="infobox" style="flex:1"><b>Materials used</b></div>
+        <div class="infobox" style="flex:1.4"><b>How it works!</b></div>
+      </div>
     </div>
   </section>
 
-  <!-- DAY 5 -->
+  <!-- ===== DAY 2 ===== -->
   <section class="page">
-    <span class="day-badge" style="background:#4a8bff">DAY 5 · Invention + Aerodynamics</span>
-    <img class="illus" src="assets/book/p14_0.jpg" alt="">
-    <h2 class="q">Can you catch<br>the wind?</h2>
-    <p class="story">A strong wind blew Lumi’s hat away. Lumi reached out to grab the wind, but it slipped right through the fingers. <span class="quote">“Can you catch something invisible?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> Pinwheels, wind turbines, and sailboats are all inventions that “catch and use” the wind!</div>
-    <div class="callout sci"><b>🟣 Science Note · Aerodynamics</b> Wind = moving air! Warm air rises and cool air rushes in — that’s wind. Strong wind can even make electricity (wind power)!</div>
-    <div class="keys"><span>Aerodynamics</span><span>Wind power</span><span>Design</span></div>
-    <div class="lab"><h3>Day 5 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Circle the evidence of wind: leaves shaking · hair flying · flag fluttering · balloon drifting · <b>your own:</b> ______</p>
-      <p class="step"><b>2 · Imagine</b> — Design a wind-collecting machine: How does it gather / store / release the wind?</p>
-      <div class="lines"></div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 2</span><span class="crumb">Senses · State change</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">What if you put a cloud in a bag?</h2>
+        <img class="illus" src="assets/book/p07_0.jpg" alt="">
+        <p class="story">Moong looked up at the fluffy clouds. <span class="quote">“What if I could touch that cloud? Could I keep one in a bag?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>One cloud can weigh as much as 100 elephants! Its water drops are so tiny it floats.</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Condensation</span>Water has 3 forms: freeze → ice, boil → vapor. A cloud is vapor turning back into water droplets — that's condensation.</div>
+        <div class="keys"><span>Five senses</span><span>Condensation</span><span>State change</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — Imagine the cloud with your senses (1–5).</div>
+        <p class="story" style="margin:4px 0">Fluffy ▢▢▢▢▢ &nbsp; Cold ▢▢▢▢▢ &nbsp; Heavy ▢▢▢▢▢</p>
+        <div class="qnum"><i>2</i> Imagine — Features for a cloud-keeping bag?</div>
+        <div class="line"></div><div class="line"></div>
+        <div class="box tip"><span class="lab">🟡 TIP</span>(cloud-sucking straw · a cooler · an amount window · your own idea)</div>
+        <div class="box tell"><span class="lab">🗣️ Tell</span>Why does your bag need each feature?</div>
+      </div>
     </div>
   </section>
   <section class="page">
-    <span class="day-badge" style="background:#4a8bff">DAY 5 · Make</span>
-    <h2 class="q">Wind machine blueprint</h2>
-    <p class="pick"><b>Step 1.</b> Circle the parts: propeller · tank · antenna · gear · magnet · bulb · <b>+ your own:</b> ______</p>
-    <p class="step"><b>Step 2.</b> Combine them, draw the machine, and use arrows (→) to show the wind’s path!</p>
-    <p class="story">Machine name: <span class="fill"></span> · Slogan: <span class="fill"></span></p>
-    <div class="box" style="min-height:240px">Draw your wind machine + arrows 💨→→→ ⚡</div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 2 · Design your cloud-keeping bag!</h2>
+    <p class="story">Bag name <span class="fill"></span> · Price <span class="fill" style="min-width:80px"></span> · Slogan <span class="fill" style="min-width:200px"></span></p>
+    <p class="step-l" style="margin-top:6px">Design the 3 sides — add buttons, pockets, gauges and name them.</p>
+    <div class="makegrid" style="grid-template-columns:1fr 1fr 1fr;height:470px">
+      <div class="drawbox">Front</div><div class="drawbox">Back</div><div class="drawbox">Side</div>
+    </div>
   </section>
 
-  <!-- DAY 6 -->
+  <!-- ===== DAY 3 ===== -->
   <section class="page">
-    <span class="day-badge" style="background:#3fc4a8">DAY 6 · Perspective + Speed</span>
-    <img class="illus" src="assets/book/p16_0.jpg" alt="">
-    <h2 class="q">What if time<br>slowed down?</h2>
-    <p class="story">One morning, everything moved very slowly. Birds flew slowly, water flowed slowly. Only Lumi could move at normal speed. <span class="quote">“If time slowed down, what would you do?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> A high-speed camera shows a water drop splashing up into a crown shape — you can even see a hummingbird’s wings!</div>
-    <div class="callout sci"><b>🟣 Science Note · Speed = distance ÷ time</b> A cheetah runs 30 m in 1 second; a snail moves 1 m in a minute. Same time — totally different distance!</div>
-    <div class="keys"><span>Speed</span><span>Observation</span><span>Perspective shift</span></div>
-    <div class="lab"><h3>Day 6 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Good points & not-so-good points of a slow world?</p>
-      <div class="grid2"><div class="box">Good 👍</div><div class="box">Tricky 🤔</div></div>
-      <p class="step"><b>2 · Imagine</b> — Top 3 things you’d do if time slowed down.</p>
-      <div class="callout tip"><b>🟡 TIP · Slow motion!</b> Walk very slowly for 10 seconds. Notice the floor, the sounds, the air — things you miss when you’re fast!</div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 3</span><span class="crumb">Empathy · Animal communication</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">Talking with a silent animal</h2>
+        <img class="illus" src="assets/book/p10_0.jpg" alt="">
+        <p class="story">Tori met a little rabbit in the forest. It said nothing, but kept looking and sniffing. <span class="quote">“What is it trying to say?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>Bees talk with dances, dolphins with sounds, and dogs with their tails!</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Pheromones</span>Ants leave an invisible chemical trail to show the way. A dog sniffing is reading information by smell!</div>
+        <div class="keys"><span>Non-verbal</span><span>Pheromones</span><span>Empathy</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — What might a rabbit mean when it…</div>
+        <p class="story" style="margin:3px 0">sniffs its nose? <span class="fill" style="min-width:150px"></span></p>
+        <p class="story" style="margin:3px 0">thumps its feet? <span class="fill" style="min-width:150px"></span></p>
+        <p class="story" style="margin:3px 0">perks its ears? <span class="fill" style="min-width:150px"></span></p>
+        <div class="qnum"><i>2</i> Imagine — What does the rabbit want to tell you?</div>
+        <div class="line"></div>
+        <div class="box tell"><span class="lab">🗣️ Tell</span>Try “speaking” to a grown-up without words!</div>
+      </div>
     </div>
   </section>
   <section class="page">
-    <span class="day-badge" style="background:#3fc4a8">DAY 6 · Make</span>
-    <h2 class="q">A 4-panel comic of the slow world</h2>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 3 · Make animal talk-cards!</h2>
+    <p class="step-l">Draw an animal, circle its feeling ( 😊 😢 😠 ), and write what it wants to say.</p>
+    <div class="tbl" style="grid-template-columns:1fr 1fr;gap:14px;height:470px;margin-top:8px">
+      <div class="cell" style="min-height:0"><b>Card 1 — 😊 😢 😠</b>What it wants to say:</div>
+      <div class="cell" style="min-height:0"><b>Card 2 — 😊 😢 😠</b>What it wants to say:</div>
+      <div class="cell" style="min-height:0"><b>Card 3 — 😊 😢 😠</b>What it wants to say:</div>
+      <div class="cell" style="min-height:0"><b>Card 4 — 😊 😢 😠</b>What it wants to say:</div>
+    </div>
+  </section>
+
+  <!-- ===== DAY 4 ===== -->
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 4</span><span class="crumb">Imagination · Light & shadow</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">What if your shadow came alive?</h2>
+        <img class="illus" src="assets/book/p12_0.jpg" alt="">
+        <p class="story">One evening, Lumi's shadow began to move on its own — and waved! <span class="quote">“What does the shadow want to do?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>When the sun is high, shadows are short; when low, long. Long ago people told time with sundials!</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Light travels straight</span>Light hits an object and a dark shadow forms behind it. A flashlight close = big shadow, far = small. You can make animal shapes too!</div>
+        <div class="keys"><span>Light</span><span>Character creation</span><span>Self-understanding</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — How are you & your shadow same / different?</div>
+        <div class="tbl"><div class="cell"><b>Me</b></div><div class="cell"><b>My shadow</b></div></div>
+        <div class="qnum"><i>2</i> Imagine — Your shadow's profile</div>
+        <p class="story" style="margin:3px 0">Name <span class="fill"></span> · Personality <span class="fill"></span></p>
+        <div class="box tip"><span class="lab">🟡 TIP</span>Move a flashlight near & far — watch your shadow grow and shrink!</div>
+      </div>
+    </div>
+  </section>
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 4 · Create your shadow friend!</h2>
+    <div class="makegrid" style="height:540px">
+      <div class="drawbox">Draw your shadow character BIG ✏️</div>
+      <div class="infocol">
+        <div class="infobox" style="flex:1"><b>Shadow Profile</b><br><span style="color:#9a8f82;font-size:12px">Name · Personality · Likes · Special power · A message for me</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DAY 5 ===== -->
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 5</span><span class="crumb">Invention · Aerodynamics</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">Can you catch the wind?</h2>
+        <img class="illus" src="assets/book/p14_0.jpg" alt="">
+        <p class="story">A strong wind blew Lumi's hat away. She reached out, but the wind slipped through her fingers. <span class="quote">“Can you catch something invisible?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>Pinwheels, wind turbines and sailboats all “catch and use” the wind!</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Aerodynamics</span>Wind = moving air! Warm air rises, cool air rushes in — that's wind. Strong wind can even make electricity!</div>
+        <div class="keys"><span>Aerodynamics</span><span>Wind power</span><span>Design</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — Circle the evidence of wind</div>
+        <p class="story" style="margin:3px 0">leaves shaking · hair flying · flag fluttering · balloon drifting</p>
+        <div class="qnum"><i>2</i> Imagine — A wind-collecting machine</div>
+        <p class="story" style="margin:3px 0">Gathers by <span class="fill"></span></p>
+        <p class="story" style="margin:3px 0">Stores by <span class="fill"></span> · Releases by <span class="fill"></span></p>
+        <div class="box tell"><span class="lab">🗣️ Tell</span>Where would you use your wind machine?</div>
+      </div>
+    </div>
+  </section>
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 5 · Wind-machine blueprint!</h2>
+    <p class="step-l">STEP 1. Circle the parts</p>
+    <div class="mats">
+      <div class="mat"><span class="e">🌀</span>Propeller</div><div class="mat"><span class="e">🛢️</span>Tank</div>
+      <div class="mat"><span class="e">📡</span>Antenna</div><div class="mat"><span class="e">⚙️</span>Gear</div>
+      <div class="mat"><span class="e">🧲</span>Magnet</div><div class="mat"><span class="e">💡</span>Bulb</div>
+      <div class="mat add"><span class="e">＋</span>Your own!</div>
+    </div>
+    <p class="step-l" style="margin-top:8px">STEP 2. Draw the machine & show the wind's path with arrows 💨→→→ ⚡</p>
+    <div class="makegrid" style="height:430px">
+      <div class="drawbox">Draw your wind machine here</div>
+      <div class="infocol"><div class="infobox" style="flex:1"><b>Machine name</b></div><div class="infobox" style="flex:1.6"><b>Slogan</b></div></div>
+    </div>
+  </section>
+
+  <!-- ===== DAY 6 ===== -->
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 6</span><span class="crumb">Perspective · Speed</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">What if time slowed down?</h2>
+        <img class="illus" src="assets/book/p16_0.jpg" alt="">
+        <p class="story">One morning, everything moved very slowly. Only Lumi moved at normal speed. <span class="quote">“If time slowed, what would you do?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>A high-speed camera shows a water drop splash up into a crown — you can even see a hummingbird's wings!</div>
+        <div class="box sci"><span class="lab">🟣 Science Note · Speed = distance ÷ time</span>A cheetah runs 30 m in 1 second; a snail moves 1 m in a minute. Same time — totally different distance!</div>
+        <div class="keys"><span>Speed</span><span>Observation</span><span>Perspective</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — A slow world: good & tricky points</div>
+        <div class="tbl"><div class="cell"><b>Good 👍</b></div><div class="cell"><b>Tricky 🤔</b></div></div>
+        <div class="qnum"><i>2</i> Imagine — Top 3 things you'd do</div>
+        <div class="rank" data-n="1"></div><div class="rank" data-n="2"></div><div class="rank" data-n="3"></div>
+        <div class="box tip"><span class="lab">🟡 TIP · Slow motion!</span>Walk very slowly for 10 seconds. Notice the floor, sounds, air you usually miss!</div>
+      </div>
+    </div>
+  </section>
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 6 · A 4-panel comic of the slow world!</h2>
     <p class="story">In a slow world I want to <span class="fill" style="min-width:160px"></span> because usually <span class="fill" style="min-width:160px"></span>.</p>
-    <div class="grid2">
-      <div class="box">1 · At first…</div>
-      <div class="box">2 · But then…</div>
-      <div class="box">3 · So…</div>
-      <div class="box">4 · In the end!</div>
+    <div class="makegrid" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:470px;margin-top:8px">
+      <div class="drawbox">1 · At first…</div><div class="drawbox">2 · But then…</div>
+      <div class="drawbox">3 · So…</div><div class="drawbox">4 · In the end!</div>
     </div>
   </section>
 
-  <!-- DAY 7 -->
+  <!-- ===== DAY 7 ===== -->
   <section class="page">
-    <span class="day-badge" style="background:#9b6bff">DAY 7 · Art appreciation + Emotion</span>
-    <img class="illus" src="assets/book/p19_0.jpg" alt=""> <div class="credit">“The Starry Night” — Vincent van Gogh (public domain)</div>
-    <h2 class="q">Starry Night,<br>through Van Gogh’s eyes</h2>
-    <p class="story">Moong looked up at the night sky, full of twinkling stars. <span class="quote">“Long ago, someone painted this sky in a very special way. Why does the sky in his painting swirl?”</span></p>
-    <div class="callout know"><b>🟢 Did you know?</b> Vincent van Gogh was a Dutch painter. He painted not what he <i>saw</i>, but what he <i>felt</i> in his heart!</div>
-    <div class="callout sci"><b>🟣 Art Note · Impasto</b> Van Gogh used very thick paint! Up close the painting is bumpy; from far away the sky looks like it’s really moving!</div>
-    <div class="keys"><span>Art appreciation</span><span>Emotion</span><span>Color</span></div>
-    <div class="lab"><h3>Day 7 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Find these in <i>Starry Night</i>: swirling sky · big bright stars · a crescent moon · a pointy cypress tree · a quiet village & church. <b>I also found:</b> ______</p>
-      <p class="step"><b>2 · About Van Gogh</b> (1853–1890, Netherlands) — He started painting at 27 and sold only <b>one</b> painting in his life… yet today he’s one of the world’s most-loved painters!</p>
-      <div class="vg-gallery"><img src="assets/book/p20_0.jpg" alt=""><img src="assets/book/p20_1.jpg" alt=""></div>
-      <div class="credit">More paintings by Vincent van Gogh (public domain)</div>
-      <p class="step"><b>3 · Imagine</b> — How does the painting make you feel? (mysterious · lonely · calm · excited · …)</p>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 7</span><span class="crumb">Art appreciation · Emotion</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">Starry Night, through Van Gogh's eyes</h2>
+        <img class="illus" src="assets/book/p19_0.jpg" alt="">
+        <div class="credit">“The Starry Night” — Vincent van Gogh (public domain)</div>
+        <p class="story">Moong looked up at the twinkling night sky. <span class="quote">“Why does the sky in his painting swirl?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know?</span>Van Gogh was a Dutch painter. He painted not what he <i>saw</i>, but what he <i>felt</i> in his heart!</div>
+        <div class="box sci"><span class="lab">🟣 Art Note · Impasto</span>He used very thick paint! Up close it's bumpy; from far the sky seems to really move.</div>
+        <div class="keys"><span>Art</span><span>Emotion</span><span>Color</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — Find these in the painting</div>
+        <p class="story" style="margin:3px 0">swirling sky · big bright stars · crescent moon · pointy cypress tree · quiet village</p>
+        <div class="qnum"><i>2</i> About Van Gogh (1853–1890)</div>
+        <p class="story" style="margin:3px 0">He sold only <b>one</b> painting in his life — now he's one of the world's most-loved painters!</p>
+        <div class="makegrid" style="grid-template-columns:1fr 1fr;gap:8px;margin-top:4px"><img class="illus" src="assets/book/p20_0.jpg" alt=""><img class="illus" src="assets/book/p20_1.jpg" alt=""></div>
+        <div class="credit">More by Van Gogh (public domain)</div>
+      </div>
     </div>
   </section>
   <section class="page">
-    <span class="day-badge" style="background:#9b6bff">DAY 7 · Make</span>
-    <h2 class="q">Paint your own swirly Starry Night</h2>
-    <p class="step">What feeling is each color? Write it next to the color. Then write a little letter:</p>
-    <p class="story">“Dear Mr. Van Gogh, when I look at Starry Night I feel <span class="fill" style="min-width:120px"></span>, because <span class="fill" style="min-width:140px"></span>.”</p>
-    <p class="step">Fill the page with swirls and shining stars — your very own starry night!</p>
-    <p class="story">Title: <span class="fill"></span> · This painting’s feeling: <span class="fill"></span></p>
-    <div class="box" style="min-height:240px">Draw your swirly starry night 🌌</div>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 7 · Paint your own swirly Starry Night!</h2>
+    <p class="story">“Dear Mr. Van Gogh, when I look at Starry Night I feel <span class="fill" style="min-width:130px"></span> because <span class="fill" style="min-width:150px"></span>.”</p>
+    <p class="step-l" style="margin-top:6px">Fill the page with swirls and shining stars — your very own starry night.</p>
+    <div class="makegrid" style="height:430px">
+      <div class="drawbox">Draw your swirly starry night 🌌</div>
+      <div class="infocol"><div class="infobox" style="flex:1"><b>Title</b></div><div class="infobox" style="flex:1.6"><b>This painting's feeling</b></div></div>
+    </div>
   </section>
 
-  <!-- COMPLETE + CERTIFICATE -->
+  <!-- COMPLETION + CERT -->
   <section class="page">
-    <h2 class="q" style="text-align:center">7 missions complete! 🎉</h2>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="text-align:center">7 missions complete! 🎉</h2>
     <p class="story" style="text-align:center">Every day you asked, imagined, and made something. All of these thoughts are your very own treasure.</p>
     <div class="recap">
-      <div><b>1</b>No bridge?</div><div><b>2</b>Cloud in a bag?</div><div><b>3</b>Animal talk</div><div><b>4</b>Living shadow</div>
-      <div><b>5</b>Catch the wind</div><div><b>6</b>Slow time</div><div><b>7</b>Starry Night</div><div><b>★</b>Korea Special</div>
+      <div><b>1</b>No bridge</div><div><b>2</b>Cloud bag</div><div><b>3</b>Animal talk</div><div><b>4</b>Shadow</div>
+      <div><b>5</b>Wind</div><div><b>6</b>Slow time</div><div><b>7</b>Starry Night</div><div><b>★</b>Korea</div>
     </div>
-    <p class="story" style="text-align:center">My favorite mission was: <span class="fill" style="min-width:200px"></span></p>
-    <div class="cert">
-      <div class="eyebrow" style="text-align:center">Creative Explorer Certificate</div>
-      <h2 style="font-size:26px;margin:8px 0">🏅 Certificate of Creativity</h2>
-      <p class="story"><span class="fill" style="min-width:180px"></span> wonderfully completed the<br>7-Day Creative Mission with Moong!</p>
-      <p class="story">Date: <span class="fill" style="min-width:160px"></span></p>
-    </div>
-  </section>
-
-  <!-- DAY 8 · KOREA SPECIAL -->
-  <section class="page korea">
-    <span class="day-badge" style="background:var(--pink-d)">DAY 8 · Korea Special · Culture + Creativity</span>
-    <h2 class="q">The Dancing Mask<br>(Talchum 탈춤)</h2>
-    <p class="story">Moong found an old wooden mask in a Korean village. When the drums began to play — <i>dung, dung!</i> — the mask started to smile… and dance! <span class="quote">“Every Korean mask has its own face and feeling. What would YOUR mask feel?”</span></p>
-    <div class="callout know"><b>🟢 Did you know? · Korea</b>
-      <ul style="margin:6px 0 0 18px;line-height:1.7;">
-        <li>Korean masks are called <b>Tal (탈)</b>. The famous <b>Hahoe</b> masks are over 800 years old!</li>
-        <li><b>Talchum (탈춤)</b> — the Korean mask dance — is on the <b>UNESCO</b> list. Dancers wear masks to tell funny, brave, and kind stories.</li>
-        <li>The Korean alphabet, <b>Hangeul (한글)</b>, was created so that everyone could read and write.</li>
-        <li><b>Hanbok (한복)</b> is the colorful traditional Korean dress.</li>
-      </ul>
-    </div>
-    <div class="callout sci"><b>🟣 Culture Note · Feelings in motion</b> In talchum, each mask shows one big feeling — a wide laugh, a sly grin, a gentle smile. The dance turns <b>feelings into movement</b> (just like Mongle creatures coming to life!).</div>
-    <div class="keys"><span>Korean culture</span><span>Emotion → movement</span><span>Pattern & color</span></div>
-    <div class="lab"><h3>Day 8 · Thinking Lab</h3>
-      <p class="step"><b>1 · Observe</b> — Masks can look happy, sly, surprised, or kind. What feeling do YOU want your mask to show?</p>
-      <div class="lines"></div>
-      <p class="step"><b>2 · Imagine</b> — Your mask’s name: <span class="fill"></span> · Its feeling: <span class="fill" style="min-width:100px"></span> · The story it dances:</p>
-      <div class="lines"></div>
-    </div>
-  </section>
-  <section class="page korea">
-    <span class="day-badge" style="background:var(--pink-d)">DAY 8 · Make</span>
-    <h2 class="q">Design your own Korean Mask (Tal)</h2>
-    <p class="step">Give your mask big eyes, a mouth, eyebrows, and bright patterns. Choose colors that match its feeling — then color it in!</p>
-    <div class="box" style="min-height:260px">Draw & color your Tal mask here 🎭</div>
-    <div class="callout tip"><b>🟡 Bonus · Hangeul</b> Try writing your name in Korean letters! Ask a helper to show you. My name in Hangeul: <span class="fill" style="min-width:140px"></span></div>
-    <div style="text-align:center;margin-top:8px;">
-      <p class="story" style="margin:6px 0">📸 Snap a photo of your mask or creature — and watch Moong bring it to life!</p>
-      <a class="cta" href="crop_creature.html?src=book">Bring it to life in the app →</a>
+    <p class="story" style="text-align:center">My favorite mission was <span class="fill" style="min-width:220px"></span></p>
+    <div class="cert" style="margin-top:16px;max-width:640px;margin-left:auto;margin-right:auto">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--teal);font-weight:700">CREATIVE EXPLORER CERTIFICATE</div>
+      <h2 style="font-size:26px;margin:6px 0">🏅 Certificate of Creativity</h2>
+      <p class="story"><span class="fill" style="min-width:200px"></span> wonderfully completed the 7-Day Creative Mission with Moong!</p>
+      <p class="story">Date <span class="fill" style="min-width:160px"></span></p>
     </div>
   </section>
 
-  <!-- APP PITCH (brief, for parents) -->
+  <!-- ===== DAY 8 KOREA ===== -->
+  <section class="page korea">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge">DAY 8 · KOREA SPECIAL</span><span class="crumb">Korean culture · Creativity</span>
+    <div class="cols">
+      <div>
+        <h2 class="title">The Dancing Mask (Talchum 탈춤)</h2>
+        <p class="story">Moong found an old wooden mask in a Korean village. When the drums played — <i>dung, dung!</i> — the mask began to smile… and dance! <span class="quote">“Every Korean mask has its own face and feeling. What would YOUR mask feel?”</span></p>
+        <div class="box know"><span class="lab">🟢 Did you know? · Korea</span>
+          • Korean masks are called <b>Tal (탈)</b>; the Hahoe masks are 800+ years old.<br>
+          • <b>Talchum (탈춤)</b>, the Korean mask dance, is on the <b>UNESCO</b> list!<br>
+          • <b>Hangeul (한글)</b> is the Korean alphabet · <b>Hanbok (한복)</b> is the colorful traditional dress.</div>
+        <div class="box sci"><span class="lab">🟣 Culture Note · Feelings in motion</span>Each mask shows one big feeling — a wide laugh, a sly grin, a kind smile. The dance turns <b>feelings into movement</b> — just like Mongle creatures coming to life!</div>
+        <div class="keys"><span>Korean culture</span><span>Emotion → movement</span><span>Pattern & color</span></div>
+      </div>
+      <div>
+        <div class="lab-head">🔬 Thinking Lab</div>
+        <div class="qnum"><i>1</i> Observe — Masks can look happy, sly, surprised, kind. What feeling will yours show?</div>
+        <div class="line"></div>
+        <div class="qnum"><i>2</i> Imagine — Your mask</div>
+        <p class="story" style="margin:3px 0">Name <span class="fill"></span> · Feeling <span class="fill" style="min-width:90px"></span></p>
+        <p class="story" style="margin:3px 0">The story it dances:</p><div class="line"></div>
+        <div class="box tip"><span class="lab">🟡 Bonus · Hangeul</span>Write your name in Korean letters (ask a helper)! My name in Hangeul: <span class="fill" style="min-width:130px"></span></div>
+      </div>
+    </div>
+  </section>
+  <section class="page korea">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <h2 class="title" style="font-size:26px;margin-top:0">DAY 8 · Design your own Korean Mask (Tal)!</h2>
+    <p class="step-l">Give your mask big eyes, a mouth, eyebrows & bright patterns. Choose colors that match its feeling — then color it in!</p>
+    <div class="makegrid" style="height:470px">
+      <div class="drawbox">Draw &amp; color your Tal mask here 🎭</div>
+      <div class="infocol">
+        <div class="infobox" style="flex:1"><b>Mask name</b></div>
+        <div class="infobox" style="flex:1"><b>Its feeling</b></div>
+        <div class="infobox" style="flex:1.4;text-align:center;background:#eaf7ef">
+          <b style="color:var(--teal)">Bring it to life! 📸</b>
+          <span style="font-size:12px;color:#6a7d6a">Snap a photo and watch Moong animate it.</span><br>
+          <a class="cta" href="crop_creature.html?src=book">Open the app →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP PITCH -->
   <section class="page">
-    <div class="eyebrow">For Grown-ups</div>
-    <h2 class="q">From 7 days → 365 days</h2>
-    <p class="story">This book was just a taste. Your child’s curiosity is waiting for many more stories. In the <b>Mongle Kids app</b>, AI Moong keeps the imagination going:</p>
-    <div class="lab">
-      <p class="step"><b>1 · Snap the page</b> — AI Moong reads your child’s drawing & words and starts a conversation: “Why did you think that?”</p>
-      <p class="step"><b>2 · One thought leads to another</b> — New questions follow each answer, expanding thinking in a new direction every time.</p>
-      <p class="step"><b>3 · A new mission every week</b> — Tailored to your child’s interests and thinking style.</p>
-      <p class="step"><b>4 · See the growth</b> — A weekly report shows how their creative thinking is growing.</p>
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge" style="background:linear-gradient(135deg,#8a7fd6,#b9a7ff)">FOR GROWN-UPS</span>
+    <h2 class="title">From 7 days → 365 days, with the Mongle Kids app</h2>
+    <div class="cols">
+      <div>
+        <p class="story">This book was just a taste. In the <b>Mongle Kids app</b>, AI Moong keeps the imagination going.</p>
+        <div class="box sci"><span class="lab">💜 Our belief</span>Not a child who memorizes answers — a child who creates questions. Mongle never gives the answer; it asks “Why?” and “What's another way?” — and that's where real thinking grows. <b>“Turn screen time into thinking time.”</b></div>
+        <p class="story" style="margin-top:10px"><b>Early supporter:</b> be first to try AI Moong, tailored missions & growth reports at launch. 💛</p>
+      </div>
+      <div>
+        <div class="lab-head">How the app continues the book</div>
+        <div class="qnum"><i>1</i> Snap the page — AI Moong reads it and asks “Why did you think that?”</div>
+        <div class="qnum"><i>2</i> One thought leads to another — new questions follow every answer.</div>
+        <div class="qnum"><i>3</i> A new mission every week — tailored to your child.</div>
+        <div class="qnum"><i>4</i> See the growth — a weekly creativity report.</div>
+      </div>
     </div>
-    <div class="callout sci"><b>💜 Our belief</b> Not a child who memorizes answers — a child who creates questions. Mongle Kids never gives the answer; it asks “Why?” and “What’s another way?” — and that’s where real thinking grows. <b>“Turn screen time into thinking time.”</b></div>
-    <p class="story" style="text-align:center;margin-top:14px;"><b>Early supporter:</b> be first to try AI Moong, tailored missions, and growth reports at launch. 💛</p>
   </section>
 
 </div>
