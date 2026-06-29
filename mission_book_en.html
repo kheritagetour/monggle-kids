@@ -94,6 +94,10 @@
   .vg4{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .gal3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start;}
   .gal3 img{height:300px;object-fit:cover;}
+  #vg-gallery figure>img{height:232px;object-fit:contain;background:#fbf3e6;}
+  #vg-gallery>div>div:first-child figure>img{height:280px;}
+  #vg-gallery .vg4{gap:10px;}
+  #vg-gallery figcaption{margin-top:2px;}
   @media print{
     @page{ size:A4 landscape; margin:0; }
     body{background:#fff;} .bar{display:none;} .book{margin:0;width:auto;max-width:none;}
@@ -418,15 +422,15 @@
       </div>
     </div>
   </section>
-  <section class="page">
+  <section class="page" id="vg-gallery">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <span class="day-badge">DAY 7</span><span class="crumb">Who was Van Gogh?</span>
-    <h2 class="title" style="font-size:27px">More paintings by Vincent van Gogh</h2>
-    <div class="cols" style="grid-template-columns:0.8fr 1.2fr;gap:26px">
+    <h2 class="title" style="font-size:25px;margin:8px 0 10px">More paintings by Vincent van Gogh</h2>
+    <div class="cols" style="grid-template-columns:0.82fr 1.18fr;gap:24px;align-items:start">
       <div>
         <figure><img src="assets/book/vg0.jpg" alt=""><figcaption>Self-Portrait, 1889</figcaption></figure>
-        <div class="box know" style="margin-top:12px"><span class="lab">🟢 About Van Gogh (1853–1890)</span>He started painting at 27 and sold only <b>one</b> painting in his life — yet today he is one of the world's most-loved painters. He painted what he <i>felt</i>!</div>
-        <div class="box tip"><span class="lab">🟣 Think about it!</span>Why are his paintings so bumpy? How do <i>Sunflowers</i> and <i>Starry Night</i> feel different?</div>
+        <div class="box know" style="margin-top:10px;padding:10px 13px;font-size:12px"><span class="lab">🟢 About Van Gogh (1853–1890)</span>He started painting at 27 and sold only <b>one</b> painting in his life — yet today he is one of the world's most-loved painters. He painted what he <i>felt</i>!</div>
+        <div class="box tip" style="padding:10px 13px;font-size:12px"><span class="lab">🟣 Think about it!</span>Why are his paintings so bumpy? How do Sunflowers and Starry Night feel different?</div>
       </div>
       <div>
         <div class="vg4">
