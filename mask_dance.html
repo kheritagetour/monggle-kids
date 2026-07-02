@@ -70,6 +70,7 @@
     <button class="btn" id="shootBtn" data-t="shoot">📸 Take / choose a photo</button>
     <button class="btn hide" id="aliveBtn" data-t="alive">✨ Bring it to life</button>
     <button class="btn pink hide" id="saveBtn" data-t="save">💾 Save the dance</button>
+    <button class="btn ghost hide" id="tryAiBtn" data-t="tryai">🤖 Try AI dance (beta · ~1 min)</button>
     <button class="btn ghost hide" id="againBtn" data-t="again">↺ Try another mask</button>
   </div>
 
@@ -84,14 +85,14 @@ const T={
      save:"💾 Save the dance",again:"↺ Try another mask",
      note:"📷 Take a photo of your <b>drawing</b> (not a person). To animate it, the drawing is sent to a free AI service just for this — and not saved by us.",
      rmbg:"Cutting out your mask…",conjure:"Teaching your mask to dance…",conjureSub:"This magic can take up to a minute ✨",
-     preview:"Quick preview animation",fallback:"The AI helper is napping — here's a quick dance preview!"},
+     preview:"Quick preview animation",fallback:"The AI helper is napping — here's a quick dance preview!",tryai:"🤖 Try AI dance (beta · ~1 min)",aiwait:"Asking the AI to choreograph… ✨",aifail:"AI helper is busy — keeping your fun preview!"},
  ko:{btitle:"내가 그린 탈을 살아나게 해요!",bsub:"탈을 그리고 사진을 찍으면 춤을 춰요.",
      h1:"탈을 살아 움직이게 🪄",lead:"배경을 지우고 AI로 탈을 움직여서 고개도 돌리고 눈도 깜빡이고 춤도 춰요!",
      ph:"내가 그린 탈 사진을 찍어요",shoot:"📸 사진 찍기 / 고르기",alive:"✨ 살아나게 하기",
      save:"💾 춤 저장하기",again:"↺ 다른 탈 하기",
      note:"📷 사람이 아니라 <b>그림(탈)</b>을 찍어요. 움직이게 하려고 그림만 무료 AI 서비스로 보내며, 우리는 저장하지 않아요.",
      rmbg:"탈을 오려내는 중…",conjure:"탈에게 춤을 가르치는 중…",conjureSub:"이 마법은 최대 1분 걸릴 수 있어요 ✨",
-     preview:"빠른 미리보기 애니메이션",fallback:"AI 도우미가 잠깐 쉬고 있어요 — 대신 빠른 춤 미리보기예요!"}
+     preview:"빠른 미리보기 애니메이션",fallback:"AI 도우미가 잠깐 쉬고 있어요 — 대신 빠른 춤 미리보기예요!",tryai:"🤖 AI 춤 시도 (베타 · 약 1분)",aiwait:"AI에게 안무를 부탁하는 중… ✨",aifail:"AI 도우미가 바빠요 — 재미있는 미리보기를 유지할게요!"}
 };
 let L=(window.MK_LANG==='ko')?'ko':'en';
 function applyLang(){ const d=T[L];
@@ -143,19 +144,18 @@ function cropAlpha(blob){ return new Promise(res=>{ const img=new Image(); img.o
 }; img.src=URL.createObjectURL(blob); }); }
 
 // ---------- Step 2: animate (free AI API, with in-browser fallback) ----------
-$('aliveBtn').onclick=async ()=>{
+$('aliveBtn').onclick=()=>{
   setStep(2); $('aliveBtn').classList.add('hide');
-  showProc(T[L].conjure, T[L].conjureSub);
-  let ok=false;
-  try{ const url=await animateWithAPI(cutBlob); await playVideo(url); saveTarget={type:'video',url}; ok=true; }
-  catch(err){ console.warn('API animate failed:',err); }
-  if(!ok){ // fallback: in-browser procedural dance
-    procSub.textContent=T[L].fallback;
-    await new Promise(r=>setTimeout(r,600));
-    startProcedural(); saveTarget={type:'canvas'};
-  }
-  $('saveBtn').classList.remove('hide'); $('againBtn').classList.remove('hide');
+  startProcedural();                       // instant, reliable, offline, no upload
+  $('saveBtn').classList.remove('hide'); $('againBtn').classList.remove('hide'); $('tryAiBtn').classList.remove('hide');
 };
+$('tryAiBtn').onclick=async ()=>{
+  $('tryAiBtn').disabled=true; cancelAnimationFrame(rafId);
+  showProc(T[L].aiwait, T[L].conjureSub);
+  try{ const url=await animateWithAPI(cutBlob); await playVideo(url); saveTarget={type:'video',url}; $('tryAiBtn').classList.add('hide'); }
+  catch(err){ console.warn('AI failed:',err); startProcedural(); $('tryAiBtn').disabled=false; toast(T[L].aifail); }
+};
+function toast(msg){ procSub.textContent=msg; }
 
 const SPACES=[
  "CVPR/Image-Animation-using-Thin-Plate-Spline-Motion-Model",
@@ -191,12 +191,21 @@ function startProcedural(){
   img.onload=()=>{
     const S=360, cv=document.createElement('canvas'); cv.width=S;cv.height=S; const c=cv.getContext('2d'); showEl(cv);
     const ir=img.width/img.height; let bw,bh; if(ir>1){bw=S*0.8;bh=bw/ir;}else{bh=S*0.8;bw=bh*ir;}
+    const spk=[]; for(let i=0;i<10;i++) spk.push({x:Math.random(),y:Math.random(),p:Math.random()*6.28,s:0.5+Math.random()});
     let t0=null;
     function frame(ts){ if(!t0)t0=ts; const t=(ts-t0)/1000;
       c.clearRect(0,0,S,S);
       const g=c.createLinearGradient(0,0,0,S); g.addColorStop(0,'#eafaf3'); g.addColorStop(1,'#fff8f0'); c.fillStyle=g; c.fillRect(0,0,S,S);
-      const sway=Math.sin(t*2.2)*0.12, bob=-8*Math.abs(Math.sin(t*2.2)), sx=1+0.05*Math.sin(t*4.4), sy=1-0.05*Math.sin(t*4.4);
-      c.save(); c.translate(S/2,S*0.58+bob); c.rotate(sway); c.scale(sx,sy);
+      // sparkles
+      c.save(); c.font='16px sans-serif'; c.textAlign='center';
+      spk.forEach(k=>{ const a=0.4+0.6*Math.abs(Math.sin(t*k.s+k.p)); c.globalAlpha=a; c.fillText('✨', k.x*S, (k.y*0.5+0.05)*S + Math.sin(t*k.s+k.p)*6); });
+      c.restore();
+      // dancing mask: side-step + sway + bob + breathe
+      const beat=t*2.4;
+      const side=Math.sin(beat)*S*0.06, sway=Math.sin(beat)*0.14, bob=-10*Math.abs(Math.sin(beat*2)), br=1+0.03*Math.sin(beat*2);
+      const sx=(1+0.05*Math.sin(beat*2))*br, sy=(1-0.05*Math.sin(beat*2))*br;
+      c.save(); c.translate(S/2+side,S*0.6+bob); c.rotate(sway); c.scale(sx,sy);
+      c.shadowColor='rgba(63,196,168,.25)'; c.shadowBlur=18; c.shadowOffsetY=6;
       c.drawImage(img,-bw/2,-bh/2,bw,bh); c.restore();
       rafId=requestAnimationFrame(frame);
     }
