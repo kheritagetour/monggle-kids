@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mongle Kids — 7-Day Creative Mission Book</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Monglekids — 7-Day Creative Mission Book</title>
 <style>
   :root{
     --cream:#fdf6ea; --ink:#34414d; --soft:#9a8f82; --story:#5d564f;
@@ -15,12 +12,12 @@
     --violet:#9b7fd6; --violet-bg:#efe9fb; --chip:#f1ece4;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Nunito','Poppins',sans-serif;color:var(--ink);background:#e9e1d4;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.3px;}
+  body{font-family:"SF Pro Rounded","Avenir Next","Helvetica Neue",system-ui,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#e9e1d4;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  h1,h2,h3,.disp{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:700;letter-spacing:-.3px;}
   .bar{position:sticky;top:0;z-index:10;background:#fff;display:flex;justify-content:space-between;align-items:center;
     padding:10px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-  .bar b{font-family:'Fredoka';color:var(--pink);}
-  .bar button{font-family:'Fredoka';font-weight:600;border:none;background:linear-gradient(135deg,var(--orange),#f4a94f);color:#fff;
+  .bar b{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;color:var(--pink);}
+  .bar button{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;border:none;background:linear-gradient(135deg,var(--orange),#f4a94f);color:#fff;
     padding:8px 16px;border-radius:999px;cursor:pointer;}
   .book{width:1123px;margin:20px auto;counter-reset:pg 0;}
   body{overflow-x:auto;}
@@ -29,28 +26,28 @@
     margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:38px 50px 54px;}
   .moong-corner{position:absolute;top:26px;right:34px;width:54px;height:54px;border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.1);}
   .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;}
-  .day-badge{display:inline-block;font-family:'Fredoka';font-weight:600;font-size:13px;color:#fff;
+  .day-badge{display:inline-block;font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;font-size:13px;color:#fff;
     background:linear-gradient(135deg,var(--orange),#f4a857);padding:5px 14px;border-radius:999px;}
   .crumb{font-size:12px;color:var(--soft);font-weight:600;margin-left:10px;}
   .title{font-size:34px;line-height:1.1;margin:12px 0 14px;color:var(--ink);}
   .illus{width:100%;max-height:262px;object-fit:cover;border-radius:14px;display:block;box-shadow:0 6px 16px rgba(90,58,120,.12);}
   .credit{font-size:10px;color:#bcae9e;text-align:right;margin-top:3px;}
-  .story{font-size:14px;line-height:1.65;color:var(--story);margin:10px 0;}
+  .story{font-size:15.5px;line-height:1.72;color:var(--story);margin:10px 0;}
   .quote{color:var(--pink);font-weight:700;}
-  .box{border-radius:14px;padding:12px 15px;margin:9px 0;font-size:13px;line-height:1.5;}
-  .box .lab{display:block;font-family:'Fredoka';font-weight:600;font-size:12.5px;margin-bottom:3px;}
+  .box{border-radius:14px;padding:12px 15px;margin:9px 0;font-size:14px;line-height:1.55;}
+  .box .lab{display:block;font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;font-size:13.5px;margin-bottom:3px;}
   .know{background:var(--green-bg);} .know .lab{color:var(--green);}
   .sci{background:var(--teal-bg);} .sci .lab{color:var(--teal);}
   .tip{background:var(--violet-bg);} .tip .lab{color:var(--violet);}
   .tell{background:#fff5e9;} .tell .lab{color:var(--orange);}
   .keys{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
-  .keys span{background:var(--chip);color:var(--soft);border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:700;}
+  .keys span{background:var(--chip);color:var(--soft);border-radius:999px;padding:5px 13px;font-size:12.5px;font-weight:700;}
   /* two-column day layout */
   .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;flex:1;min-height:0;}
-  .lab-head{font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--teal);margin-bottom:8px;}
-  .qnum{display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-weight:700;font-size:13.5px;color:var(--ink);}
+  .lab-head{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;font-size:18px;color:var(--teal);margin-bottom:8px;}
+  .qnum{display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-weight:700;font-size:15px;color:var(--ink);}
   .qnum i{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;
-    font-family:'Fredoka';font-weight:600;font-size:13px;font-style:normal;flex-shrink:0;}
+    font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;font-size:13px;font-style:normal;flex-shrink:0;}
   .tbl{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .cell{border:1.5px solid #e7ddcf;border-radius:10px;min-height:80px;background:#fffdf8;padding:8px;font-size:11px;color:#cbbfae;}
   .cell b{display:block;color:var(--soft);font-size:11.5px;margin-bottom:4px;}
@@ -59,10 +56,10 @@
   .line{border-bottom:1.5px dotted #d8ccba;height:24px;margin:8px 0;}
   .fill{display:inline-block;border-bottom:1.5px solid #cdbfa9;min-width:120px;}
   /* make page */
-  .step-l{color:var(--red);font-weight:700;font-size:14px;}
+  .step-l{color:var(--red);font-weight:700;font-size:15.5px;}
   .mats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px;}
   .mat{width:104px;height:92px;background:#fffdf8;border:1.5px solid #ece3d4;border-radius:14px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--soft);font-weight:600;}
+    align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--soft);font-weight:600;}
   .mat .e{font-size:26px;}
   .mat.add{border-style:dashed;color:#c9bba6;}
   .drawbox{border:2px dashed #e7c9b8;border-radius:16px;background:linear-gradient(#fffdf8,#fff7ee);
@@ -77,7 +74,7 @@
   .cover .pill{font-size:12px;letter-spacing:4px;color:#cf9a86;font-weight:700;background:#ffffffaa;padding:6px 16px;border-radius:999px;}
   .cover .icon{width:140px;height:140px;border-radius:30%;margin:18px 0 8px;box-shadow:0 12px 30px rgba(180,120,90,.22);}
   .cover h1{font-size:52px;color:var(--pink);}
-  .cover .sub2{font-family:'Fredoka';font-weight:600;color:var(--orange);font-size:20px;margin-top:2px;}
+  .cover .sub2{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;color:var(--orange);font-size:20px;margin-top:2px;}
   .cover .tag{color:#a98e7e;margin-top:14px;line-height:1.7;font-size:14px;}
   .cover .name{margin-top:22px;color:#a98e7e;font-size:14px;}
   /* cert */
@@ -87,10 +84,10 @@
   .recap b{display:block;font-size:16px;color:var(--orange);}
   .korea .day-badge{background:linear-gradient(135deg,var(--pink),#f59ab0);}
   .cta{display:inline-block;margin-top:8px;background:linear-gradient(135deg,var(--teal),#6fce9f);color:#fff;
-    font-family:'Fredoka';font-weight:600;padding:9px 18px;border-radius:999px;text-decoration:none;font-size:13px;}
+    font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;padding:9px 18px;border-radius:999px;text-decoration:none;font-size:13px;}
   figure{margin:0;}
   figure img{width:100%;border-radius:10px;display:block;box-shadow:0 4px 12px rgba(90,58,120,.12);}
-  figcaption{font-size:11px;color:var(--soft);text-align:center;margin-top:4px;font-weight:600;line-height:1.4;}
+  figcaption{font-size:12px;color:var(--soft);text-align:center;margin-top:4px;font-weight:600;line-height:1.4;}
   .vg4{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .gal3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start;}
   .gal3 img{height:300px;object-fit:cover;}
@@ -99,16 +96,30 @@
   #vg-gallery .vg4{gap:10px;}
   #vg-gallery figcaption{margin-top:2px;}
   .page:not(.cover){counter-increment:pg;}
-  .page:not(.cover)::before{content:"MONGLE KIDS  \00B7  7-Day Creative Mission Book";position:absolute;left:50px;bottom:18px;font-family:'Nunito',sans-serif;font-weight:700;font-size:9px;letter-spacing:.6px;color:#c6b9a7;}
-  .page:not(.cover)::after{content:counter(pg);position:absolute;right:50px;bottom:15px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:12px;color:#b0a595;}
+  .page:not(.cover)::before{content:"MONGLEKIDS  \00B7  7-Day Creative Mission Book";position:absolute;left:50px;bottom:18px;font-family:"SF Pro Rounded","Avenir Next","Helvetica Neue",system-ui,"Segoe UI",Arial,sans-serif;font-weight:700;font-size:9px;letter-spacing:.6px;color:#c6b9a7;}
+  .page:not(.cover)::after{content:counter(pg);position:absolute;right:50px;bottom:15px;font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;font-size:12px;color:#b0a595;}
   .toc{margin-top:8px;}
   .toc .row{display:flex;align-items:baseline;margin:10px 2px;font-size:15px;}
   .toc .row .t{font-weight:700;color:var(--ink);}
   .toc .row .t small{font-weight:600;color:var(--soft);font-size:12.5px;}
   .toc .row .dots{flex:1;border-bottom:2px dotted #d8ccba;margin:0 10px;position:relative;top:-4px;}
-  .toc .row .n{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--orange);min-width:22px;text-align:right;}
-  .toc .sec{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--teal);font-size:12px;letter-spacing:1.2px;margin:15px 2px 3px;text-transform:uppercase;}
+  .toc .row .n{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;color:var(--orange);min-width:22px;text-align:right;}
+  .toc .sec{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;color:var(--teal);font-size:12px;letter-spacing:1.2px;margin:15px 2px 3px;text-transform:uppercase;}
   .belongs{margin-top:20px;color:#a98e7e;font-size:14px;line-height:2;}
+  .moongsays{display:flex;align-items:center;gap:11px;background:#fff;border:2px dashed var(--sun);border-radius:16px;padding:9px 13px;margin-top:14px;}
+  .moongsays img{width:42px;height:42px;border-radius:12px;flex-shrink:0;}
+  .moongsays span{font-family:"SF Pro Rounded","Avenir Next","Helvetica Neue",system-ui,"Segoe UI",Arial,sans-serif;font-weight:700;color:var(--story);font-size:14px;line-height:1.4;}
+  .reward-stars{text-align:center;margin-top:18px;}
+  .reward-stars b{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;color:var(--orange);font-size:17px;}
+  .rstars{display:flex;justify-content:center;gap:14px;margin-top:12px;}
+  .rstars i{width:44px;height:44px;border:2px dashed #ffb84d;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;color:#ffcf80;font-size:22px;}
+  .linkcard{background:#eaf7ef;border:2.5px solid var(--teal);border-radius:18px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .lc-title{font-family:"Arial Rounded MT Bold","SF Pro Rounded",system-ui,"Segoe UI",sans-serif;font-weight:600;color:var(--teal);font-size:19px;margin-bottom:8px;}
+  .lc-steps{text-align:left;font-size:13.5px;line-height:1.5;margin:0 0 12px 18px;color:var(--story);}
+  .lc-steps li{margin:6px 0;}
+  .qr{width:158px;height:158px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 4px 10px rgba(0,0,0,.08);}
+  .lc-foot{font-size:11px;color:#6a8a78;margin-top:10px;font-weight:700;}
+  .lc-foot span{font-weight:600;color:#9ab3a8;}
   @media print{
     @page{ size:A4 landscape; margin:0; }
     body{background:#fff;} .bar{display:none;} .book{margin:0;width:auto;max-width:none;}
@@ -120,32 +131,32 @@
 </style>
 </head>
 <body>
-<div class="bar"><b>🐣 Mongle Kids · 7-Day Creative Mission Book (EN)</b><button onclick="window.print()">🖨️ Print as landscape book / Save PDF</button></div>
+<div class="bar"><b>🐣 Monglekids · 7-Day Creative Mission Book (EN)</b><button onclick="window.print()">🖨️ Print as landscape book / Save PDF</button></div>
 <div class="book">
 
   <!-- COVER -->
   <section class="page cover">
     <div class="blob" style="width:120px;height:60px;background:#fff;left:8%;top:14%"></div>
     <div class="blob" style="width:140px;height:70px;background:#fff;right:7%;bottom:18%"></div>
-    <div class="pill">MONGLE KIDS</div>
+    <div class="pill">MONGLEKIDS</div>
     <img class="icon" src="assets/book/moong.jpg" alt="Moong">
-    <h1>Mongle Kids</h1>
+    <h1>Monglekids</h1>
     <div class="sub2">7-Day Creative Mission Book</div>
-    <div style="font-family:'Nunito',sans-serif;font-weight:800;color:#d19a83;letter-spacing:2px;font-size:12px;margin-top:8px">AGES 4–8 · CREATIVITY &amp; STEAM</div>
+    <div style="font-family:"SF Pro Rounded","Avenir Next","Helvetica Neue",system-ui,"Segoe UI",Arial,sans-serif;font-weight:800;color:#d19a83;letter-spacing:2px;font-size:12px;margin-top:8px">AGES 4–8 · CREATIVITY &amp; STEAM</div>
     <p class="tag">One question a day, one imagination a day.<br>A 7-day adventure where thinking grows.</p>
     <div class="belongs" style="text-align:center">This book belongs to<br><span class="fill" style="min-width:280px;height:24px"></span><br>
       <span style="font-size:12px">Age <span class="fill" style="min-width:64px"></span> &nbsp;·&nbsp; Even better together with a grown-up 💛</span></div>
-    <p style="position:absolute;bottom:20px;font-size:10px;color:#c8a994">© Mongle Kids · monglekids.com &nbsp;·&nbsp; Unauthorized copying &amp; distribution prohibited.</p>
+    <p style="position:absolute;bottom:20px;font-size:10px;color:#c8a994">© Monglekids · monglekids.com &nbsp;·&nbsp; Unauthorized copying &amp; distribution prohibited.</p>
   </section>
 
-  <!-- ABOUT MONGLE KIDS -->
+  <!-- ABOUT MONGLEKIDS -->
   <section class="page">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
-    <span class="day-badge" style="background:linear-gradient(135deg,var(--pink),#f59ab0)">ABOUT MONGLE KIDS</span>
+    <span class="day-badge" style="background:linear-gradient(135deg,var(--pink),#f59ab0)">ABOUT MONGLEKIDS</span>
     <h2 class="title">A world where curiosity grows 🌱</h2>
     <div class="cols" style="grid-template-columns:1fr 1fr;gap:30px">
       <div>
-        <p class="story"><b>Mongle Kids</b> is a creative learning world where children grow <b>curiosity, imagination, and confidence</b> — one playful question at a time.</p>
+        <p class="story"><b>Monglekids</b> is a creative learning world where children grow <b>curiosity, imagination, and confidence</b> — one playful question at a time.</p>
         <p class="story">Your guide is <b>Moong</b>, a friendly little cloud who loves to wonder. Together you'll <b>observe, imagine, explore, make,</b> and <b>tell</b>. This book is a 7-day taste of that journey.</p>
         <div class="box sci"><span class="lab">💜 Our belief</span>We help raise children who <b>create questions</b> — not just memorize answers. <b>Turn screen time into thinking time.</b></div>
       </div>
@@ -165,7 +176,7 @@
     <div class="cols" style="grid-template-columns:1fr 1fr;gap:40px">
       <div class="toc">
         <div class="sec">Getting Started</div>
-        <div class="row"><span class="t">About Mongle Kids</span><span class="dots"></span><span class="n">1</span></div>
+        <div class="row"><span class="t">About Monglekids</span><span class="dots"></span><span class="n">1</span></div>
         <div class="row"><span class="t">How to Use This Book <small>· meet Moong</small></span><span class="dots"></span><span class="n">3</span></div>
         <div class="row"><span class="t">For Grown-ups</span><span class="dots"></span><span class="n">4</span></div>
         <div class="sec">7 Creative Missions</div>
@@ -182,7 +193,7 @@
         <div class="sec">Finish &amp; Beyond</div>
         <div class="row"><span class="t">Certificate of Creativity</span><span class="dots"></span><span class="n">20</span></div>
         <div class="row"><span class="t">Day 8 <small>· Korea Special</small></span><span class="dots"></span><span class="n">21</span></div>
-        <div class="row"><span class="t">About the Mongle Kids App</span><span class="dots"></span><span class="n">24</span></div>
+        <div class="row"><span class="t">About the Monglekids App</span><span class="dots"></span><span class="n">24</span></div>
       </div>
     </div>
   </section>
@@ -257,6 +268,7 @@
         <div class="rank" data-n="1"></div><div class="rank" data-n="2"></div><div class="rank" data-n="3"></div>
         <div class="box tip"><span class="lab">🟡 TIP · Try at home</span>Fill a basin with water and drop in objects. What do the floaters have in common?</div>
         <div class="box tell"><span class="lab">🗣️ Tell</span>Tell a grown-up which way is best, and why.</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: There’s no wrong answer — the sillier, the better! 🌈</span></div>
       </div>
     </div>
   </section>
@@ -302,6 +314,7 @@
         <div class="line"></div><div class="line"></div>
         <div class="box tip"><span class="lab">🟡 TIP</span>(cloud-sucking straw · a cooler · an amount window · your own idea)</div>
         <div class="box tell"><span class="lab">🗣️ Tell</span>Why does your bag need each feature?</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Dream big — your bag can do anything! ☁️</span></div>
       </div>
     </div>
   </section>
@@ -337,6 +350,7 @@
         <div class="qnum"><i>2</i> Imagine — What does the rabbit want to tell you?</div>
         <div class="line"></div>
         <div class="box tell"><span class="lab">🗣️ Tell</span>Try “speaking” to a grown-up without words!</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Every animal has feelings, just like you. 💛</span></div>
       </div>
     </div>
   </section>
@@ -372,6 +386,7 @@
         <div class="qnum"><i>2</i> Imagine — Your shadow's profile</div>
         <p class="story" style="margin:3px 0">Name <span class="fill"></span> · Personality <span class="fill"></span></p>
         <div class="box tip"><span class="lab">🟡 TIP</span>Move a flashlight near & far — watch your shadow grow and shrink!</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Your shadow is one of a kind — just like YOU! ✨</span></div>
       </div>
     </div>
   </section>
@@ -407,6 +422,7 @@
         <p class="story" style="margin:3px 0">Gathers by <span class="fill"></span></p>
         <p class="story" style="margin:3px 0">Stores by <span class="fill"></span> · Releases by <span class="fill"></span></p>
         <div class="box tell"><span class="lab">🗣️ Tell</span>Where would you use your wind machine?</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Inventors try, try, and try again! 🌬️</span></div>
       </div>
     </div>
   </section>
@@ -447,6 +463,7 @@
         <div class="qnum"><i>2</i> Imagine — Top 3 things you'd do</div>
         <div class="rank" data-n="1"></div><div class="rank" data-n="2"></div><div class="rank" data-n="3"></div>
         <div class="box tip"><span class="lab">🟡 TIP · Slow motion!</span>Walk very slowly for 10 seconds. Notice the floor, sounds, air you usually miss!</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Slow down and notice the little things. 🐌</span></div>
       </div>
     </div>
   </section>
@@ -481,6 +498,7 @@
         <div class="qnum"><i>2</i> About Van Gogh (1853–1890)</div>
         <p class="story" style="margin:3px 0">He sold only <b>one</b> painting in his life — now he's one of the world's most-loved painters!</p>
         <div class="box tell"><span class="lab">🖼️ More paintings</span>Turn the page to see more of Van Gogh's famous works →</div>
+        <div class="moongsays"><img src="assets/book/moong.jpg" alt=""><span>Moong says: Art is how we share our feelings. 🎨</span></div>
       </div>
     </div>
   </section>
@@ -526,6 +544,7 @@
       <div><b>5</b>Wind</div><div><b>6</b>Slow time</div><div><b>7</b>Starry Night</div><div><b>★</b>Korea</div>
     </div>
     <p class="story" style="text-align:center">My favorite mission was <span class="fill" style="min-width:220px"></span></p>
+    <div class="reward-stars"><b>⭐ Color a star for every mission you finished!</b><div class="rstars"><i>☆</i><i>☆</i><i>☆</i><i>☆</i><i>☆</i><i>☆</i><i>☆</i><i>☆</i></div></div>
     <div class="cert" style="margin-top:16px;max-width:640px;margin-left:auto;margin-right:auto">
       <div style="font-size:11px;letter-spacing:2px;color:var(--teal);font-weight:700">CREATIVE EXPLORER CERTIFICATE</div>
       <h2 style="font-size:26px;margin:6px 0">🏅 Certificate of Creativity</h2>
@@ -546,7 +565,7 @@
           • Korean masks are called <b>Tal (탈)</b>; the Hahoe masks are 800+ years old.<br>
           • <b>Talchum (탈춤)</b>, the Korean mask dance, is on the <b>UNESCO</b> list!<br>
           • <b>Hangeul (한글)</b> is the Korean alphabet · <b>Hanbok (한복)</b> is the colorful traditional dress.</div>
-        <div class="box sci"><span class="lab">🟣 Culture Note · Feelings in motion</span>Each mask shows one big feeling — a wide laugh, a sly grin, a kind smile. The dance turns <b>feelings into movement</b> — just like Mongle creatures coming to life!</div>
+        <div class="box sci"><span class="lab">🟣 Culture Note · Feelings in motion</span>Each mask shows one big feeling — a wide laugh, a sly grin, a kind smile. The dance turns <b>feelings into movement</b> — just like Monglekids creatures coming to life!</div>
         <div class="keys"><span>Korean culture</span><span>Emotion → movement</span><span>Pattern & color</span></div>
       </div>
       <div>
@@ -574,17 +593,26 @@
   </section>
   <section class="page korea">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
-    <h2 class="title" style="font-size:26px;margin-top:0">DAY 8 · Design your own Korean Mask (Tal)!</h2>
-    <p class="step-l">Give your mask big eyes, a mouth, eyebrows & bright patterns. Choose colors that match its feeling — then color it in!</p>
-    <div class="makegrid" style="flex:1;min-height:0">
-      <div class="drawbox">Draw &amp; color your Tal mask here 🎭</div>
-      <div class="infocol">
-        <div class="infobox" style="flex:1"><b>Mask name</b></div>
-        <div class="infobox" style="flex:1"><b>Its feeling</b></div>
-        <div class="infobox" style="flex:1.4;text-align:center;background:#eaf7ef">
-          <b style="color:var(--teal)">Bring it to life! 📸</b>
-          <span style="font-size:12px;color:#6a7d6a">Snap a photo and watch Moong animate it.</span><br>
-          <a class="cta" href="crop_creature.html?src=book">Open the app →</a></div>
+    <span class="day-badge">DAY 8 · KOREA</span><span class="crumb">Make it come alive!</span>
+    <h2 class="title" style="font-size:27px;margin:8px 0 6px">Make your mask come ALIVE! 🎭</h2>
+    <div class="cols" style="grid-template-columns:1.45fr 1fr;gap:24px">
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <p class="step-l">1 · Draw &amp; color your own Korean mask — big eyes, a mouth, and bright patterns!</p>
+        <div class="drawbox" style="flex:1;min-height:0">Draw &amp; color your Tal mask here 🎨</div>
+        <div style="display:flex;gap:12px;margin-top:10px">
+          <div class="infobox" style="flex:1"><b>Mask name</b></div>
+          <div class="infobox" style="flex:1"><b>Its feeling</b></div>
+        </div>
+      </div>
+      <div class="linkcard">
+        <div class="lc-title">Watch it DANCE! 🎭➡️✨</div>
+        <ol class="lc-steps">
+          <li><b>Scan</b> the code with a grown-up’s phone</li>
+          <li><b>Snap</b> a photo of the mask you drew</li>
+          <li><b>Watch</b> Moong bring it to life &amp; make it dance in the Monglekids <b>Mask Dance</b>!</li>
+        </ol>
+        <img class="qr" src="assets/book/qr_mask.png" alt="Scan to open Monglekids">
+        <div class="lc-foot">monglekids.com · Mask Dance<br><span>Your photo is never uploaded or saved 💛</span></div>
       </div>
     </div>
   </section>
@@ -593,11 +621,11 @@
   <section class="page">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
     <span class="day-badge" style="background:linear-gradient(135deg,#8a7fd6,#b9a7ff)">FOR GROWN-UPS</span>
-    <h2 class="title">From 7 days → 365 days, with the Mongle Kids app</h2>
+    <h2 class="title">From 7 days → 365 days, with the Monglekids app</h2>
     <div class="cols">
       <div>
-        <p class="story">This book was just a taste. In the <b>Mongle Kids app</b>, AI Moong keeps the imagination going.</p>
-        <div class="box sci"><span class="lab">💜 Our belief</span>Not a child who memorizes answers — a child who creates questions. Mongle never gives the answer; it asks “Why?” and “What's another way?” — and that's where real thinking grows. <b>“Turn screen time into thinking time.”</b></div>
+        <p class="story">This book was just a taste. In the <b>Monglekids app</b>, AI Moong keeps the imagination going.</p>
+        <div class="box sci"><span class="lab">💜 Our belief</span>Not a child who memorizes answers — a child who creates questions. Monglekids never gives the answer; it asks “Why?” and “What's another way?” — and that's where real thinking grows. <b>“Turn screen time into thinking time.”</b></div>
         <p class="story" style="margin-top:10px"><b>Early supporter:</b> be first to try AI Moong, tailored missions & growth reports at launch. 💛</p>
       </div>
       <div>
