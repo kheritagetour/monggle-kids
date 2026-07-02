@@ -6,7 +6,7 @@
 <title>Mongle Kids — 7-Day Creative Mission Book</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --cream:#fdf6ea; --ink:#34414d; --soft:#9a8f82; --story:#5d564f;
@@ -15,18 +15,18 @@
     --violet:#9b7fd6; --violet-bg:#efe9fb; --chip:#f1ece4;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Poppins',sans-serif;color:var(--ink);background:#e9e1d4;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{font-family:'Nunito','Poppins',sans-serif;color:var(--ink);background:#e9e1d4;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;font-weight:700;letter-spacing:-.3px;}
   .bar{position:sticky;top:0;z-index:10;background:#fff;display:flex;justify-content:space-between;align-items:center;
     padding:10px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
   .bar b{font-family:'Fredoka';color:var(--pink);}
   .bar button{font-family:'Fredoka';font-weight:600;border:none;background:linear-gradient(135deg,var(--orange),#f4a94f);color:#fff;
     padding:8px 16px;border-radius:999px;cursor:pointer;}
-  .book{width:1123px;margin:20px auto;}
+  .book{width:1123px;margin:20px auto;counter-reset:pg 0;}
   body{overflow-x:auto;}
   /* landscape A4 page */
   .page{position:relative;display:flex;flex-direction:column;width:1123px;height:794px;background:var(--cream);border-radius:6px;overflow:hidden;
-    margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:40px 50px;}
+    margin:0 auto 18px;box-shadow:0 10px 30px rgba(90,58,120,.14);padding:38px 50px 54px;}
   .moong-corner{position:absolute;top:26px;right:34px;width:54px;height:54px;border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.1);}
   .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;}
   .day-badge{display:inline-block;font-family:'Fredoka';font-weight:600;font-size:13px;color:#fff;
@@ -98,12 +98,24 @@
   #vg-gallery>div>div:first-child figure>img{height:280px;}
   #vg-gallery .vg4{gap:10px;}
   #vg-gallery figcaption{margin-top:2px;}
+  .page:not(.cover){counter-increment:pg;}
+  .page:not(.cover)::before{content:"MONGLE KIDS  \00B7  7-Day Creative Mission Book";position:absolute;left:50px;bottom:18px;font-family:'Nunito',sans-serif;font-weight:700;font-size:9px;letter-spacing:.6px;color:#c6b9a7;}
+  .page:not(.cover)::after{content:counter(pg);position:absolute;right:50px;bottom:15px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:12px;color:#b0a595;}
+  .toc{margin-top:8px;}
+  .toc .row{display:flex;align-items:baseline;margin:10px 2px;font-size:15px;}
+  .toc .row .t{font-weight:700;color:var(--ink);}
+  .toc .row .t small{font-weight:600;color:var(--soft);font-size:12.5px;}
+  .toc .row .dots{flex:1;border-bottom:2px dotted #d8ccba;margin:0 10px;position:relative;top:-4px;}
+  .toc .row .n{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--orange);min-width:22px;text-align:right;}
+  .toc .sec{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--teal);font-size:12px;letter-spacing:1.2px;margin:15px 2px 3px;text-transform:uppercase;}
+  .belongs{margin-top:20px;color:#a98e7e;font-size:14px;line-height:2;}
   @media print{
     @page{ size:A4 landscape; margin:0; }
     body{background:#fff;} .bar{display:none;} .book{margin:0;width:auto;max-width:none;}
-    .page{margin:0;border-radius:0;box-shadow:none;page-break-after:always;width:297mm;height:209mm;padding:13mm 16mm;}
+    .page{margin:0;border-radius:0;box-shadow:none;page-break-after:always;width:297mm;height:209mm;padding:12mm 16mm 17mm;}
     .moong-corner{width:13mm;height:13mm;top:11mm;right:13mm;}
     .page:last-child{page-break-after:avoid;}
+    .page:not(.cover)::before{left:16mm;bottom:8mm;} .page:not(.cover)::after{right:16mm;bottom:7mm;}
   }
 </style>
 </head>
@@ -119,16 +131,66 @@
     <img class="icon" src="assets/book/moong.jpg" alt="Moong">
     <h1>Mongle Kids</h1>
     <div class="sub2">7-Day Creative Mission Book</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;color:#d19a83;letter-spacing:2px;font-size:12px;margin-top:8px">AGES 4–8 · CREATIVITY &amp; STEAM</div>
     <p class="tag">One question a day, one imagination a day.<br>A 7-day adventure where thinking grows.</p>
-    <p class="name">Name <span class="fill" style="min-width:200px"></span> &nbsp; Age <span class="fill" style="min-width:60px"></span><br>
-      <span style="font-size:12px">Even better together with a grown-up 💛</span></p>
-    <p style="position:absolute;bottom:22px;font-size:10px;color:#c8a994">© Mongle Kids. Unauthorized copying & distribution prohibited.</p>
+    <div class="belongs" style="text-align:center">This book belongs to<br><span class="fill" style="min-width:280px;height:24px"></span><br>
+      <span style="font-size:12px">Age <span class="fill" style="min-width:64px"></span> &nbsp;·&nbsp; Even better together with a grown-up 💛</span></div>
+    <p style="position:absolute;bottom:20px;font-size:10px;color:#c8a994">© Mongle Kids · monglekids.com &nbsp;·&nbsp; Unauthorized copying &amp; distribution prohibited.</p>
+  </section>
+
+  <!-- ABOUT MONGLE KIDS -->
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge" style="background:linear-gradient(135deg,var(--pink),#f59ab0)">ABOUT MONGLE KIDS</span>
+    <h2 class="title">A world where curiosity grows 🌱</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:30px">
+      <div>
+        <p class="story"><b>Mongle Kids</b> is a creative learning world where children grow <b>curiosity, imagination, and confidence</b> — one playful question at a time.</p>
+        <p class="story">Your guide is <b>Moong</b>, a friendly little cloud who loves to wonder. Together you'll <b>observe, imagine, explore, make,</b> and <b>tell</b>. This book is a 7-day taste of that journey.</p>
+        <div class="box sci"><span class="lab">💜 Our belief</span>We help raise children who <b>create questions</b> — not just memorize answers. <b>Turn screen time into thinking time.</b></div>
+      </div>
+      <div>
+        <div class="box know"><span class="lab">🌟 What children build</span>Creative thinking &middot; problem-solving &middot; science curiosity &middot; self-expression &middot; confidence</div>
+        <div class="box tip"><span class="lab">👨‍👩‍👧 Made for families</span>Just 20–30 relaxed minutes a day. There are no wrong answers — follow your child's ideas and gently ask “Why?”</div>
+        <div class="box tell"><span class="lab">🗺️ Inside this book</span>7 daily creative missions + a Korea Special — each with a story, a science note, and lots of room to draw &amp; dream.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE OF CONTENTS -->
+  <section class="page">
+    <img class="moong-corner" src="assets/book/moong.jpg" alt="">
+    <span class="day-badge" style="background:linear-gradient(135deg,#8a7fd6,#b9a7ff)">CONTENTS</span>
+    <h2 class="title">Table of Contents</h2>
+    <div class="cols" style="grid-template-columns:1fr 1fr;gap:40px">
+      <div class="toc">
+        <div class="sec">Getting Started</div>
+        <div class="row"><span class="t">About Mongle Kids</span><span class="dots"></span><span class="n">1</span></div>
+        <div class="row"><span class="t">How to Use This Book <small>· meet Moong</small></span><span class="dots"></span><span class="n">3</span></div>
+        <div class="row"><span class="t">For Grown-ups</span><span class="dots"></span><span class="n">4</span></div>
+        <div class="sec">7 Creative Missions</div>
+        <div class="row"><span class="t">Day 1 <small>· No bridge?</small></span><span class="dots"></span><span class="n">5</span></div>
+        <div class="row"><span class="t">Day 2 <small>· Cloud in a bag?</small></span><span class="dots"></span><span class="n">7</span></div>
+        <div class="row"><span class="t">Day 3 <small>· Animal talk</small></span><span class="dots"></span><span class="n">9</span></div>
+      </div>
+      <div class="toc">
+        <div class="sec">&nbsp;</div>
+        <div class="row"><span class="t">Day 4 <small>· Living shadow</small></span><span class="dots"></span><span class="n">11</span></div>
+        <div class="row"><span class="t">Day 5 <small>· Catch the wind</small></span><span class="dots"></span><span class="n">13</span></div>
+        <div class="row"><span class="t">Day 6 <small>· Slow time</small></span><span class="dots"></span><span class="n">15</span></div>
+        <div class="row"><span class="t">Day 7 <small>· Starry Night</small></span><span class="dots"></span><span class="n">17</span></div>
+        <div class="sec">Finish &amp; Beyond</div>
+        <div class="row"><span class="t">Certificate of Creativity</span><span class="dots"></span><span class="n">20</span></div>
+        <div class="row"><span class="t">Day 8 <small>· Korea Special</small></span><span class="dots"></span><span class="n">21</span></div>
+        <div class="row"><span class="t">About the Mongle Kids App</span><span class="dots"></span><span class="n">24</span></div>
+      </div>
+    </div>
   </section>
 
   <!-- WELCOME -->
   <section class="page">
     <img class="moong-corner" src="assets/book/moong.jpg" alt="">
-    <span class="day-badge" style="background:linear-gradient(135deg,var(--teal),#6fce9f)">WELCOME</span>
+    <span class="day-badge" style="background:linear-gradient(135deg,var(--teal),#6fce9f)">HOW TO USE</span>
     <h2 class="title">Hi! I'm Moong. Let's adventure together!</h2>
     <div class="cols">
       <div>
