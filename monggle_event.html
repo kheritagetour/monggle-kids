@@ -314,6 +314,30 @@
   @media (max-height:680px){
     .status{bottom:128px;} .meter{bottom:100px;}
   }
+  /* ---- responsive hardening (mobile) ---- */
+  img,video,canvas,svg{max-width:100%;}
+  .sp-title,.sp-text,.lead,.m-desc,.fname,.fstat,.win-ov p,.battle p,.cam-note,.brief p,h1{overflow-wrap:break-word;word-break:keep-all;}
+  .story-stage{max-width:min(430px,100%);padding:0 4px;}
+  .controls{padding-bottom:calc(34px + env(safe-area-inset-bottom));}
+  @supports (height:100svh){
+    .app{min-height:100svh;}
+    #splash,#story,#scene{min-height:100svh;}
+  }
+  @media (max-width:480px){
+    .app{padding:0 15px 40px;}
+    #story,#scene{padding:26px 20px;}
+    .sp-emoji{font-size:70px;}
+    .sp-title{font-size:clamp(21px,6vw,25px);}
+    .sp-text{font-size:clamp(13px,3.9vw,15px);}
+    .topbar{flex-wrap:wrap;gap:6px;} .topbar .tag{display:none;}
+    .costumes{top:56px;}
+  }
+  @media (max-width:360px){
+    .costumes button{font-size:11px;padding:5px 9px;}
+    .m-title2{font-size:14px;}
+    .win-ov h3,.battle h3{font-size:19px;}
+    .sp-emoji{font-size:60px;}
+  }
 </style>
 <script>window.MK_LANG=(function(){var p=new URLSearchParams(location.search).get("lang");if(p==="ko"||p==="en")return p;try{var v=localStorage.getItem("mk_lang");if(v)return v;}catch(e){}return "en";})();</script>
 <script src="assets/tts/manifest.js"></script>
@@ -618,38 +642,47 @@ function charOf(c){ if(!c) return 'narrator';
   if(c.indexOf('iris')===0) return 'iris'; if(c.indexOf('grumble')===0) return 'grumble';
   if(c.indexOf('mungi')===0) return 'mungi'; return 'narrator'; }
 const TTS_CACHE={};
+const EMOJI_RE=/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u2764\u2728]/gu;
+function forTTS(s){ return String(s).replace(/<[^>]*>/g,' ').replace(EMOJI_RE,' ').replace(/\s+/g,' ').trim(); }
 function pickVoice(lang){ try{ const vs=speechSynthesis.getVoices(); if(!vs||!vs.length) return null;
-  const pref = lang==='ko' ? ['Yuna','Google','한국','Heami'] : ['Samantha','Google US English','Aria','Jenny','Natural','Daniel'];
-  for(const pn of pref){ const f=vs.find(v=> v.name.indexOf(pn)>=0 && (lang==='ko'? /ko/i.test(v.lang) : /en/i.test(v.lang))); if(f) return f; }
-  return vs.find(v=> lang==='ko'? /ko/i.test(v.lang) : /en[-_]?US/i.test(v.lang)) || null;
+  const isKo=lang==='ko';
+  const cands=vs.filter(v=> isKo? /^ko/i.test(v.lang): /^en/i.test(v.lang)); if(!cands.length) return null;
+  const named=isKo?[/Yuna/i,/Sora/i,/Nara/i,/Siri/i,/Google/i]:[/Siri/i,/Samantha/i,/Ava/i,/Allison/i,/Aria/i,/Jenny/i,/Emma/i,/Google US/i,/Google/i];
+  const score=v=>{ let s=0; const n=v.name||'';
+    if(/Premium|Enhanced|Neural|Natural|Siri/i.test(n)) s+=6;
+    named.forEach((re,i)=>{ if(re.test(n)) s+=(named.length-i); });
+    if(v.localService) s+=1; if(!isKo && /en[-_]US/i.test(v.lang)) s+=2; return s; };
+  return cands.slice().sort((a,b)=>score(b)-score(a))[0]||null;
 }catch(e){ return null; } }
 function browserSpeak(txt,lang,v){ if(!window.speechSynthesis) return;
   try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang=lang==='ko'?'ko-KR':'en-US';
     const vo=pickVoice(lang); if(vo) u.voice=vo;
-    u.rate=((v&&v.rate)?v.rate:0.98)*0.95; u.pitch=(v&&v.pitch)||1.05; speechSynthesis.speak(u);}catch(e){} }
-if(window.speechSynthesis) speechSynthesis.onvoiceschanged=()=>{};
+    u.rate=((v&&v.rate)?v.rate:1.0)*0.98; u.pitch=(v&&v.pitch)||1.06; u.volume=1; speechSynthesis.speak(u);}catch(e){} }
+if(window.speechSynthesis){ speechSynthesis.onvoiceschanged=()=>{}; try{speechSynthesis.getVoices();}catch(e){} }
 function stopAudio(){ if(currentAudio){ try{currentAudio.pause();}catch(e){} currentAudio=null; } try{ if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){} }
 async function speak(t,who){
   if(!voiceOn) return;
-  const txt=String(t).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); if(!txt) return;
+  const raw=String(t).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  const txt=forTTS(t); if(!txt) return;
   const lang=LANG(); const v=VOICES[who]||VOICES.narrator; const voice=v.en;
   stopAudio();
-  const pre=(window.TTS_PREGEN||{})[lang+'|'+(who||'narrator')+'|'+txt];
-  if(pre){ try{ const a=new Audio(pre); currentAudio=a; a.play(); return; }catch(e){} }
+  // 1) natural self-hosted server (Kokoro / OpenAI-compatible /v1/audio/speech) if configured
   if(TTS_SERVER && voice && lang==='en'){
     try{
       const key=lang+'|'+voice+'|'+txt; let url=TTS_CACHE[key];
       if(!url){
         const res=await fetch(TTS_SERVER+'/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({model:'kokoro',input:txt,voice:voice,response_format:'mp3'})});
-        if(!res.ok) throw 0;
-        url=URL.createObjectURL(await res.blob()); TTS_CACHE[key]=url;
+        if(!res.ok) throw 0; url=URL.createObjectURL(await res.blob()); TTS_CACHE[key]=url;
       }
-      if(!voiceOn) return;
-      const a=new Audio(url); currentAudio=a; a.play(); return;
-    }catch(e){ /* fall back to browser voice */ }
+      if(!voiceOn) return; const a=new Audio(url); currentAudio=a; a.play(); return;
+    }catch(e){}
   }
-  browserSpeak(txt,lang,v);
+  // 2) device neural voice (natural intonation on phones) — primary free path
+  if(window.speechSynthesis){ browserSpeak(txt,lang,v); return; }
+  // 3) offline pre-generated fallback (keeps working with no network / no voices)
+  const pre=(window.TTS_PREGEN||{})[lang+'|'+(who||'narrator')+'|'+raw];
+  if(pre){ try{ const a=new Audio(pre); currentAudio=a; a.play(); }catch(e){} }
 }
 document.addEventListener('pointerdown',e=>{ if(e.target.closest('.story-next,.costumes button,.mission,.m-go,#mbStart,.m-close,#langToggle,#voiceToggle,.dl,#enterBtn')) sfx('tap'); },true);
 (function(){ const vb=document.getElementById('voiceToggle'); if(!vb) return;
