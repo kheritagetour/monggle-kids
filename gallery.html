@@ -146,9 +146,11 @@ const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)
 const T={
  ko:{upload:'＋ 내 그림 올리기',hint:'바닥을 눌러 걷기 · 친구를 누르면 하트 뿅! · 계단으로 2층에 🎨',upTitle:'🎨 내 그림 전시하기',dropTxt:'여기를 눌러 그림 사진을 골라요',submit:'✨ 갤러리에 전시하기',upNote:'아이 얼굴이 아닌 <b>그림</b>을 올려주세요.',star:'응원 별',cert:'🏅 전시 기록증',del:'🗑 이 작품 지우기',adminTitle:'관리자 · 전시 관리',brandSub:'Monglekids Metaverse Gallery',artist:'이름 (예: 몽글이)',title:'작품 제목 (예: 우리 가족)',cheer:'응원 한마디',chat:'채팅…',enter:'입장하기',entryTitle:'몽글 메타버스 갤러리',entrySub:'이름을 정하고, 나의 캐릭터를 골라 입장해요',entryNote:'다른 친구들과 같은 방에서 만나 그림을 감상하고 채팅해요.',labName:'이름',labChar:'캐릭터 고르기',presets:['멋져요! 🌟','최고예요! 👍','색깔이 예뻐요! 🎨','상상력 대단해요! 🚀','따뜻해요! 💛'],awards:['반짝이는 상상력 상','용감한 색깔 상','따뜻한 마음 상','자유로운 생각 상','오늘의 몽글 작가 상','반짝반짝 창의 상'],empty:'첫 번째 작품의 주인공이 되어보세요! ＋',ppl:'명 접속',guest:'손님',
      docent:['안녕! 나는 도슨트 로비야. 몽글 갤러리에 온 걸 환영해! 🤖','바닥을 누르면 그쪽으로 걸어갈 수 있어. 계단으로 2층도 올라가 봐!','그림을 누르면 크게 보고 응원 별과 댓글을 남길 수 있어.','＋ 버튼으로 네 그림도 전시해 봐. 멋진 전시 기록증도 나와!','풍선을 누르면 깜짝 선물이 나온단다 🎈','문 밖에는 초록 풀밭이 펼쳐져 있어. 창밖을 구경해 봐!'],
+     greet:['반가워! 나는 도슨트 로비야 🤖','어서 와! 구경 많이 하고 가 🎨','작품을 누르면 응원할 수 있어!','친구를 누르면 하트를 보낼 수 있어 ❤️','오늘도 반짝이는 하루 보내!'],
      chars:['구름','토끼','로봇','고양이','곰','펭귄','공룡','병아리']},
  en:{upload:'＋ Add my drawing',hint:'Tap floor to walk · tap a friend for hearts · stairs to level 2 🎨',upTitle:'🎨 Exhibit my drawing',dropTxt:'Tap to choose a photo of your drawing',submit:'✨ Put it in the gallery',upNote:'Please upload the <b>drawing</b>, not a child\'s face.',star:'Star',cert:'🏅 Certificate',del:'🗑 Delete',adminTitle:'Admin · Manage',brandSub:'Monglekids Metaverse Gallery',artist:'Name (e.g., Moong)',title:'Title (e.g., My Family)',cheer:'Write a cheer',chat:'Chat…',enter:'Enter',entryTitle:'Mongle Metaverse Gallery',entrySub:'Pick a name and your character to enter',entryNote:'Meet friends in the same room, view art and chat together.',labName:'Name',labChar:'Choose a character',presets:['Awesome! 🌟','You rock! 👍','Lovely colors! 🎨','So creative! 🚀','So warm! 💛'],awards:['Sparkling Imagination Award','Brave Colors Award','Warm Heart Award','Free Thinker Award','Today\'s Mongle Artist','Twinkle Creativity Award'],empty:'Be the very first artist! ＋',ppl:'online',guest:'Guest',
      docent:['Hi! I\'m Docent Robi. Welcome to the Mongle gallery! 🤖','Tap the floor to walk there. Take the stairs up to level 2!','Tap a picture to view it big, give stars and leave a cheer.','Use ＋ to exhibit your own drawing — you get a certificate too!','Tap a balloon for a surprise gift 🎈','Green meadows lie outside the door. Take a peek through the window!'],
+     greet:['Hi there! I\'m Docent Robi 🤖','Welcome! Enjoy the art 🎨','Tap a picture to cheer it on!','Tap a friend to send a heart ❤️','Have a sparkly day!'],
      chars:['Cloud','Bunny','Robot','Cat','Bear','Penguin','Dino','Chick']}
 };
 let L=(window.MK_LANG==='en')?'en':'ko';
@@ -196,8 +198,14 @@ const rug=new THREE.Mesh(new THREE.CircleGeometry(4.6,48),new THREE.MeshStandard
 (function panels(){ const m=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xfff2d8,emissiveIntensity:.85,roughness:1}); for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const p=new THREE.Mesh(new THREE.PlaneGeometry(3.2,3.2),m); p.rotation.x=Math.PI/2; p.position.set(i*6.6,H-0.06,j*6.6); scene.add(p);} })();
 /* accent spotlights on each wall */
 (function spots(){ const mk=(x,z,tx,tz)=>{const sp=new THREE.SpotLight(0xfff2dc,26,30,0.66,0.55,1.2); sp.position.set(x,H-0.5,z); sp.target.position.set(tx,3,tz); scene.add(sp,sp.target);}; mk(0,-D/2+3.5,0,-D/2); mk(0,D/2-3.5,0,D/2); mk(-W/2+3.5,0,-W/2,0); mk(W/2-3.5,0,W/2,0); mk(0,7,0,3.5); })();
-/* potted plants in corners */
-(function plants(){ const pot=new THREE.MeshStandardMaterial({color:0xd98b5f,roughness:.9}), leaf=new THREE.MeshStandardMaterial({color:0x5fbf6a,roughness:.8}); [[-W/2+1.3,D/2-1.3],[W/2-1.3,D/2-1.3],[-W/2+1.3,8],[W/2-1.3,8]].forEach(([x,z])=>{const g=new THREE.Group(); const p=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.24,0.44,14),pot); p.position.y=0.22; g.add(p); for(let i=0;i<8;i++){const l=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.95,6),leaf); l.position.y=0.75; l.rotation.z=(i-4)*0.18; l.rotation.x=Math.sin(i)*0.4; g.add(l);} g.position.set(x,0,z); scene.add(g);}); })();
+/* potted plants (waterable) */
+const plantHits=[], plants=[], drops=[];
+function addPlant(x,y,z){ const g=new THREE.Group(); const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.24,0.44,14),new THREE.MeshStandardMaterial({color:0xd98b5f,roughness:.9})); pot.position.y=0.22; g.add(pot); const soil=new THREE.Mesh(new THREE.CylinderGeometry(0.27,0.27,0.06,14),new THREE.MeshStandardMaterial({color:0x6b4a2f})); soil.position.y=0.42; g.add(soil); const leafG=new THREE.Group(); leafG.position.y=0.44; const lm=new THREE.MeshStandardMaterial({color:0x5fbf6a,roughness:.8}); for(let i=0;i<8;i++){const l=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.95,6),lm); l.position.y=0.31; l.rotation.z=(i-4)*0.18; l.rotation.x=Math.sin(i)*0.4; leafG.add(l);} g.add(leafG); g.userData={leafG,grow:1}; g.position.set(x,y,z); scene.add(g); const hit=new THREE.Mesh(new THREE.SphereGeometry(0.85,8,8),new THREE.MeshBasicMaterial({visible:false})); hit.position.y=0.7; hit.userData.plant=g; g.add(hit); plantHits.push(hit); plants.push(g); return g; }
+function spawnDrops(px,py,pz){ for(let i=0;i<6;i++){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:emojiTex('💧'),transparent:true,depthWrite:false,depthTest:false})); s.scale.set(0.42,0.42,1); s.position.set(px+(Math.random()-0.5)*0.5,py+Math.random()*0.4,pz+(Math.random()-0.5)*0.5); s.userData={vy:-1.5-Math.random()*0.7,life:0.8+Math.random()*0.3,age:0}; scene.add(s); drops.push(s);} }
+function stepDrops(dt){ for(let i=drops.length-1;i>=0;i--){const s=drops[i],u=s.userData; u.age+=dt; s.position.y+=u.vy*dt; s.material.opacity=Math.max(0,1-u.age/u.life); if(u.age>=u.life){scene.remove(s); drops.splice(i,1);}} }
+function stepPlants(dt){ for(const g of plants){ const gr=g.userData.grow||1,sc=g.userData.leafG.scale; sc.x+=(gr-sc.x)*Math.min(1,4*dt); sc.y+=(gr-sc.y)*Math.min(1,4*dt); sc.z+=(gr-sc.z)*Math.min(1,4*dt); } }
+function waterPlant(g){ g.userData.grow=Math.min(1.7,(g.userData.grow||1)+0.14); spawnDrops(g.position.x,g.position.y+1.7,g.position.z); spawnReact(new THREE.Vector3(g.position.x,g.position.y+1.5,g.position.z),'sparkle'); sfxPop(); }
+[[-W/2+1.3,D/2-1.3],[W/2-1.3,D/2-1.3],[-W/2+1.3,8],[W/2-1.3,8]].forEach(([x,z])=>addPlant(x,0,z));
 /* benches */
 (function benches(){ const w=new THREE.MeshStandardMaterial({color:0xf3e4ec,roughness:.7}); const mk=(x,z)=>{const g=new THREE.Group(); const s=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.18,0.7),w); s.position.y=0.5; g.add(s); [[-0.9,-0.25],[0.9,-0.25],[-0.9,0.25],[0.9,0.25]].forEach(([lx,lz])=>{const leg=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.5,0.13),w); leg.position.set(lx,0.25,lz); g.add(leg);}); g.position.set(x,0,z); scene.add(g);}; mk(-7,11); mk(7,11); })();
 /* rainbow wall */
@@ -235,23 +243,19 @@ const AABBs=[{x0:SX0-0.35,x1:SX0,z0:SZ0,z1:SZ1},                 // west wall (b
 /* floor guide arrows */
 (function(){ const sh=new THREE.Shape(); sh.moveTo(0,0.5); sh.lineTo(0.35,-0.1); sh.lineTo(0.13,-0.1); sh.lineTo(0.13,-0.5); sh.lineTo(-0.13,-0.5); sh.lineTo(-0.13,-0.1); sh.lineTo(-0.35,-0.1); sh.closePath(); const geo=new THREE.ShapeGeometry(sh),mat=new THREE.MeshBasicMaterial({color:0xff9fc4,transparent:true,opacity:.5,side:THREE.DoubleSide}); [[sCx,SZ1+1.4,0],[0,12,0]].forEach(([x,z,r])=>{const a=new THREE.Mesh(geo,mat); a.rotation.x=-Math.PI/2; a.rotation.z=r; a.position.set(x,0.03,z); a.scale.setScalar(1.7); scene.add(a);}); })();
 /* ===== floor-2 furnishings + gallery essentials ===== */
-const spinners=[];
+const spinners=[]; let crystalMesh=null;
 function signSprite(text,bg,fg){ const c=document.createElement('canvas'); c.width=256;c.height=88; const x=c.getContext('2d'); x.fillStyle=bg; roundRect(x,4,4,248,80,18); x.fill(); x.fillStyle=fg; x.font='bold 34px "Apple SD Gothic Neo",sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,128,46); const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false})); s.scale.set(2.1,0.72,1); return s; }
 (function floor2(){ const F2=MZ;
   const skyMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xeaf4ff,emissiveIntensity:1.1,roughness:1});
   [[-4,-4],[4,-8]].forEach(([sx,sz])=>{const sk=new THREE.Mesh(new THREE.PlaneGeometry(6,6),skyMat); sk.rotation.x=Math.PI/2; sk.position.set(sx,H-0.05,sz); scene.add(sk); const l=new THREE.PointLight(0xeaf4ff,0.55,44); l.position.set(sx,H-1.5,sz); scene.add(l);});
   const fillL=new THREE.PointLight(0xfff4e6,0.5,44); fillL.position.set(0,F2+3.5,-6); scene.add(fillL);
   const ped=new THREE.Mesh(new THREE.CylinderGeometry(0.85,1.0,1.1,24),new THREE.MeshStandardMaterial({color:0xf3e6d0,roughness:.7})); ped.position.set(-5,F2+0.55,-9); scene.add(ped);
-  const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(0.75,0),new THREE.MeshStandardMaterial({color:0x9fe6ff,emissive:0x3fbfe0,emissiveIntensity:.55,metalness:.3,roughness:.15,transparent:true,opacity:.9})); crystal.position.set(-5,F2+2.0,-9); scene.add(crystal); spinners.push(crystal);
+  const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(0.75,0),new THREE.MeshStandardMaterial({color:0x9fe6ff,emissive:0x3fbfe0,emissiveIntensity:.55,metalness:.3,roughness:.15,transparent:true,opacity:.9})); crystal.position.set(-5,F2+2.0,-9); scene.add(crystal); spinners.push(crystal); crystalMesh=crystal;
   const crL=new THREE.PointLight(0x7fd8ff,0.6,12); crL.position.set(-5,F2+2.3,-9); scene.add(crL);
   const w=new THREE.MeshStandardMaterial({color:0xf3e4ec,roughness:.7}); [[-9,-3],[7,-3]].forEach(([x,z])=>{const g=new THREE.Group(); const s=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.18,0.7),w); s.position.y=0.5; g.add(s); [[-0.9,-0.25],[0.9,-0.25],[-0.9,0.25],[0.9,0.25]].forEach(([lx,lz])=>{const leg=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.5,0.13),w); leg.position.set(lx,0.25,lz); g.add(leg);}); g.position.set(x,F2,z); scene.add(g);});
-  const pot=new THREE.MeshStandardMaterial({color:0xd98b5f,roughness:.9}),leaf=new THREE.MeshStandardMaterial({color:0x5fbf6a,roughness:.8}); [[-W/2+1.4,-D/2+1.4],[-W/2+1.4,D/2-1.4]].forEach(([x,z])=>{const g=new THREE.Group(); const p=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.24,0.44,14),pot); p.position.y=0.22; g.add(p); for(let i=0;i<8;i++){const l=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.95,6),leaf); l.position.y=0.75; l.rotation.z=(i-4)*0.18; l.rotation.x=Math.sin(i)*0.4; g.add(l);} g.position.set(x,F2,z); scene.add(g);});
+  [[-W/2+1.4,-D/2+1.4],[-W/2+1.4,D/2-1.4]].forEach(([x,z])=>addPlant(x,F2,z));
   const mk=(x,z,tx,tz)=>{const sp=new THREE.SpotLight(0xfff2dc,16,28,0.7,0.5,1.2); sp.position.set(x,H-1,z); sp.target.position.set(tx,F2+2.6,tz); scene.add(sp,sp.target);}; mk(0,-D/2+3,0,-D/2); mk(-W/2+3,0,-W/2,0); mk(W/2-3,0,W/2,0);
-  const s2=signSprite('▼ 1층으로','rgba(255,255,255,.95)','#3f6fc4'); s2.position.set(sCx-1.5,F2+1.7,SZ0-0.6); scene.add(s2);
 })();
-/* floor1 wayfinding + welcome sign */
-const s1=signSprite('▲ 2층 전시관','rgba(255,255,255,.95)','#c4536a'); s1.position.set(sCx-1.6,2.0,SZ1+1.2); scene.add(s1);
-const sw=signSprite('환영합니다 🎨','rgba(255,255,255,.95)','#3fa88a'); sw.scale.set(2.6,0.9,1); sw.position.set(0,2.2,D/2-2); scene.add(sw);
 /* statue: torus knot (reverted) */
 const pedestal=new THREE.Mesh(new THREE.CylinderGeometry(0.9,1.05,1.3,32),new THREE.MeshStandardMaterial({color:0xf3e6d0,roughness:.7})); pedestal.position.set(0,0.65,9); scene.add(pedestal);
 const plinth=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,0.18,32),new THREE.MeshStandardMaterial({color:0xe6d3b6,roughness:.8})); plinth.position.set(0,1.34,9); scene.add(plinth);
@@ -293,10 +297,11 @@ function makeChar(type,name,col){ const g=new THREE.Group(); col=col||0xffd45e;
   const tag=nameTag(name); tag.position.y=type===0?1.78:2.05; g.add(tag); g.userData.tagY=tag.position.y; return g; }
 
 /* docent NPC — free 3D asset (three.js RobotExpressive, CC0), fallback to procedural */
-let docent=null, docentBubble=null, docentIdx=0, docentTimer=0, docentMixer=null, docentWave=null, docentIdleA=null;
+let docent=null, docentBubble=null, docentIdx=0, docentTimer=0, docentMixer=null, docentWave=null, docentIdleA=null; const docentHits=[];
 const DOCENT_URL='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/models/gltf/RobotExpressive/RobotExpressive.glb';
 function addDocent(){ const grp=new THREE.Group(); grp.position.set(-6,0,11.5); grp.rotation.y=0.7; scene.add(grp); docent=grp;
   const tag=nameTag(L==='ko'?'🤖 도슨트 로비':'🤖 Docent Robi',true); tag.position.y=2.35; grp.add(tag);
+  const dhit=new THREE.Mesh(new THREE.SphereGeometry(1.05,8,8),new THREE.MeshBasicMaterial({visible:false})); dhit.position.y=1.0; dhit.userData.docent=true; grp.add(dhit); docentHits.push(dhit);
   new GLTFLoader().load(DOCENT_URL, g=>{ const m=g.scene; m.scale.setScalar(0.42); m.traverse(o=>{ if(o.isMesh){o.frustumCulled=false;} }); grp.add(m);
       docentMixer=new THREE.AnimationMixer(m); const clips=g.animations||[]; const byName=n=>clips.find(c=>c.name.toLowerCase()===n);
       docentIdleA=byName('idle')||clips.find(c=>/idle/i.test(c.name)); docentWave=byName('wave'); if(docentIdleA)docentMixer.clipAction(docentIdleA).play(); docentGesture(); },
@@ -304,7 +309,9 @@ function addDocent(){ const grp=new THREE.Group(); grp.position.set(-6,0,11.5); 
   showDocentTip();
 }
 function docentGesture(){ if(docentMixer&&docentWave&&docentIdleA){ const a=docentMixer.clipAction(docentWave); a.reset(); a.setLoop(THREE.LoopOnce); a.clampWhenFinished=false; a.fadeIn(0.2).play(); setTimeout(()=>{a.fadeOut(0.4);},1600); } }
-function showDocentTip(){ if(docentBubble){docent.remove(docentBubble);} const txt=T[L].docent[docentIdx%T[L].docent.length]; docentIdx++; const c=document.createElement('canvas'); c.width=512;c.height=140; const x=c.getContext('2d'); x.fillStyle='rgba(255,255,255,.96)'; roundRect(x,6,6,500,128,22); x.fill(); x.fillStyle='#3a3550'; x.font='26px "Apple SD Gothic Neo",sans-serif'; x.textAlign='center'; wrap(x,txt,256,52,470,32); docentBubble=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false})); docentBubble.scale.set(3.4,0.93,1); docentBubble.position.y=2.9; docent.add(docentBubble); docentTimer=7; docentGesture(); }
+function setDocentBubble(txt){ if(docentBubble){docent.remove(docentBubble);} const c=document.createElement('canvas'); c.width=512;c.height=140; const x=c.getContext('2d'); x.fillStyle='rgba(255,255,255,.96)'; roundRect(x,6,6,500,128,22); x.fill(); x.fillStyle='#3a3550'; x.font='26px "Apple SD Gothic Neo",sans-serif'; x.textAlign='center'; wrap(x,txt,256,52,470,32); docentBubble=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false})); docentBubble.scale.set(3.4,0.93,1); docentBubble.position.y=2.9; docent.add(docentBubble); docentTimer=7; }
+function showDocentTip(){ setDocentBubble(T[L].docent[docentIdx%T[L].docent.length]); docentIdx++; docentGesture(); }
+function greetDocent(){ if(!docent)return; setDocentBubble(T[L].greet[Math.floor(Math.random()*T[L].greet.length)]); docentGesture(); spawnReact(new THREE.Vector3(docent.position.x,2.4,docent.position.z),'sparkle'); }
 function wrap(x,text,cx,cy,maxw,lh){ const words=text.split(' '); let line='',y=cy,lines=[]; for(const w of words){ if(x.measureText(line+w).width>maxw&&line){lines.push(line);line=w+' ';}else line+=w+' '; } lines.push(line); const sy=cy-(lines.length-1)*lh/2; lines.forEach((l,i)=>x.fillText(l.trim(),cx,sy+i*lh)); }
 
 /* other players (real, via MQTT) */
@@ -315,7 +322,7 @@ function dropOther(id){ const o=others.get(id); if(!o)return; scene.remove(o.gro
 const _emojiTex={};
 function emojiTex(em){ if(_emojiTex[em])return _emojiTex[em]; const c=document.createElement('canvas'); c.width=c.height=72; const x=c.getContext('2d'); x.font='54px serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(em,36,40); const t=new THREE.CanvasTexture(c); _emojiTex[em]=t; return t; }
 const reacts=[];
-function spawnReact(pos,kind){ const em=kind==='star'?'⭐':kind==='clap'?'👏':kind==='cheer'?'🎉':'❤️'; for(let i=0;i<6;i++){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:emojiTex(em),transparent:true,depthWrite:false,depthTest:false})); s.scale.set(0.62,0.62,1); s.position.set(pos.x+(Math.random()-0.5)*0.7,pos.y+Math.random()*0.3,pos.z+(Math.random()-0.5)*0.5); s.renderOrder=999; s.userData={vy:1.3+Math.random()*0.7,life:1.3+Math.random()*0.5,age:0,sx:(Math.random()-0.5)*0.5}; scene.add(s); reacts.push(s); } sfxTwinkle(); }
+function spawnReact(pos,kind){ const em=kind==='star'?'⭐':kind==='clap'?'👏':kind==='cheer'?'🎉':kind==='sparkle'?'✨':'❤️'; for(let i=0;i<6;i++){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:emojiTex(em),transparent:true,depthWrite:false,depthTest:false})); s.scale.set(0.62,0.62,1); s.position.set(pos.x+(Math.random()-0.5)*0.7,pos.y+Math.random()*0.3,pos.z+(Math.random()-0.5)*0.5); s.renderOrder=999; s.userData={vy:1.3+Math.random()*0.7,life:1.3+Math.random()*0.5,age:0,sx:(Math.random()-0.5)*0.5}; scene.add(s); reacts.push(s); } sfxTwinkle(); }
 function stepReacts(dt){ for(let i=reacts.length-1;i>=0;i--){ const s=reacts[i],u=s.userData; u.age+=dt; s.position.y+=u.vy*dt; s.position.x+=u.sx*dt; const k=u.age/u.life; s.material.opacity=Math.max(0,1-k); s.scale.setScalar(0.62+k*0.5); if(k>=1){scene.remove(s); reacts.splice(i,1);} } }
 function reactPos(targetId){ if(!targetId||targetId===myId) return new THREE.Vector3(controls.target.x,controls.target.y+0.7,controls.target.z); const o=others.get(targetId); return o? o.group.position.clone().setY(o.group.position.y+2.2) : null; }
 function sendReaction(targetId,kind){ const pos=reactPos(targetId); if(pos)spawnReact(pos,kind); if(mqc&&mqc.connected)mqc.publish(window.MG_ROOM+'/react',JSON.stringify({id:myId,to:targetId||myId,kind})); }
@@ -337,16 +344,19 @@ const slots=(function(){ const s=[],near=0.18,inset=4; const run=(n,sx,sz,ex,ez,
     if(li===0){ run(2,-9,D/2-near,-3,D/2-near,Math.PI,y); run(2,3,D/2-near,9,D/2-near,Math.PI,y); } // F1 front (doorway gap)
     else run(4,-W/2+inset,D/2-near, W/2-inset,D/2-near,Math.PI,y);   // F2 front (solid)
   }); return s; })();
+slots.forEach((s,i)=>{s.idx=i; s.level=s.y>=MZ-0.1?1:0;});
+function usedSlots(){ const u=new Set(); for(const it of artMap.values())if(it.slot!=null)u.add(it.slot); return u; }
+function pickSlot(){ const used=usedSlots(),cx=controls.target.x,cz=controls.target.z; let best=-1,bd=1e9; for(const s of slots){ if(s.level!==myLevel||used.has(s.idx))continue; const d=(s.x-cx)**2+(s.z-cz)**2; if(d<bd){bd=d;best=s.idx;} } if(best<0)for(const s of slots){ if(!used.has(s.idx)){best=s.idx;break;} } return best<0?0:best; }
 const frameCols=[0xff9fb8,0xffd67a,0x8fe0c0,0x8fbcff,0xc7a0ff,0xffb27a]; let placedTotal=0; const shown=new Map();
-function placeArtwork(item){ return new Promise(res=>{ const idx=placedTotal,slot=slots[placedTotal%slots.length]; placedTotal++; const img=new Image(); img.onload=()=>{ const ar=img.width/img.height; let w=2.4,h=2.4; if(ar>1)h=w/ar; else w=h*ar; const tex=new THREE.Texture(img); tex.colorSpace=THREE.SRGBColorSpace; tex.needsUpdate=true; const grp=new THREE.Group(); grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.36,h+0.36,0.12),new THREE.MeshStandardMaterial({color:frameCols[idx%frameCols.length],roughness:.5,metalness:.2}))); const mat=new THREE.Mesh(new THREE.PlaneGeometry(w+0.12,h+0.12),new THREE.MeshStandardMaterial({color:0xffffff})); mat.position.z=0.062; grp.add(mat); const art=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex})); art.position.z=0.07; art.userData.key=item.key; grp.add(art); grp.position.set(slot.x,slot.y,slot.z); grp.rotation.y=slot.ry; scene.add(grp); shown.set(item.key,{item,group:grp,artMesh:art}); res(); }; img.onerror=()=>res(); img.src=item.img; }); }
+function placeArtwork(item){ return new Promise(res=>{ const slot=(item.slot!=null&&slots[item.slot])?slots[item.slot]:slots[placedTotal%slots.length]; const idx=(item.slot!=null?item.slot:placedTotal); placedTotal++; const img=new Image(); img.onload=()=>{ const ar=img.width/img.height; let w=2.4,h=2.4; if(ar>1)h=w/ar; else w=h*ar; const tex=new THREE.Texture(img); tex.colorSpace=THREE.SRGBColorSpace; tex.needsUpdate=true; const grp=new THREE.Group(); grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.36,h+0.36,0.12),new THREE.MeshStandardMaterial({color:frameCols[idx%frameCols.length],roughness:.5,metalness:.2}))); const mat=new THREE.Mesh(new THREE.PlaneGeometry(w+0.12,h+0.12),new THREE.MeshStandardMaterial({color:0xffffff})); mat.position.z=0.062; grp.add(mat); const art=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex})); art.position.z=0.07; art.userData.key=item.key; grp.add(art); grp.position.set(slot.x,slot.y,slot.z); grp.rotation.y=slot.ry; scene.add(grp); shown.set(item.key,{item,group:grp,artMesh:art}); res(); }; img.onerror=()=>res(); img.src=item.img; }); }
 async function syncItems(items){ const seen=new Set(); for(const it of items){ seen.add(it.key); if(shown.has(it.key)){const e=shown.get(it.key); Object.assign(e.item,it); if(cur&&cur.key===it.key){cur=e.item; refreshModal();}} else await placeArtwork(it); } for(const [k,e] of [...shown]){ if(!seen.has(k)){scene.remove(e.group); shown.delete(k); if(cur&&cur.key===k)closeArt();} } $('hint').textContent=shown.size?T[L].hint:T[L].empty; }
 
 /* ---------- picking + walk ---------- */
 const ray=new THREE.Raycaster(),ptr=new THREE.Vector2(); let downXY=null,navTo=null;
 canvas.addEventListener('pointerdown',e=>{ downXY=[e.clientX,e.clientY]; startAudio(); });
 canvas.addEventListener('pointerup',e=>{ if(!downXY)return; const dx=e.clientX-downXY[0],dy=e.clientY-downXY[1]; downXY=null; if(Math.hypot(dx,dy)>8)return; ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1; ray.setFromCamera(ptr,camera);
-  const targets=[...shown.values()].map(a=>a.artMesh).concat(balloonMeshes,avatarHits,walkables,[statueMesh]); const hits=ray.intersectObjects(targets,false); if(!hits.length)return; const o=hits[0].object;
-  if(o.userData.key){const e2=shown.get(o.userData.key); if(e2)openArt(e2.item);} else if(o.userData.oid){ sendReaction(o.userData.oid,'heart'); burstAt(e.clientX,e.clientY,['❤️','💕','✨','⭐']); } else if(o.userData.balloon){popBalloon(o.userData.balloon,e);} else if(o===statueMesh){statueSpin+=6; burstAt(e.clientX,e.clientY,['✨','⭐','🌟','💫']); sfxTwinkle();} else if(walkables.includes(o)){navTo=new THREE.Vector2(hits[0].point.x,hits[0].point.z); ripple(e.clientX,e.clientY);} });
+  const targets=[...shown.values()].map(a=>a.artMesh).concat(balloonMeshes,avatarHits,plantHits,docentHits,walkables,[statueMesh]); if(crystalMesh)targets.push(crystalMesh); const hits=ray.intersectObjects(targets,false); if(!hits.length)return; const o=hits[0].object;
+  if(o.userData.key){const e2=shown.get(o.userData.key); if(e2)openArt(e2.item);} else if(o.userData.oid){ sendReaction(o.userData.oid,'heart'); burstAt(e.clientX,e.clientY,['❤️','💕','✨','⭐']); } else if(o.userData.docent){ greetDocent(); } else if(o.userData.plant){ waterPlant(o.userData.plant); burstAt(e.clientX,e.clientY,['💧','🌱','✨']); } else if(o===crystalMesh){ crystalMesh.rotation.y+=4; spawnReact(new THREE.Vector3(crystalMesh.position.x,crystalMesh.position.y+1.1,crystalMesh.position.z),'star'); sfxTwinkle(); } else if(o.userData.balloon){popBalloon(o.userData.balloon,e);} else if(o===statueMesh){statueSpin+=6; burstAt(e.clientX,e.clientY,['✨','⭐','🌟','💫']); sfxTwinkle();} else if(walkables.includes(o)){navTo=new THREE.Vector2(hits[0].point.x,hits[0].point.z); ripple(e.clientX,e.clientY);} });
 const keys={},dpad={f:0,s:0};
 addEventListener('keydown',e=>{ if(document.activeElement&&document.activeElement.tagName==='INPUT')return; const k=e.key.toLowerCase(); keys[k]=true; startAudio(); if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault(); });
 addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
@@ -383,8 +393,8 @@ async function initBackend(){ const cfg=window.MG_FIREBASE;
   backend=window.mqtt?'mqtt':'local';
   loadLocal().items.forEach(it=>{ if(it.key)artMap.set(it.key,it); }); scheduleSync();
 }
-async function addArtwork(item){ item.createdAt=Date.now(); item.stars=0; item.comments=[];
-  if(backend==='firebase'){ const ref=await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:item.createdAt}); mine.add(ref.id); saveMine(); return; }
+async function addArtwork(item){ item.createdAt=Date.now(); item.stars=0; item.comments=[]; item.slot=pickSlot();
+  if(backend==='firebase'){ const ref=await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:item.createdAt,slot:item.slot}); mine.add(ref.id); saveMine(); return; }
   item.key=(backend==='mqtt'?'m':'L')+myId.slice(0,4)+'-'+(++seq)+'-'+(item.createdAt%100000); artMap.set(item.key,item); mine.add(item.key); saveMine(); scheduleSync();
   if(backend==='mqtt'&&mqc&&mqc.connected) mqc.publish(window.MG_ROOM+'/art/'+item.key,JSON.stringify(item),{retain:true});
   openArt(item); }
@@ -482,6 +492,7 @@ function animate(){ const now=performance.now(),dt=Math.min(0.05,(now-last)/1000
   if(docent){ docentTimer-=dt; if(docentTimer<=0)showDocentTip(); }
   for(const s of stars){ const k=0.6+0.4*Math.abs(Math.sin(t*1.6+s.userData.ph)); s.scale.set(s.userData.sz*k,s.userData.sz*k,1); s.material.opacity=0.4+0.6*k; }
   for(const m of spinners){ m.rotation.y+=dt*0.6; m.position.y+=Math.sin(t*1.5)*0.0015; }
+  stepDrops(dt); stepPlants(dt);
   pubPos(false); controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
 tr();
 </script>
