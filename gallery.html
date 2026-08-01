@@ -151,6 +151,8 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 /* ---------------- i18n ---------------- */
 const T={
@@ -192,7 +194,7 @@ controls.enablePan=false; controls.enableDamping=true; controls.dampingFactor=.0
 controls.minDistance=2.5; controls.maxDistance=13.5; controls.minPolarAngle=0.7; controls.maxPolarAngle=1.5;
 scene.add(new THREE.HemisphereLight(0xffffff,0xb8a888,0.9));
 const key=new THREE.DirectionalLight(0xfff4e0,0.5); key.position.set(6,10,6); scene.add(key);
-[[-6,-6],[6,-6],[-6,6],[6,6]].forEach(([x,z])=>{const p=new THREE.PointLight(0xfff0d8,0.35,26);p.position.set(x,5.2,z);scene.add(p);});
+[[-6,-6,0xffd6e6],[6,-6,0xd6ecff],[-6,6,0xdcffe0],[6,6,0xfff0c8]].forEach(([x,z,col])=>{const p=new THREE.PointLight(col,0.42,28);p.position.set(x,5.2,z);scene.add(p);});
 const W=18,D=18,H=6;
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xd8c6a6,roughness:.95})); floor.rotation.x=-Math.PI/2; scene.add(floor);
 const gridh=new THREE.GridHelper(W,9,0xc2ad86,0xc9b892); gridh.position.y=0.01; scene.add(gridh);
@@ -201,10 +203,37 @@ function wall(w,h,x,y,z,ry){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
 wall(W,H,0,H/2,-D/2,0); wall(W,H,0,H/2,D/2,Math.PI); wall(D,H,-W/2,H/2,0,Math.PI/2); wall(D,H,W/2,H/2,0,-Math.PI/2);
 const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xfbf6ec})); ceil.rotation.x=Math.PI/2; ceil.position.y=H; scene.add(ceil);
 const rug=new THREE.Mesh(new THREE.CircleGeometry(4.4,48),new THREE.MeshStandardMaterial({color:0xe7d3b6,roughness:1})); rug.rotation.x=-Math.PI/2; rug.position.y=0.02; scene.add(rug);
-let avatar=null;
-new THREE.TextureLoader().load('assets/book/moong.png', t=>{ t.colorSpace=THREE.SRGBColorSpace;
-  avatar=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true})); avatar.scale.set(2.1,2.1,1); avatar.position.set(0,1.35,0); scene.add(avatar);
-});
+/* ---- kids gallery decorations ---- */
+const frameCols=[0xff9fb8,0xffd67a,0x8fe0c0,0x8fbcff,0xc7a0ff,0xffb27a];
+const floaties=[];
+(function balloons(){ const cols=[0xff7a9b,0xffd45e,0x7fd8ff,0x9be36f,0xc79bff,0xff9f5a];
+  for(let i=0;i<6;i++){ const g=new THREE.Group(); const col=cols[i%cols.length];
+    const b=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),new THREE.MeshStandardMaterial({color:col,roughness:.35})); b.scale.y=1.2;
+    const knot=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.14,8),new THREE.MeshStandardMaterial({color:col})); knot.position.y=-0.52;
+    const str=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,1.5,6),new THREE.MeshStandardMaterial({color:0xcbb48a})); str.position.y=-1.3;
+    g.add(b,knot,str); const a=i/6*Math.PI*2; g.position.set(Math.cos(a)*6.6,4.2+(i%2?0.5:0),Math.sin(a)*6.6);
+    g.userData={ph:i*1.1,baseY:0}; g.userData.baseY=g.position.y; scene.add(g); floaties.push(g); }
+})();
+function bobFloaties(t){ for(const g of floaties){ g.position.y=g.userData.baseY+Math.sin(t*0.8+g.userData.ph)*0.25; g.rotation.z=Math.sin(t*0.5+g.userData.ph)*0.08; } }
+(function buntingAll(){ const cols=[0xff6f91,0xffcf5a,0x6fce9f,0x4a8bff,0xb98cff,0xff9f5a];
+  function bunting(y,z,ry,span){ const grp=new THREE.Group();
+    grp.add(new THREE.Mesh(new THREE.BoxGeometry(span,0.03,0.03),new THREE.MeshStandardMaterial({color:0xcbb48a})));
+    const n=14; for(let i=0;i<n;i++){ const t=i/(n-1); const f=new THREE.Mesh(new THREE.ConeGeometry(0.26,0.46,4),new THREE.MeshStandardMaterial({color:cols[i%cols.length],roughness:.6}));
+      f.rotation.x=Math.PI; f.rotation.y=Math.PI/4; f.position.set(-span/2+span*t,-0.25,0); grp.add(f); }
+    grp.position.set(0,y,z); grp.rotation.y=ry; scene.add(grp); }
+  bunting(5.4,-D/2+0.3,0,W-2); bunting(5.4,D/2-0.3,Math.PI,W-2);
+})();
+/* 3D MONGLEKIDS logo engraved on the back wall */
+new FontLoader().load('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', font=>{
+  const geo=new TextGeometry('MONGLEKIDS',{font,size:1.05,height:0.26,curveSegments:6,bevelEnabled:true,bevelThickness:0.05,bevelSize:0.04,bevelSegments:3});
+  geo.computeBoundingBox(); const cx=(geo.boundingBox.max.x+geo.boundingBox.min.x)/2;
+  const logo=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xffc94a,metalness:.55,roughness:.3,emissive:0x442f00,emissiveIntensity:.18}));
+  logo.position.set(-cx,4.55,-D/2+0.14); scene.add(logo);
+  const g2=new TextGeometry('KIDS ART GALLERY',{font,size:0.3,height:0.05,bevelEnabled:false});
+  g2.computeBoundingBox(); const cx2=(g2.boundingBox.max.x+g2.boundingBox.min.x)/2;
+  const sub=new THREE.Mesh(g2,new THREE.MeshStandardMaterial({color:0xff8fb3,metalness:.2,roughness:.5}));
+  sub.position.set(-cx2,3.95,-D/2+0.12); scene.add(sub);
+}, undefined, e=>console.warn('font load failed',e));
 
 /* slots along walls */
 const slots=(function(){const s=[],y=2.35,inset=2.6,near=0.12;
@@ -216,13 +245,13 @@ let placedTotal=0;
 const shown=new Map(); // key -> {item, group, artMesh}
 function placeArtwork(item){
   return new Promise(res=>{
-    const slot=slots[placedTotal % slots.length]; const yoff=Math.floor(placedTotal/slots.length)*0; placedTotal++;
+    const idx=placedTotal; const slot=slots[placedTotal % slots.length]; const yoff=Math.floor(placedTotal/slots.length)*0; placedTotal++;
     const img=new Image();
     img.onload=()=>{
       const ar=img.width/img.height; let w=2.2,h=2.2; if(ar>1)h=w/ar; else w=h*ar;
       const tex=new THREE.Texture(img); tex.colorSpace=THREE.SRGBColorSpace; tex.needsUpdate=true;
       const grp=new THREE.Group();
-      grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.34,h+0.34,0.12),new THREE.MeshStandardMaterial({color:0xc9a96a,roughness:.55,metalness:.35})));
+      grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.34,h+0.34,0.12),new THREE.MeshStandardMaterial({color:frameCols[idx%frameCols.length],roughness:.5,metalness:.2})));
       const mat=new THREE.Mesh(new THREE.PlaneGeometry(w+0.12,h+0.12),new THREE.MeshStandardMaterial({color:0xffffff})); mat.position.z=0.062; grp.add(mat);
       const art=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex})); art.position.z=0.07; art.userData.key=item.key; grp.add(art);
       grp.position.set(slot.x,slot.y+yoff,slot.z); grp.rotation.y=slot.ry; scene.add(grp);
@@ -402,7 +431,7 @@ function burst(){ for(let i=0;i<24;i++){ const s=document.createElement('div'); 
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 let last=performance.now(), t0=last;
 function animate(){ const now=performance.now(); const dt=Math.min(0.05,(now-last)/1000); last=now; const t=(now-t0)/1000;
-  moveStep(dt); if(avatar) avatar.position.y=1.35+Math.sin(t*2)*0.06; controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
+  moveStep(dt); bobFloaties(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
 initBackend().then(()=>{ $('loading').classList.add('hide'); tr(); animate(); });
 </script>
 </body>
