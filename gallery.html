@@ -6,18 +6,10 @@
 <title>몽글 갤러리 · Monglekids Gallery 🖼️</title>
 <script>
   window.MK_LANG=(new URLSearchParams(location.search).get('lang')||localStorage.getItem('mk_lang')||'ko');
-  /* ===== 공유·영구 갤러리(여러 기기 실시간 공유) — 무료 Firebase 설정 ★ =====
-     1) console.firebase.google.com 에서 무료 프로젝트 생성
-     2) Firestore Database 만들기(테스트 모드)  3) 웹 앱 등록 후 config 복사
-     4) 아래 PASTE_ 값들을 붙여넣으면 자동으로 '공유 갤러리'로 전환됩니다.
-     (설정 전에는 이 기기 브라우저에 영구 저장 — 새로고침·재방문해도 유지) */
-  window.MG_FIREBASE = {
-    apiKey: "PASTE_YOUR_API_KEY",
-    authDomain: "PASTE.firebaseapp.com",
-    projectId: "PASTE",
-    storageBucket: "PASTE.appspot.com",
-    appId: "PASTE"
-  };
+  /* ===== 공유·영구 갤러리(여러 기기 실시간) — 무료 Firebase 설정 =====
+     console.firebase.google.com → 프로젝트 생성 → Firestore(테스트 모드) → 웹앱 config 복사 → 아래 PASTE_ 채우기.
+     설정 전에는 이 기기 브라우저에 영구 저장(새로고침·재방문해도 유지). */
+  window.MG_FIREBASE = { apiKey:"PASTE_YOUR_API_KEY", authDomain:"PASTE.firebaseapp.com", projectId:"PASTE", storageBucket:"PASTE.appspot.com", appId:"PASTE" };
 </script>
 <style>
   :root{ --ink:#2b2b3a; --gold:#c9a96a; --gold-d:#a8894c; --teal:#3fc4a8; --pink:#ff6f91; --cream:#fff8f0; }
@@ -26,25 +18,21 @@
   #c{position:fixed;inset:0;display:block;touch-action:none;}
   .ui{position:fixed;inset:0;pointer-events:none;z-index:5;}
   .ui>*{pointer-events:auto;}
-  .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
-    background:linear-gradient(#000000aa,transparent);}
+  .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:linear-gradient(#00000099,transparent);}
   .brand{color:#fff;font-weight:800;font-size:15px;text-shadow:0 2px 6px #0007;}
   .brand small{display:block;font-weight:600;font-size:10.5px;opacity:.85;}
   .tb-btns{display:flex;gap:7px;align-items:center;}
-  .btn{border:none;border-radius:999px;padding:10px 15px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:inherit;
-    background:linear-gradient(135deg,var(--gold),#e0c48a);color:#3a2f1a;box-shadow:0 4px 12px rgba(0,0,0,.25);}
-  .btn.ghost{background:#ffffffdd;color:var(--ink);}
+  .btn{border:none;border-radius:999px;padding:10px 15px;font-weight:800;font-size:13.5px;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#ffcf5a,#ff9fb8);color:#5a2a3a;box-shadow:0 4px 12px rgba(0,0,0,.22);}
+  .btn.ghost{background:#ffffffe0;color:var(--ink);}
   .btn.teal{background:linear-gradient(135deg,var(--teal),#6fce9f);color:#fff;}
   .btn.pink{background:linear-gradient(135deg,var(--pink),#ff9bb0);color:#fff;}
   .btn.icon{padding:10px 12px;}
   .btn:active{transform:scale(.96);}
   .cloudtag{position:absolute;top:58px;right:14px;font-size:10.5px;font-weight:700;color:#fff;background:#0006;padding:4px 10px;border-radius:999px;}
-  .hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#0008;color:#fff;font-size:12px;
-    padding:8px 15px;border-radius:999px;backdrop-filter:blur(4px);white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;}
-  /* dpad */
-  .dpad{position:absolute;left:14px;bottom:16px;display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:5px;opacity:.9;}
-  .dpad button{border:none;background:#ffffffcc;border-radius:12px;font-size:20px;font-weight:900;color:#5a4a32;box-shadow:0 3px 8px rgba(0,0,0,.2);cursor:pointer;}
-  .dpad button:active{background:var(--gold);}
+  .hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#0008;color:#fff;font-size:12px;padding:8px 15px;border-radius:999px;backdrop-filter:blur(4px);white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;}
+  .dpad{position:absolute;left:14px;bottom:16px;display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);gap:5px;opacity:.92;}
+  .dpad button{border:none;background:#ffffffcc;border-radius:12px;font-size:19px;font-weight:900;color:#5a4a32;box-shadow:0 3px 8px rgba(0,0,0,.2);cursor:pointer;}
+  .dpad button:active{background:#ffcf5a;}
   .dpad .up{grid-area:1/2} .dpad .left{grid-area:2/1} .dpad .right{grid-area:2/3} .dpad .down{grid-area:3/2}
   .modal{position:fixed;inset:0;z-index:20;background:#0009;backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;}
   .modal.show{display:flex;}
@@ -54,8 +42,7 @@
   .art-meta{margin:12px 2px 4px;}
   .art-title{font-weight:800;font-size:19px;}
   .art-artist{color:#8a83a0;font-size:13px;margin-top:2px;}
-  .award{display:inline-block;margin-top:8px;background:#fff3d6;color:var(--gold-d);border:1.5px solid #ebd9a8;
-    border-radius:999px;padding:5px 13px;font-weight:800;font-size:12.5px;}
+  .award{display:inline-block;margin-top:8px;background:#fff3d6;color:var(--gold-d);border:1.5px solid #ebd9a8;border-radius:999px;padding:5px 13px;font-weight:800;font-size:12.5px;}
   .stars{margin:10px 0;font-size:14px;font-weight:700;color:var(--gold-d);}
   .cmt-list{margin:8px 0;display:flex;flex-direction:column;gap:7px;max-height:150px;overflow:auto;}
   .cmt{background:#fff;border:1px solid #eee2d4;border-radius:12px;padding:8px 12px;font-size:13.5px;}
@@ -65,16 +52,15 @@
   .cmt-row{display:flex;gap:8px;margin-top:6px;}
   .cmt-row input{flex:1;border:1.5px solid #e6dccb;border-radius:12px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;}
   input.name{width:100%;border:1.5px solid #e6dccb;border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;background:#fff;margin-bottom:10px;}
-  .row2{display:flex;gap:8px;margin-top:12px;}
-  .row2 .btn{flex:1;}
+  .row2{display:flex;gap:8px;margin-top:12px;} .row2 .btn{flex:1;}
   .close{float:right;border:none;background:#00000012;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;}
   .drop{border:2px dashed #d8c7a8;border-radius:16px;padding:26px;text-align:center;color:#a8956f;background:#fffdf8;cursor:pointer;display:block;}
   .drop .big{font-size:40px;display:block;margin-bottom:8px;}
   #file{display:none;}
   .h2{font-weight:800;font-size:20px;margin-bottom:12px;}
   .note{font-size:11px;color:#a89e8e;text-align:center;margin-top:12px;line-height:1.6;}
-  .loading{position:fixed;inset:0;z-index:30;background:#1a1424;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;}
-  .spin{width:44px;height:44px;border:5px solid #ffffff33;border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite;}
+  .loading{position:fixed;inset:0;z-index:30;background:linear-gradient(160deg,#2a1840,#5b3b8a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;}
+  .spin{width:44px;height:44px;border:5px solid #ffffff33;border-top-color:#ffcf5a;border-radius:50%;animation:sp 1s linear infinite;}
   @keyframes sp{to{transform:rotate(360deg)}}
   .hide{display:none!important;}
   @media (max-width:520px){ .brand small{display:none;} }
@@ -95,52 +81,34 @@
   </div>
   <div class="cloudtag" id="cloudtag"></div>
   <div class="dpad">
-    <button class="up" data-dir="f">▲</button>
-    <button class="left" data-dir="l">◀</button>
-    <button class="right" data-dir="r">▶</button>
-    <button class="down" data-dir="b">▼</button>
+    <button class="up" data-dir="f">▲</button><button class="left" data-dir="l">◀</button>
+    <button class="right" data-dir="r">▶</button><button class="down" data-dir="b">▼</button>
   </div>
-  <div class="hint" id="hint" data-t="hint">방향키(또는 버튼)로 걷고, 그림을 눌러 응원해요 🎨</div>
+  <div class="hint" id="hint" data-t="hint">바닥을 눌러 그쪽으로 걷고, 그림·풍선·조각상을 눌러 보세요 🎨</div>
 </div>
 
-<!-- Upload modal -->
-<div class="modal" id="upModal">
-  <div class="sheet"><div class="sheet-pad">
-    <button class="close" onclick="closeUp()">✕</button>
-    <div class="h2" data-t="upTitle">🎨 내 그림 전시하기</div>
-    <label class="drop" id="drop"><span class="big">🖼️</span><span id="dropTxt" data-t="dropTxt">여기를 눌러 그림 사진을 골라요</span></label>
-    <input type="file" id="file" accept="image/*">
-    <img id="preview" class="art-big hide" style="margin:12px 0">
-    <input class="name" id="artist" data-ph="artist" placeholder="이름 (예: 몽글이)">
-    <input class="name" id="title" data-ph="title" placeholder="작품 제목 (예: 우리 가족)">
-    <button class="btn teal" id="submitArt" style="width:100%" data-t="submit">✨ 갤러리에 전시하기</button>
-    <p class="note" data-t="upNote">아이 얼굴이 아닌 <b>그림</b>을 올려주세요.</p>
-  </div></div>
-</div>
+<div class="modal" id="upModal"><div class="sheet"><div class="sheet-pad">
+  <button class="close" onclick="closeUp()">✕</button>
+  <div class="h2" data-t="upTitle">🎨 내 그림 전시하기</div>
+  <label class="drop" id="drop"><span class="big">🖼️</span><span id="dropTxt" data-t="dropTxt">여기를 눌러 그림 사진을 골라요</span></label>
+  <input type="file" id="file" accept="image/*">
+  <img id="preview" class="art-big hide" style="margin:12px 0">
+  <input class="name" id="artist" data-ph="artist" placeholder="이름 (예: 몽글이)">
+  <input class="name" id="title" data-ph="title" placeholder="작품 제목 (예: 우리 가족)">
+  <button class="btn teal" id="submitArt" style="width:100%" data-t="submit">✨ 갤러리에 전시하기</button>
+  <p class="note" data-t="upNote">아이 얼굴이 아닌 <b>그림</b>을 올려주세요.</p>
+</div></div></div>
 
-<!-- Artwork modal -->
-<div class="modal" id="artModal">
-  <div class="sheet"><div class="sheet-pad">
-    <button class="close" onclick="closeArt()">✕</button>
-    <img id="aImg" class="art-big">
-    <div class="art-meta">
-      <div class="art-title" id="aTitle"></div>
-      <div class="art-artist" id="aArtist"></div>
-      <div class="award" id="aAward"></div>
-    </div>
-    <div class="stars" id="aStars"></div>
-    <div class="cmt-list" id="aComments"></div>
-    <div class="presets" id="presets"></div>
-    <div class="cmt-row">
-      <input id="cInput" data-ph="cheer" placeholder="응원 한마디 써주기" maxlength="60">
-      <button class="btn teal" id="cSend">보내기</button>
-    </div>
-    <div class="row2">
-      <button class="btn" id="starBtn">⭐ <span data-t="star">응원 별 주기</span></button>
-      <button class="btn pink" id="certBtn" data-t="cert">🏅 전시 기록증</button>
-    </div>
-  </div></div>
-</div>
+<div class="modal" id="artModal"><div class="sheet"><div class="sheet-pad">
+  <button class="close" onclick="closeArt()">✕</button>
+  <img id="aImg" class="art-big">
+  <div class="art-meta"><div class="art-title" id="aTitle"></div><div class="art-artist" id="aArtist"></div><div class="award" id="aAward"></div></div>
+  <div class="stars" id="aStars"></div>
+  <div class="cmt-list" id="aComments"></div>
+  <div class="presets" id="presets"></div>
+  <div class="cmt-row"><input id="cInput" data-ph="cheer" placeholder="응원 한마디 써주기" maxlength="60"><button class="btn teal" id="cSend">보내기</button></div>
+  <div class="row2"><button class="btn" id="starBtn">⭐ <span data-t="star">응원 별 주기</span></button><button class="btn pink" id="certBtn" data-t="cert">🏅 전시 기록증</button></div>
+</div></div></div>
 
 <script type="importmap">
 { "imports": {
@@ -153,285 +121,259 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 /* ---------------- i18n ---------------- */
 const T={
- ko:{upload:'＋ 내 그림 올리기',hint:'방향키(또는 버튼)로 걷고, 그림을 눌러 응원해요 🎨',upTitle:'🎨 내 그림 전시하기',
-     dropTxt:'여기를 눌러 그림 사진을 골라요',submit:'✨ 갤러리에 전시하기',
-     upNote:'아이 얼굴이 아닌 <b>그림</b>을 올려주세요.',star:'응원 별 주기',cert:'🏅 전시 기록증',
-     brandSub:'Monglekids Virtual Gallery',artist:'이름 (예: 몽글이)',title:'작품 제목 (예: 우리 가족)',cheer:'응원 한마디 써주기',
-     presets:['멋져요! 🌟','최고예요! 👍','색깔이 예뻐요! 🎨','상상력 대단해요! 🚀','따뜻해요! 💛'],
-     awards:['반짝이는 상상력 상','용감한 색깔 상','따뜻한 마음 상','자유로운 생각 상','오늘의 몽글 작가 상','반짝반짝 창의 상'],
-     empty:'첫 번째 작품의 주인공이 되어보세요! ＋ 버튼을 눌러요',cloud:'☁️ 공유 갤러리 (실시간)',local:'💾 이 기기에 저장'},
- en:{upload:'＋ Add my drawing',hint:'Walk with arrow keys (or buttons), tap a picture to cheer 🎨',upTitle:'🎨 Exhibit my drawing',
-     dropTxt:'Tap here to choose a photo of your drawing',submit:'✨ Put it in the gallery',
-     upNote:'Please upload the <b>drawing</b>, not a child\'s face.',star:'Give a star',cert:'🏅 Certificate',
-     brandSub:'Monglekids Virtual Gallery',artist:'Name (e.g., Moong)',title:'Title (e.g., My Family)',cheer:'Write a cheer',
-     presets:['Awesome! 🌟','You rock! 👍','Lovely colors! 🎨','So creative! 🚀','So warm! 💛'],
-     awards:['Sparkling Imagination Award','Brave Colors Award','Warm Heart Award','Free Thinker Award','Today\'s Mongle Artist','Twinkle Creativity Award'],
-     empty:'Be the very first artist! Tap ＋',cloud:'☁️ Shared gallery (live)',local:'💾 Saved on this device'}
+ ko:{upload:'＋ 내 그림 올리기',hint:'바닥을 눌러 그쪽으로 걷고, 그림·풍선·조각상을 눌러 보세요 🎨',upTitle:'🎨 내 그림 전시하기',dropTxt:'여기를 눌러 그림 사진을 골라요',submit:'✨ 갤러리에 전시하기',upNote:'아이 얼굴이 아닌 <b>그림</b>을 올려주세요.',star:'응원 별 주기',cert:'🏅 전시 기록증',brandSub:'Monglekids Virtual Gallery',artist:'이름 (예: 몽글이)',title:'작품 제목 (예: 우리 가족)',cheer:'응원 한마디 써주기',presets:['멋져요! 🌟','최고예요! 👍','색깔이 예뻐요! 🎨','상상력 대단해요! 🚀','따뜻해요! 💛'],awards:['반짝이는 상상력 상','용감한 색깔 상','따뜻한 마음 상','자유로운 생각 상','오늘의 몽글 작가 상','반짝반짝 창의 상'],empty:'첫 번째 작품의 주인공이 되어보세요! ＋ 버튼을 눌러요',cloud:'☁️ 공유 갤러리 (실시간)',local:'💾 이 기기에 저장'},
+ en:{upload:'＋ Add my drawing',hint:'Tap the floor to walk there; tap art, balloons & the statue 🎨',upTitle:'🎨 Exhibit my drawing',dropTxt:'Tap here to choose a photo of your drawing',submit:'✨ Put it in the gallery',upNote:'Please upload the <b>drawing</b>, not a child\'s face.',star:'Give a star',cert:'🏅 Certificate',brandSub:'Monglekids Virtual Gallery',artist:'Name (e.g., Moong)',title:'Title (e.g., My Family)',cheer:'Write a cheer',presets:['Awesome! 🌟','You rock! 👍','Lovely colors! 🎨','So creative! 🚀','So warm! 💛'],awards:['Sparkling Imagination Award','Brave Colors Award','Warm Heart Award','Free Thinker Award','Today\'s Mongle Artist','Twinkle Creativity Award'],empty:'Be the very first artist! Tap ＋',cloud:'☁️ Shared gallery (live)',local:'💾 Saved on this device'}
 };
 let L=(window.MK_LANG==='en')?'en':'ko';
-const $=id=>document.getElementById(id);
 function tr(){ const d=T[L];
   document.querySelectorAll('[data-t]').forEach(e=>{const k=e.getAttribute('data-t'); if(d[k]!=null)e.innerHTML=d[k];});
   document.querySelectorAll('[data-ph]').forEach(e=>{const k=e.getAttribute('data-ph'); if(d[k]!=null)e.placeholder=d[k];});
-  $('langBtn').textContent=(L==='ko')?'EN':'한국어';
-  $('cloudtag').textContent = (backend==='firebase')? d.cloud : d.local;
-  $('hint').textContent = shown.size? d.hint : d.empty;
-  buildPresets(); document.documentElement.lang=L;
+  $('langBtn').textContent=(L==='ko')?'EN':'한국어'; $('cloudtag').textContent=(backend==='firebase')?d.cloud:d.local;
+  $('hint').textContent=shown.size?d.hint:d.empty; buildPresets(); document.documentElement.lang=L;
 }
 $('langBtn').onclick=()=>{ L=(L==='ko')?'en':'ko'; window.MK_LANG=L; localStorage.setItem('mk_lang',L); tr(); };
 
-/* ---------------- three.js scene ---------------- */
+/* ---------------- scene (bright kids palette) ---------------- */
 const canvas=$('c');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight);
-const scene=new THREE.Scene(); scene.background=new THREE.Color('#efe6d6'); scene.fog=new THREE.Fog('#efe6d6',22,46);
-const camera=new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 100); camera.position.set(0,2.6,9);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight);
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#fff2fb'); scene.fog=new THREE.Fog('#fff2fb',24,50);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,100); camera.position.set(0,2.6,9);
 const controls=new OrbitControls(camera,canvas); controls.target.set(0,2.2,0);
-controls.enablePan=false; controls.enableDamping=true; controls.dampingFactor=.08;
-controls.minDistance=2.5; controls.maxDistance=13.5; controls.minPolarAngle=0.7; controls.maxPolarAngle=1.5;
-scene.add(new THREE.HemisphereLight(0xffffff,0xb8a888,0.9));
-const key=new THREE.DirectionalLight(0xfff4e0,0.5); key.position.set(6,10,6); scene.add(key);
-[[-6,-6,0xffd6e6],[6,-6,0xd6ecff],[-6,6,0xdcffe0],[6,6,0xfff0c8]].forEach(([x,z,col])=>{const p=new THREE.PointLight(col,0.42,28);p.position.set(x,5.2,z);scene.add(p);});
+controls.enablePan=false; controls.enableDamping=true; controls.dampingFactor=.08; controls.minDistance=1.5; controls.maxDistance=13.5; controls.minPolarAngle=0.7; controls.maxPolarAngle=1.5;
+scene.add(new THREE.HemisphereLight(0xffffff,0xffe0f0,1.15));
+const key=new THREE.DirectionalLight(0xffffff,0.55); key.position.set(6,10,6); scene.add(key);
+[[-6,-6,0xffcfe6],[6,-6,0xcfe8ff],[-6,6,0xd6ffdc],[6,6,0xfff0c0]].forEach(([x,z,col])=>{const p=new THREE.PointLight(col,0.5,30);p.position.set(x,5.2,z);scene.add(p);});
 const W=18,D=18,H=6;
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xd8c6a6,roughness:.95})); floor.rotation.x=-Math.PI/2; scene.add(floor);
-const gridh=new THREE.GridHelper(W,9,0xc2ad86,0xc9b892); gridh.position.y=0.01; scene.add(gridh);
-const wallMat=new THREE.MeshStandardMaterial({color:0xf3ebdc,roughness:1,side:THREE.DoubleSide});
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xf7ecff,roughness:.95})); floor.rotation.x=-Math.PI/2; scene.add(floor);
+const gridh=new THREE.GridHelper(W,9,0xe6c6ff,0xf0dcff); gridh.position.y=0.01; scene.add(gridh);
+const wallMat=new THREE.MeshStandardMaterial({color:0xfff8fc,roughness:1,side:THREE.DoubleSide});
 function wall(w,h,x,y,z,ry){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),wallMat);m.position.set(x,y,z);m.rotation.y=ry;scene.add(m);}
 wall(W,H,0,H/2,-D/2,0); wall(W,H,0,H/2,D/2,Math.PI); wall(D,H,-W/2,H/2,0,Math.PI/2); wall(D,H,W/2,H/2,0,-Math.PI/2);
-const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xfbf6ec})); ceil.rotation.x=Math.PI/2; ceil.position.y=H; scene.add(ceil);
-const rug=new THREE.Mesh(new THREE.CircleGeometry(4.4,48),new THREE.MeshStandardMaterial({color:0xe7d3b6,roughness:1})); rug.rotation.x=-Math.PI/2; rug.position.y=0.02; scene.add(rug);
-/* ---- kids gallery decorations ---- */
-const frameCols=[0xff9fb8,0xffd67a,0x8fe0c0,0x8fbcff,0xc7a0ff,0xffb27a];
-const floaties=[];
-(function balloons(){ const cols=[0xff7a9b,0xffd45e,0x7fd8ff,0x9be36f,0xc79bff,0xff9f5a];
-  for(let i=0;i<6;i++){ const g=new THREE.Group(); const col=cols[i%cols.length];
-    const b=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),new THREE.MeshStandardMaterial({color:col,roughness:.35})); b.scale.y=1.2;
-    const knot=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.14,8),new THREE.MeshStandardMaterial({color:col})); knot.position.y=-0.52;
-    const str=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,1.5,6),new THREE.MeshStandardMaterial({color:0xcbb48a})); str.position.y=-1.3;
-    g.add(b,knot,str); const a=i/6*Math.PI*2; g.position.set(Math.cos(a)*6.6,4.2+(i%2?0.5:0),Math.sin(a)*6.6);
-    g.userData={ph:i*1.1,baseY:0}; g.userData.baseY=g.position.y; scene.add(g); floaties.push(g); }
+const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xfffdf6})); ceil.rotation.x=Math.PI/2; ceil.position.y=H; scene.add(ceil);
+const rug=new THREE.Mesh(new THREE.CircleGeometry(4.6,48),new THREE.MeshStandardMaterial({color:0xffe3f2,roughness:1})); rug.rotation.x=-Math.PI/2; rug.position.y=0.02; scene.add(rug);
+
+/* rainbow wall (right wall) */
+(function rainbow(){ const cols=[0xff6b6b,0xffa94d,0xffe066,0x8ce99a,0x74c0fc,0x748ffc,0xb197fc];
+  const bandH=H/cols.length;
+  cols.forEach((col,i)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(D-0.2,bandH),new THREE.MeshStandardMaterial({color:col,roughness:.85,side:THREE.DoubleSide}));
+    m.position.set(W/2-0.05, bandH*(i+0.5), 0); m.rotation.y=-Math.PI/2; scene.add(m); });
 })();
-function bobFloaties(t){ for(const g of floaties){ g.position.y=g.userData.baseY+Math.sin(t*0.8+g.userData.ph)*0.25; g.rotation.z=Math.sin(t*0.5+g.userData.ph)*0.08; } }
-(function buntingAll(){ const cols=[0xff6f91,0xffcf5a,0x6fce9f,0x4a8bff,0xb98cff,0xff9f5a];
-  function bunting(y,z,ry,span){ const grp=new THREE.Group();
-    grp.add(new THREE.Mesh(new THREE.BoxGeometry(span,0.03,0.03),new THREE.MeshStandardMaterial({color:0xcbb48a})));
+
+/* star lights (twinkling sprites + a few soft lights) */
+const stars=[];
+(function starLights(){ const c=document.createElement('canvas'); c.width=c.height=64; const x=c.getContext('2d'); x.translate(32,32);
+  x.fillStyle='#fff'; x.shadowColor='#fff'; x.shadowBlur=12; x.beginPath();
+  for(let i=0;i<10;i++){ const r=i%2?9:24, a=Math.PI/5*i-Math.PI/2; x.lineTo(Math.cos(a)*r,Math.sin(a)*r);} x.closePath(); x.fill();
+  const tex=new THREE.CanvasTexture(c); const tints=[0xfff2a8,0xffc8e0,0xc8e6ff,0xd8ffd0,0xe0d0ff];
+  for(let i=0;i<16;i++){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,color:tints[i%tints.length],transparent:true,depthWrite:false}));
+    s.position.set((Math.random()-0.5)*(W-2),4.4+Math.random()*1.2,(Math.random()-0.5)*(D-2)); const sz=0.5+Math.random()*0.5; s.scale.set(sz,sz,1);
+    s.userData={ph:Math.random()*6.28,sz}; scene.add(s); stars.push(s); }
+  [0xffe08a,0xffb3d1,0xa8d8ff].forEach((col,i)=>{ const p=new THREE.PointLight(col,0.5,14); p.position.set((i-1)*4,4.6,0); scene.add(p); });
+})();
+
+/* bunting */
+(function bunting(){ const cols=[0xff6f91,0xffcf5a,0x6fce9f,0x4a8bff,0xb98cff,0xff9f5a];
+  function row(y,z,ry,span){ const g=new THREE.Group(); g.add(new THREE.Mesh(new THREE.BoxGeometry(span,0.03,0.03),new THREE.MeshStandardMaterial({color:0xcbb48a})));
     const n=14; for(let i=0;i<n;i++){ const t=i/(n-1); const f=new THREE.Mesh(new THREE.ConeGeometry(0.26,0.46,4),new THREE.MeshStandardMaterial({color:cols[i%cols.length],roughness:.6}));
-      f.rotation.x=Math.PI; f.rotation.y=Math.PI/4; f.position.set(-span/2+span*t,-0.25,0); grp.add(f); }
-    grp.position.set(0,y,z); grp.rotation.y=ry; scene.add(grp); }
-  bunting(5.4,-D/2+0.3,0,W-2); bunting(5.4,D/2-0.3,Math.PI,W-2);
+      f.rotation.x=Math.PI; f.rotation.y=Math.PI/4; f.position.set(-span/2+span*t,-0.25,0); g.add(f);} g.position.set(0,y,z); g.rotation.y=ry; scene.add(g);}
+  row(5.4,-D/2+0.3,0,W-2); row(5.4,D/2-0.3,Math.PI,W-2);
 })();
-/* 3D MONGLEKIDS logo engraved on the back wall */
+
+/* central statue on pedestal */
+const pedestal=new THREE.Mesh(new THREE.CylinderGeometry(0.9,1.05,1.3,32),new THREE.MeshStandardMaterial({color:0xf3e6d0,roughness:.7}));
+pedestal.position.y=0.65; scene.add(pedestal);
+const plinth=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,0.18,32),new THREE.MeshStandardMaterial({color:0xe6d3b6,roughness:.8})); plinth.position.y=1.34; scene.add(plinth);
+const statueMesh=new THREE.Mesh(new THREE.TorusKnotGeometry(0.55,0.19,120,20),new THREE.MeshStandardMaterial({color:0xffc94a,metalness:.75,roughness:.25,emissive:0x6a4a00,emissiveIntensity:.14}));
+statueMesh.position.y=2.25; scene.add(statueMesh);
+let statueSpin=0.5;
+const stSpot=new THREE.PointLight(0xffffff,0.7,10); stSpot.position.set(0,4.4,0); scene.add(stSpot);
+
+/* partition walls -> back "room" (with central entrance) */
+const AABBs=[];
+function partition(cx,cz,w,d,col){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,3.6,d),new THREE.MeshStandardMaterial({color:col,roughness:.9})); m.position.set(cx,1.8,cz); scene.add(m);
+  AABBs.push({x0:cx-w/2-0.35,x1:cx+w/2+0.35,z0:cz-d/2-0.35,z1:cz+d/2+0.35}); }
+partition(-4,-4.2,4,0.3,0xffe1ee); partition(4,-4.2,4,0.3,0xe1f0ff);
+
+/* floor arrow markers (walk guides) */
+(function arrows(){ const sh=new THREE.Shape(); sh.moveTo(0,0.5); sh.lineTo(0.35,-0.1); sh.lineTo(0.13,-0.1); sh.lineTo(0.13,-0.5); sh.lineTo(-0.13,-0.5); sh.lineTo(-0.13,-0.1); sh.lineTo(-0.35,-0.1); sh.closePath();
+  const geo=new THREE.ShapeGeometry(sh); const mat=new THREE.MeshBasicMaterial({color:0xff9fc4,transparent:true,opacity:.5,side:THREE.DoubleSide});
+  [[0,5,0],[5,0,-Math.PI/2],[0,-5,Math.PI],[-5,0,Math.PI/2]].forEach(([x,z,r])=>{ const a=new THREE.Mesh(geo,mat); a.rotation.x=-Math.PI/2; a.rotation.z=r; a.position.set(x,0.03,z); a.scale.set(1.6,1.6,1.6); scene.add(a); });
+})();
+
+/* 3D MONGLEKIDS logo on back wall */
 new FontLoader().load('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', font=>{
   const geo=new TextGeometry('MONGLEKIDS',{font,size:1.05,height:0.26,curveSegments:6,bevelEnabled:true,bevelThickness:0.05,bevelSize:0.04,bevelSegments:3});
   geo.computeBoundingBox(); const cx=(geo.boundingBox.max.x+geo.boundingBox.min.x)/2;
-  const logo=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xffc94a,metalness:.55,roughness:.3,emissive:0x442f00,emissiveIntensity:.18}));
-  logo.position.set(-cx,4.55,-D/2+0.14); scene.add(logo);
-  const g2=new TextGeometry('KIDS ART GALLERY',{font,size:0.3,height:0.05,bevelEnabled:false});
-  g2.computeBoundingBox(); const cx2=(g2.boundingBox.max.x+g2.boundingBox.min.x)/2;
-  const sub=new THREE.Mesh(g2,new THREE.MeshStandardMaterial({color:0xff8fb3,metalness:.2,roughness:.5}));
-  sub.position.set(-cx2,3.95,-D/2+0.12); scene.add(sub);
-}, undefined, e=>console.warn('font load failed',e));
+  const logo=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xffc94a,metalness:.55,roughness:.3,emissive:0x442f00,emissiveIntensity:.2})); logo.position.set(-cx,4.55,-D/2+0.14); scene.add(logo);
+  const g2=new TextGeometry('KIDS ART GALLERY',{font,size:0.3,height:0.05,bevelEnabled:false}); g2.computeBoundingBox(); const cx2=(g2.boundingBox.max.x+g2.boundingBox.min.x)/2;
+  const sub=new THREE.Mesh(g2,new THREE.MeshStandardMaterial({color:0xff8fb3,metalness:.2,roughness:.5})); sub.position.set(-cx2,3.95,-D/2+0.12); scene.add(sub);
+}, undefined, e=>console.warn('font',e));
 
-/* slots along walls */
-const slots=(function(){const s=[],y=2.35,inset=2.6,near=0.12;
+/* balloons (raycastable, poppable) */
+const floaties=[], balloonMeshes=[];
+const balCols=[0xff7a9b,0xffd45e,0x7fd8ff,0x9be36f,0xc79bff,0xff9f5a];
+function spawnBalloon(i){ const g=new THREE.Group(); const col=balCols[i%balCols.length];
+  const b=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),new THREE.MeshStandardMaterial({color:col,roughness:.35})); b.scale.y=1.2; b.userData.balloon=g;
+  const knot=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.14,8),new THREE.MeshStandardMaterial({color:col})); knot.position.y=-0.52;
+  const str=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,1.5,6),new THREE.MeshStandardMaterial({color:0xcbb48a})); str.position.y=-1.3;
+  g.add(b,knot,str); const a=Math.random()*Math.PI*2, rad=5.5+Math.random()*1.6; g.position.set(Math.cos(a)*rad,3.9+Math.random()*0.8,Math.sin(a)*rad);
+  g.userData={ph:Math.random()*6.28,baseY:0,ball:b}; g.userData.baseY=g.position.y; scene.add(g); floaties.push(g); balloonMeshes.push(b);
+}
+for(let i=0;i<6;i++) spawnBalloon(i);
+function bobFloaties(t){ for(const g of floaties){ g.position.y=g.userData.baseY+Math.sin(t*0.8+g.userData.ph)*0.25; g.rotation.z=Math.sin(t*0.5+g.userData.ph)*0.08; } }
+function popBalloon(g,ev){ const bm=g.userData.ball; scene.remove(g);
+  const fi=floaties.indexOf(g); if(fi>=0)floaties.splice(fi,1); const bi=balloonMeshes.indexOf(bm); if(bi>=0)balloonMeshes.splice(bi,1);
+  burstAt(ev.clientX,ev.clientY,['🧸','🎈','🌈','🐣','🍭','⭐','🎉']); sfxPop();
+  setTimeout(()=>spawnBalloon(Math.floor(Math.random()*balCols.length)), 2600);
+}
+
+/* ---------------- artworks ---------------- */
+const slots=(function(){const s=[],y=2.35,inset=2.6,near=0.14;
   const run=(n,sx,sz,ex,ez,ry)=>{for(let i=0;i<n;i++){const t=(i+0.5)/n;s.push({x:sx+(ex-sx)*t,y,z:sz+(ez-sz)*t,ry});}};
   run(5,-W/2+inset,-D/2+near,W/2-inset,-D/2+near,0); run(5,W/2-near,-D/2+inset,W/2-near,D/2-inset,-Math.PI/2);
-  run(5,W/2-inset,D/2-near,-W/2+inset,D/2-near,Math.PI); run(5,-W/2+near,D/2-inset,-W/2+near,-D/2+inset,Math.PI/2);
-  return s;})();
-let placedTotal=0;
-const shown=new Map(); // key -> {item, group, artMesh}
-function placeArtwork(item){
-  return new Promise(res=>{
-    const idx=placedTotal; const slot=slots[placedTotal % slots.length]; const yoff=Math.floor(placedTotal/slots.length)*0; placedTotal++;
-    const img=new Image();
-    img.onload=()=>{
-      const ar=img.width/img.height; let w=2.2,h=2.2; if(ar>1)h=w/ar; else w=h*ar;
-      const tex=new THREE.Texture(img); tex.colorSpace=THREE.SRGBColorSpace; tex.needsUpdate=true;
-      const grp=new THREE.Group();
-      grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.34,h+0.34,0.12),new THREE.MeshStandardMaterial({color:frameCols[idx%frameCols.length],roughness:.5,metalness:.2})));
-      const mat=new THREE.Mesh(new THREE.PlaneGeometry(w+0.12,h+0.12),new THREE.MeshStandardMaterial({color:0xffffff})); mat.position.z=0.062; grp.add(mat);
-      const art=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex})); art.position.z=0.07; art.userData.key=item.key; grp.add(art);
-      grp.position.set(slot.x,slot.y+yoff,slot.z); grp.rotation.y=slot.ry; scene.add(grp);
-      shown.set(item.key,{item,group:grp,artMesh:art}); res();
-    };
-    img.onerror=()=>res(); img.src=item.img;
-  });
-}
-async function syncItems(items){
-  const seen=new Set();
-  for(const it of items){ seen.add(it.key);
-    if(shown.has(it.key)){ const e=shown.get(it.key); Object.assign(e.item,it); if(cur&&cur.key===it.key){cur=e.item; refreshModal();} }
-    else { await placeArtwork(it); }
-  }
+  run(5,W/2-inset,D/2-near,-W/2+inset,D/2-near,Math.PI); run(5,-W/2+near,D/2-inset,-W/2+near,-D/2+inset,Math.PI/2); return s;})();
+const frameCols=[0xff9fb8,0xffd67a,0x8fe0c0,0x8fbcff,0xc7a0ff,0xffb27a];
+let placedTotal=0; const shown=new Map();
+function placeArtwork(item){ return new Promise(res=>{ const idx=placedTotal; const slot=slots[placedTotal%slots.length]; placedTotal++;
+  const img=new Image(); img.onload=()=>{ const ar=img.width/img.height; let w=2.2,h=2.2; if(ar>1)h=w/ar; else w=h*ar;
+    const tex=new THREE.Texture(img); tex.colorSpace=THREE.SRGBColorSpace; tex.needsUpdate=true; const grp=new THREE.Group();
+    grp.add(new THREE.Mesh(new THREE.BoxGeometry(w+0.34,h+0.34,0.12),new THREE.MeshStandardMaterial({color:frameCols[idx%frameCols.length],roughness:.5,metalness:.2})));
+    const mat=new THREE.Mesh(new THREE.PlaneGeometry(w+0.12,h+0.12),new THREE.MeshStandardMaterial({color:0xffffff})); mat.position.z=0.062; grp.add(mat);
+    const art=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex})); art.position.z=0.07; art.userData.key=item.key; grp.add(art);
+    grp.position.set(slot.x,slot.y,slot.z); grp.rotation.y=slot.ry; scene.add(grp); shown.set(item.key,{item,group:grp,artMesh:art}); res(); };
+  img.onerror=()=>res(); img.src=item.img; }); }
+async function syncItems(items){ const seen=new Set();
+  for(const it of items){ seen.add(it.key); if(shown.has(it.key)){ const e=shown.get(it.key); Object.assign(e.item,it); if(cur&&cur.key===it.key){cur=e.item; refreshModal();} } else await placeArtwork(it); }
   for(const [k,e] of [...shown]){ if(!seen.has(k)){ scene.remove(e.group); shown.delete(k); } }
-  $('hint').textContent = shown.size? T[L].hint : T[L].empty;
-}
+  $('hint').textContent=shown.size?T[L].hint:T[L].empty; }
 
-/* raycast pick */
-const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let downXY=null;
+/* ---------------- picking + click-to-walk ---------------- */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let downXY=null, navTo=null;
 canvas.addEventListener('pointerdown',e=>{ downXY=[e.clientX,e.clientY]; startAudio(); });
-canvas.addEventListener('pointerup',e=>{ if(!downXY)return; const dx=e.clientX-downXY[0],dy=e.clientY-downXY[1]; downXY=null;
-  if(Math.hypot(dx,dy)>8)return; ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1; ray.setFromCamera(ptr,camera);
-  const hits=ray.intersectObjects([...shown.values()].map(e=>e.artMesh));
-  if(hits.length){ const k=hits[0].object.userData.key; const e=shown.get(k); if(e) openArt(e.item); }
+canvas.addEventListener('pointerup',e=>{ if(!downXY)return; const dx=e.clientX-downXY[0],dy=e.clientY-downXY[1]; downXY=null; if(Math.hypot(dx,dy)>8)return;
+  ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1; ray.setFromCamera(ptr,camera);
+  const targets=[...shown.values()].map(a=>a.artMesh).concat(balloonMeshes,[statueMesh,floor]);
+  const hits=ray.intersectObjects(targets,false); if(!hits.length)return; const o=hits[0].object;
+  if(o.userData.key){ const e2=shown.get(o.userData.key); if(e2)openArt(e2.item); }
+  else if(o.userData.balloon){ popBalloon(o.userData.balloon,e); }
+  else if(o===statueMesh){ statueSpin+=6; burstAt(e.clientX,e.clientY,['✨','⭐','🌟','💫']); sfxTwinkle(); }
+  else if(o===floor){ navTo=new THREE.Vector2(hits[0].point.x,hits[0].point.z); ripple(e.clientX,e.clientY); }
 });
 
-/* ---------------- movement: arrows / WASD / dpad ---------------- */
-const keys={}; const dpad={f:0,s:0};
-addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true; startAudio();
-  if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k)) e.preventDefault(); });
+/* ---------------- movement ---------------- */
+const keys={}, dpad={f:0,s:0};
+addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true; startAudio(); if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault(); });
 addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
-document.querySelectorAll('.dpad button').forEach(b=>{
-  const dir=b.dataset.dir; const set=(on)=>{ if(dir==='f')dpad.f=on?1:0; if(dir==='b')dpad.f=on?-1:0; if(dir==='l')dpad.s=on?-1:0; if(dir==='r')dpad.s=on?1:0; };
-  b.addEventListener('pointerdown',e=>{e.preventDefault();startAudio();set(true);});
-  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>set(false)));
-});
-const fwd=new THREE.Vector3(), rgt=new THREE.Vector3(), up=new THREE.Vector3(0,1,0), mv=new THREE.Vector3();
-function moveStep(dt){
-  let f=dpad.f, s=dpad.s;
-  if(keys['w']||keys['arrowup'])f+=1; if(keys['s']||keys['arrowdown'])f-=1;
-  if(keys['a']||keys['arrowleft'])s-=1; if(keys['d']||keys['arrowright'])s+=1;
-  if(!f&&!s) return;
-  camera.getWorldDirection(fwd); fwd.y=0; fwd.normalize(); rgt.crossVectors(fwd,up).normalize();
-  const sp=4.2*dt; mv.set(0,0,0).addScaledVector(fwd,f*sp).addScaledVector(rgt,s*sp);
-  camera.position.add(mv); controls.target.add(mv);
-  const lim=W/2-1.1;
-  for(const o of [camera.position,controls.target]){ o.x=THREE.MathUtils.clamp(o.x,-lim,lim); o.z=THREE.MathUtils.clamp(o.z,-lim,lim); }
+document.querySelectorAll('.dpad button').forEach(b=>{ const dir=b.dataset.dir; const set=on=>{ if(dir==='f')dpad.f=on?1:0; if(dir==='b')dpad.f=on?-1:0; if(dir==='l')dpad.s=on?-1:0; if(dir==='r')dpad.s=on?1:0; };
+  b.addEventListener('pointerdown',e=>{e.preventDefault();startAudio();navTo=null;set(true);}); ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>set(false))); });
+function collide(p){ const lim=W/2-1.1; p.x=clamp(p.x,-lim,lim); p.z=clamp(p.z,-lim,lim);
+  const d=Math.hypot(p.x,p.z); if(d<1.45){ const s=1.45/(d||1e-3); p.x*=s; p.z*=s; }
+  for(const b of AABBs){ if(p.x>b.x0&&p.x<b.x1&&p.z>b.z0&&p.z<b.z1){ const dl=p.x-b.x0,dr=b.x1-p.x,dt=p.z-b.z0,db=b.z1-p.z,m=Math.min(dl,dr,dt,db);
+    if(m===dl)p.x=b.x0; else if(m===dr)p.x=b.x1; else if(m===dt)p.z=b.z0; else p.z=b.z1; } } }
+const fwd=new THREE.Vector3(),rgt=new THREE.Vector3(),upv=new THREE.Vector3(0,1,0),mv=new THREE.Vector3();
+function moveStep(dt){ let f=dpad.f,s=dpad.s;
+  if(keys['w']||keys['arrowup'])f+=1; if(keys['s']||keys['arrowdown'])f-=1; if(keys['a']||keys['arrowleft'])s-=1; if(keys['d']||keys['arrowright'])s+=1;
+  if(f||s){ navTo=null; camera.getWorldDirection(fwd); fwd.y=0; fwd.normalize(); rgt.crossVectors(fwd,upv).normalize();
+    const sp=4.4*dt; mv.set(0,0,0).addScaledVector(fwd,f*sp).addScaledVector(rgt,s*sp);
+    const before=camera.position.clone(); camera.position.add(mv); collide(camera.position); const applied=camera.position.clone().sub(before); controls.target.add(applied); }
+  if(navTo){ const cx=camera.position.x,cz=camera.position.z; let dx=navTo.x-cx,dz=navTo.y-cz; const dist=Math.hypot(dx,dz);
+    if(dist<0.25){ navTo=null; } else { const step=Math.min(dist,5.0*dt); const nx=dx/dist*step,nz=dz/dist*step;
+      const before=camera.position.clone(); camera.position.x+=nx; camera.position.z+=nz; collide(camera.position); const ax=camera.position.x-before.x,az=camera.position.z-before.z; controls.target.x+=ax; controls.target.z+=az; } }
 }
 
-/* ---------------- ambient background music (original synthesis) ---------------- */
-let actx=null, musicOn=true, musicStarted=false, master=null, timers=[];
-function startAudio(){ if(musicStarted||!musicOn) return; musicStarted=true;
-  try{ actx=new (window.AudioContext||window.webkitAudioContext)(); master=actx.createGain(); master.gain.value=0.14; master.connect(actx.destination);
-    const chords=[[196,247,294],[220,262,330],[174,220,262],[196,233,294]];
-    let ci=0;
-    const pad=()=>{ if(!musicOn||actx.state!=='running')return; const t=actx.currentTime; const ns=chords[ci++%chords.length];
-      ns.forEach(fr=>{ const o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.value=fr;
-        g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.05,t+2.2); g.gain.linearRampToValueAtTime(0.0001,t+7.5);
-        o.connect(g).connect(master); o.start(t); o.stop(t+7.7); }); };
-    const twinkle=()=>{ if(!musicOn||actx.state!=='running')return; const t=actx.currentTime; const o=actx.createOscillator(),g=actx.createGain();
-      o.type='sine'; o.frequency.value=784+Math.floor(Math.random()*4)*130; g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.05,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+1.1); o.connect(g).connect(master); o.start(t); o.stop(t+1.2); };
-    pad(); timers.push(setInterval(pad,6000)); timers.push(setInterval(twinkle,3200));
-  }catch(e){}
-}
-$('musicBtn').onclick=()=>{ musicOn=!musicOn; $('musicBtn').textContent=musicOn?'🔊':'🔇';
-  if(musicOn){ if(!musicStarted) startAudio(); else if(master){ master.gain.value=0.14; if(actx&&actx.state==='suspended')actx.resume(); } }
-  else if(master){ master.gain.value=0; } };
+/* ---------------- kid-friendly ambient + SFX (original) ---------------- */
+let actx=null,musicOn=true,musicStarted=false,master=null,timers=[];
+function startAudio(){ if(musicStarted||!musicOn)return; musicStarted=true;
+  try{ actx=new (window.AudioContext||window.webkitAudioContext)(); master=actx.createGain(); master.gain.value=0.16; master.connect(actx.destination);
+    const scale=[523.25,587.33,659.25,783.99,880.00], bass=[130.81,146.83,164.81,196.00]; let step=0;
+    const beep=(fr,dur,vol,type,delay)=>{ const t=actx.currentTime+(delay||0); const o=actx.createOscillator(),g=actx.createGain(); o.type=type||'triangle'; o.frequency.value=fr;
+      g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(vol,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.connect(g).connect(master); o.start(t); o.stop(t+dur+0.05); };
+    const tick=()=>{ if(!musicOn||actx.state!=='running')return; const s=step++;
+      const mel=scale[(s*2+(s%3))%scale.length]; beep(mel,0.4,0.09,'triangle'); if(s%2===0)beep(mel*2,0.25,0.025,'sine',0.02); if(s%4===0)beep(bass[(s/4)%bass.length],0.9,0.05,'sine'); };
+    tick(); timers.push(setInterval(tick,380));
+  }catch(e){} }
+$('musicBtn').onclick=()=>{ musicOn=!musicOn; $('musicBtn').textContent=musicOn?'🔊':'🔇'; if(musicOn){ if(!musicStarted)startAudio(); else if(master){master.gain.value=0.16; if(actx&&actx.state==='suspended')actx.resume();} } else if(master){ master.gain.value=0; } };
+function sfxPop(){ if(!actx)return; const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.setValueAtTime(420,t); o.frequency.exponentialRampToValueAtTime(900,t+0.12); g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.16); o.connect(g).connect(master||actx.destination); o.start(t); o.stop(t+0.2); }
+function sfxTwinkle(){ if(!actx)return; [1200,1600,2000].forEach((f,i)=>{ const t=actx.currentTime+i*0.05,o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25); o.connect(g).connect(master||actx.destination); o.start(t); o.stop(t+0.3); }); }
 
-/* ---------------- backend: Firebase (shared) or localStorage (device) ---------------- */
-let backend='local', fb=null;
-const LKEY='mg_gallery_v2';
+/* ---------------- backend ---------------- */
+let backend='local',fb=null; const LKEY='mg_gallery_v2';
 function loadLocal(){ try{return JSON.parse(localStorage.getItem(LKEY))||{items:[]};}catch(e){return{items:[]};} }
 function saveLocal(){ try{localStorage.setItem(LKEY,JSON.stringify(LDATA));}catch(e){alert('저장 공간이 가득 찼어요.');} }
 let LDATA=loadLocal(); let seq=LDATA.items.reduce((m,i)=>Math.max(m,i.id||0),0);
-
-async function initBackend(){
-  const cfg=window.MG_FIREBASE;
-  if(cfg&&cfg.apiKey&&cfg.apiKey.indexOf('PASTE')<0){
-    try{
-      const appMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-      const fsMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-      const app=appMod.initializeApp(cfg); const db=fsMod.getFirestore(app);
-      fb={m:fsMod,db,col:fsMod.collection(db,'artworks')};
-      fsMod.onSnapshot(fsMod.query(fb.col, fsMod.orderBy('createdAt','asc')), snap=>{
-        const items=[]; snap.forEach(d=>{ const x=d.data(); x.key=d.id; items.push(x); }); syncItems(items);
-      });
-      backend='firebase'; return;
-    }catch(e){ console.warn('Firebase off, using local:',e); }
-  }
-  backend='local';
-  LDATA.items.forEach(it=>{ it.key=it.key||('L'+it.id); }); syncItems(LDATA.items);
-}
-
-async function addArtwork(item){
-  if(backend==='firebase'){
-    await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:Date.now()});
-    // snapshot listener will place it and open on next tick
-  } else {
-    item.id=++seq; item.key='L'+item.id; LDATA.items.push(item); saveLocal(); await syncItems(LDATA.items); openArt(item);
-  }
-}
+async function initBackend(){ const cfg=window.MG_FIREBASE;
+  if(cfg&&cfg.apiKey&&cfg.apiKey.indexOf('PASTE')<0){ try{
+    const appMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'); const fsMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const app=appMod.initializeApp(cfg); const db=fsMod.getFirestore(app); fb={m:fsMod,db,col:fsMod.collection(db,'artworks')};
+    fsMod.onSnapshot(fsMod.query(fb.col,fsMod.orderBy('createdAt','asc')),snap=>{ const items=[]; snap.forEach(d=>{const x=d.data();x.key=d.id;items.push(x);}); syncItems(items); });
+    backend='firebase'; return; }catch(e){ console.warn('Firebase off:',e); } }
+  backend='local'; LDATA.items.forEach(it=>{it.key=it.key||('L'+it.id);}); syncItems(LDATA.items); }
+async function addArtwork(item){ if(backend==='firebase'){ await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:Date.now()}); }
+  else { item.id=++seq; item.key='L'+item.id; LDATA.items.push(item); saveLocal(); await syncItems(LDATA.items); openArt(item); } }
 async function addComment(txt){ if(!cur||!txt.trim())return; const c={t:txt.trim().slice(0,60),by:(L==='ko'?'친구':'Friend')};
-  if(backend==='firebase'){ try{ await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{comments:fb.m.arrayUnion(c)}); }catch(e){} }
-  else { cur.comments=cur.comments||[]; cur.comments.push(c); saveLocal(); refreshModal(); } }
-async function addStar(){ if(!cur)return;
-  if(backend==='firebase'){ try{ await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{stars:fb.m.increment(1)}); }catch(e){} burst(); }
-  else { cur.stars=(cur.stars||0)+1; saveLocal(); renderStars(); burst(); } }
+  if(backend==='firebase'){ try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{comments:fb.m.arrayUnion(c)});}catch(e){} } else { cur.comments=cur.comments||[]; cur.comments.push(c); saveLocal(); refreshModal(); } }
+async function addStar(){ if(!cur)return; if(backend==='firebase'){ try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{stars:fb.m.increment(1)});}catch(e){} burstAt(innerWidth/2,innerHeight*0.4,['⭐','🌟']); } else { cur.stars=(cur.stars||0)+1; saveLocal(); renderStars(); burstAt(innerWidth/2,innerHeight*0.4,['⭐','🌟']); } }
 
-/* ---------------- upload UI ---------------- */
+/* ---------------- upload ---------------- */
 $('uploadBtn').onclick=()=>{ startAudio(); $('upModal').classList.add('show'); };
 window.closeUp=()=>{ $('upModal').classList.remove('show'); $('preview').classList.add('hide'); pendingImg=null; $('file').value=''; };
-$('drop').onclick=()=>$('file').click();
-let pendingImg=null;
+$('drop').onclick=()=>$('file').click(); let pendingImg=null;
 $('file').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=()=>{ const img=new Image(); img.onload=()=>{ const S=760,sc=Math.min(1,S/Math.max(img.width,img.height));
-    const cv=document.createElement('canvas'); cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
-    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height); pendingImg=cv.toDataURL('image/jpeg',0.72);
-    $('preview').src=pendingImg; $('preview').classList.remove('hide'); }; img.src=r.result; }; r.readAsDataURL(f); });
-$('submitArt').onclick=async ()=>{ if(!pendingImg){ $('file').click(); return; }
-  const artist=($('artist').value||(L==='ko'?'몽글이':'Moong')).slice(0,20);
-  const title=($('title').value||(L==='ko'?'나의 작품':'My Artwork')).slice(0,30);
-  const award=T[L].awards[Math.floor(Math.random()*T[L].awards.length)];
-  const btn=$('submitArt'); btn.disabled=true; const old=btn.textContent; btn.textContent='…';
-  try{ await addArtwork({img:pendingImg,artist,title,award,stars:0,comments:[],date:todayStr()}); }catch(e){ alert('업로드 실패'); }
-  btn.disabled=false; btn.textContent=old; $('artist').value=''; $('title').value=''; closeUp();
-};
+  r.onload=()=>{ const img=new Image(); img.onload=()=>{ const S=760,sc=Math.min(1,S/Math.max(img.width,img.height)); const cv=document.createElement('canvas'); cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc); cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height); pendingImg=cv.toDataURL('image/jpeg',0.72); $('preview').src=pendingImg; $('preview').classList.remove('hide'); }; img.src=r.result; }; r.readAsDataURL(f); });
+$('submitArt').onclick=async ()=>{ if(!pendingImg){ $('file').click(); return; } const artist=($('artist').value||(L==='ko'?'몽글이':'Moong')).slice(0,20); const title=($('title').value||(L==='ko'?'나의 작품':'My Artwork')).slice(0,30); const award=T[L].awards[Math.floor(Math.random()*T[L].awards.length)];
+  const btn=$('submitArt'); btn.disabled=true; const old=btn.textContent; btn.textContent='…'; try{ await addArtwork({img:pendingImg,artist,title,award,stars:0,comments:[],date:todayStr()}); }catch(e){ alert('업로드 실패'); } btn.disabled=false; btn.textContent=old; $('artist').value=''; $('title').value=''; closeUp(); };
 function todayStr(){ const d=new Date(); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
 
 /* ---------------- artwork modal ---------------- */
 let cur=null;
 function openArt(item){ cur=item; refreshModal(); $('artModal').classList.add('show'); }
 window.closeArt=()=>$('artModal').classList.remove('show');
-function refreshModal(){ if(!cur)return; $('aImg').src=cur.img; $('aTitle').textContent=cur.title;
-  $('aArtist').textContent='🎨 '+cur.artist+' · '+(cur.date||''); $('aAward').textContent='🏅 '+(cur.award||'');
-  renderStars(); renderComments(); }
+function refreshModal(){ if(!cur)return; $('aImg').src=cur.img; $('aTitle').textContent=cur.title; $('aArtist').textContent='🎨 '+cur.artist+' · '+(cur.date||''); $('aAward').textContent='🏅 '+(cur.award||''); renderStars(); renderComments(); }
 function renderStars(){ $('aStars').textContent='⭐ '+(cur.stars||0)+(L==='ko'?' 개의 응원 별':' cheer stars'); }
-function renderComments(){ const box=$('aComments'); box.innerHTML='';
-  (cur.comments||[]).slice(-40).forEach(c=>{ const d=document.createElement('div'); d.className='cmt'; d.innerHTML='<b>'+esc(c.by||'익명')+'</b> · '+esc(c.t); box.appendChild(d); });
-  box.scrollTop=box.scrollHeight; }
-function buildPresets(){ const p=$('presets'); if(!p)return; p.innerHTML='';
-  T[L].presets.forEach(txt=>{ const b=document.createElement('button'); b.textContent=txt; b.onclick=()=>addComment(txt); p.appendChild(b); }); }
+function renderComments(){ const box=$('aComments'); box.innerHTML=''; (cur.comments||[]).slice(-40).forEach(c=>{ const d=document.createElement('div'); d.className='cmt'; d.innerHTML='<b>'+esc(c.by||'익명')+'</b> · '+esc(c.t); box.appendChild(d); }); box.scrollTop=box.scrollHeight; }
+function buildPresets(){ const p=$('presets'); if(!p)return; p.innerHTML=''; T[L].presets.forEach(txt=>{ const b=document.createElement('button'); b.textContent=txt; b.onclick=()=>addComment(txt); p.appendChild(b); }); }
 $('cSend').onclick=()=>{ const v=$('cInput').value; if(v.trim()){ addComment(v); $('cInput').value=''; } };
 $('cInput').addEventListener('keydown',e=>{ if(e.key==='Enter')$('cSend').click(); });
 $('starBtn').onclick=()=>addStar();
 function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 
 /* ---------------- certificate ---------------- */
-$('certBtn').onclick=()=>{ if(cur) makeCertificate(cur); };
-function makeCertificate(item){
-  const cv=document.createElement('canvas'); cv.width=1000; cv.height=720; const c=cv.getContext('2d');
+$('certBtn').onclick=()=>{ if(cur)makeCertificate(cur); };
+function makeCertificate(item){ const cv=document.createElement('canvas'); cv.width=1000; cv.height=720; const c=cv.getContext('2d');
   const g=c.createLinearGradient(0,0,0,720); g.addColorStop(0,'#fffdf7'); g.addColorStop(1,'#fdf3e2'); c.fillStyle=g; c.fillRect(0,0,1000,720);
   c.strokeStyle='#c9a96a'; c.lineWidth=6; c.strokeRect(24,24,952,672); c.strokeStyle='#e6cf9e'; c.lineWidth=2; c.strokeRect(38,38,924,644);
   c.textAlign='center'; c.fillStyle='#a8894c'; c.font='700 22px "Apple SD Gothic Neo",sans-serif'; c.fillText('MONGLEKIDS  VIRTUAL  GALLERY',500,92);
   c.fillStyle='#3a2f1a'; c.font='800 44px "Apple SD Gothic Neo",sans-serif'; c.fillText(L==='ko'?'전 시 기 록 증':'CERTIFICATE OF EXHIBITION',500,152);
   const img=new Image(); img.onload=()=>{ const bw=300,ar=img.width/img.height; let w=bw,h=bw; if(ar>1)h=bw/ar; else w=bw*ar; const x=500-w/2,y=200;
-    c.save(); c.shadowColor='#0002'; c.shadowBlur=16; c.shadowOffsetY=8; c.fillStyle='#fff'; c.fillRect(x-10,y-10,w+20,h+20); c.restore();
-    c.strokeStyle='#c9a96a'; c.lineWidth=6; c.strokeRect(x-10,y-10,w+20,h+20); c.drawImage(img,x,y,w,h);
+    c.save(); c.shadowColor='#0002'; c.shadowBlur=16; c.shadowOffsetY=8; c.fillStyle='#fff'; c.fillRect(x-10,y-10,w+20,h+20); c.restore(); c.strokeStyle='#c9a96a'; c.lineWidth=6; c.strokeRect(x-10,y-10,w+20,h+20); c.drawImage(img,x,y,w,h);
     const by=y+h+52; c.fillStyle='#3a2f1a'; c.font='800 30px "Apple SD Gothic Neo",sans-serif'; c.fillText('“'+item.title+'”',500,by);
-    c.fillStyle='#5a4a32'; c.font='500 20px "Apple SD Gothic Neo",sans-serif';
-    c.fillText((L==='ko'? item.artist+' 어린이의 작품이 몽글 갤러리에 전시되었습니다.':'Exhibited by '+item.artist+' at the Mongle Gallery.'),500,by+40);
+    c.fillStyle='#5a4a32'; c.font='500 20px "Apple SD Gothic Neo",sans-serif'; c.fillText((L==='ko'? item.artist+' 어린이의 작품이 몽글 갤러리에 전시되었습니다.':'Exhibited by '+item.artist+' at the Mongle Gallery.'),500,by+40);
     c.fillStyle='#a8894c'; c.font='800 24px "Apple SD Gothic Neo",sans-serif'; c.fillText('🏅 '+(item.award||''),500,by+86);
-    c.fillStyle='#8a7a5a'; c.font='500 16px "Apple SD Gothic Neo",sans-serif';
-    c.fillText((L==='ko'?'응원 별 ':'Cheer stars ')+'⭐ '+(item.stars||0)+'   ·   '+(item.date||''),500,by+120);
+    c.fillStyle='#8a7a5a'; c.font='500 16px "Apple SD Gothic Neo",sans-serif'; c.fillText((L==='ko'?'응원 별 ':'Cheer stars ')+'⭐ '+(item.stars||0)+'   ·   '+(item.date||''),500,by+120);
     c.fillStyle='#a8894c'; c.font='700 18px "Apple SD Gothic Neo",sans-serif'; c.fillText('Monglekids',500,662);
-    const a=document.createElement('a'); a.download='mongle-certificate.png'; a.href=cv.toDataURL('image/png'); a.click(); burst();
-  }; img.src=item.img;
-}
-function burst(){ for(let i=0;i<24;i++){ const s=document.createElement('div'); s.textContent=['🌟','🎉','💛','✨','🏅'][i%5];
-  s.style.cssText='position:fixed;z-index:40;left:50%;top:40%;font-size:22px;pointer-events:none;transition:transform 1.1s ease,opacity 1.1s';
-  document.body.appendChild(s); const ang=Math.random()*6.28,dist=120+Math.random()*180;
-  requestAnimationFrame(()=>{ s.style.transform='translate('+Math.cos(ang)*dist+'px,'+(Math.sin(ang)*dist+120)+'px) rotate('+(Math.random()*360)+'deg)'; s.style.opacity='0'; });
-  setTimeout(()=>s.remove(),1150); } }
+    const a=document.createElement('a'); a.download='mongle-certificate.png'; a.href=cv.toDataURL('image/png'); a.click(); burstAt(innerWidth/2,innerHeight*0.4,['🎉','🏅','🌟']); }; img.src=item.img; }
 
-/* ---------------- loop + boot ---------------- */
+/* ---------------- fx ---------------- */
+function burstAt(px,py,emo){ for(let i=0;i<20;i++){ const s=document.createElement('div'); s.textContent=emo[i%emo.length];
+  s.style.cssText='position:fixed;z-index:40;left:'+px+'px;top:'+py+'px;font-size:24px;pointer-events:none;transition:transform 1.1s ease,opacity 1.1s;transform:translate(-50%,-50%)';
+  document.body.appendChild(s); const ang=Math.random()*6.28,dist=90+Math.random()*160;
+  requestAnimationFrame(()=>{ s.style.transform='translate('+(Math.cos(ang)*dist-50)+'%,'+(Math.sin(ang)*dist+80)+'%) rotate('+(Math.random()*360)+'deg)'; s.style.opacity='0'; }); setTimeout(()=>s.remove(),1150); } }
+function ripple(px,py){ const r=document.createElement('div'); r.style.cssText='position:fixed;z-index:39;left:'+px+'px;top:'+py+'px;width:12px;height:12px;border:3px solid #ff9fc4;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:all .5s ease;opacity:.9';
+  document.body.appendChild(r); requestAnimationFrame(()=>{ r.style.width='70px'; r.style.height='70px'; r.style.opacity='0'; }); setTimeout(()=>r.remove(),520); }
+
+/* ---------------- loop ---------------- */
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
-let last=performance.now(), t0=last;
-function animate(){ const now=performance.now(); const dt=Math.min(0.05,(now-last)/1000); last=now; const t=(now-t0)/1000;
-  moveStep(dt); bobFloaties(t); controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
+let last=performance.now(),t0=last;
+function animate(){ const now=performance.now(),dt=Math.min(0.05,(now-last)/1000); last=now; const t=(now-t0)/1000;
+  moveStep(dt); bobFloaties(t);
+  statueSpin=Math.max(0.5,statueSpin-dt*3); statueMesh.rotation.y+=dt*statueSpin; statueMesh.rotation.x+=dt*statueSpin*0.4;
+  for(const s of stars){ const k=0.6+0.4*Math.abs(Math.sin(t*1.6+s.userData.ph)); s.scale.set(s.userData.sz*k,s.userData.sz*k,1); s.material.opacity=0.4+0.6*k; }
+  controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
 initBackend().then(()=>{ $('loading').classList.add('hide'); tr(); animate(); });
 </script>
 </body>
