@@ -8,7 +8,7 @@
   window.MK_LANG=(new URLSearchParams(location.search).get('lang')||localStorage.getItem('mk_lang')||'ko');
   window.MG_FIREBASE={ apiKey:"PASTE_YOUR_API_KEY", authDomain:"PASTE.firebaseapp.com", projectId:"PASTE", storageBucket:"PASTE.appspot.com", appId:"PASTE" };
   window.MG_ADMIN_PASS="monggle";
-  window.MG_ROOM="monglekids/gallery/v3";           /* 실시간 방 토픽 */
+  window.MG_ROOM="monglekids/gallery/v4";           /* 실시간 방 토픽 (v4 = 초기화) */
   window.MG_MQTT="wss://broker.emqx.io:8084/mqtt";    /* 무료 공개 MQTT 브로커 */
 </script>
 <script src="https://unpkg.com/mqtt@5.7.0/dist/mqtt.min.js"></script>
@@ -51,12 +51,18 @@
   #file{display:none;} .h2{font-weight:800;font-size:20px;margin-bottom:12px;} .note{font-size:11px;color:#a89e8e;text-align:center;margin-top:12px;line-height:1.6;}
   .admin-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow:auto;} .admin-row{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #eee2d4;border-radius:12px;padding:8px;} .admin-row img{width:52px;height:52px;object-fit:cover;border-radius:8px;} .admin-row .info{flex:1;font-size:13px;} .admin-row .info small{color:#a89;display:block;}
   /* entry */
-  #entry{position:fixed;inset:0;z-index:40;background:linear-gradient(160deg,#8fd3ff,#c9b6ff 60%,#ffd6ef);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:22px;text-align:center;}
-  #entry h1{font-size:30px;color:#fff;text-shadow:0 3px 10px #0003;} #entry p{color:#ffffffe0;font-size:14px;margin-top:-6px;}
-  .ent-card{background:#ffffffee;border-radius:22px;padding:22px;max-width:420px;width:100%;box-shadow:0 16px 40px #0003;}
-  .chars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 14px;}
-  .char{border:2px solid #eadff2;border-radius:16px;padding:8px 4px;cursor:pointer;background:#fff;text-align:center;}
-  .char.on{border-color:var(--teal);background:#eafaf5;transform:scale(1.04);} .char .e{font-size:34px;} .char small{display:block;font-size:11px;color:#8a83a0;margin-top:2px;}
+  #entry{position:fixed;inset:0;z-index:40;background:linear-gradient(160deg,#8fd3ff,#b9a9ff 55%,#ffcfe9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;text-align:center;}
+  .ent-logo{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .ent-badge{width:66px;height:66px;border-radius:20px;background:linear-gradient(135deg,#fff,#ffe9f6);box-shadow:0 8px 22px #0003;display:flex;align-items:center;justify-content:center;}
+  .ent-logo h1{font-size:29px;color:#fff;text-shadow:0 3px 12px #0004;letter-spacing:.3px;line-height:1.2;margin-top:6px;}
+  .ent-logo p{color:#ffffffe6;font-size:14px;font-weight:600;}
+  .ent-card{background:#fffffff2;border-radius:26px;padding:28px 24px;max-width:430px;width:100%;box-shadow:0 20px 48px #0004;display:flex;flex-direction:column;align-items:stretch;}
+  .ent-card .lab{font-size:12.5px;font-weight:800;color:#8a83a0;text-align:left;margin:2px 2px 7px;letter-spacing:.2px;}
+  .ent-card .name{text-align:center;font-weight:700;margin-bottom:0;}
+  .chars{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:10px 0 20px;}
+  .char{border:2.5px solid #ece3f5;border-radius:18px;padding:10px 4px 8px;cursor:pointer;background:#fff;text-align:center;transition:transform .12s,border-color .12s,background .12s;}
+  .char.on{border-color:var(--teal);background:#eafaf5;transform:translateY(-3px) scale(1.05);box-shadow:0 8px 18px #3fc4a833;}
+  .char canvas{width:54px;height:54px;display:block;margin:0 auto;} .char small{display:block;font-size:11.5px;font-weight:700;color:#8a83a0;margin-top:4px;}
   .loading{position:fixed;inset:0;z-index:35;background:linear-gradient(160deg,#8fd3ff,#c9b6ff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;}
   .spin{width:44px;height:44px;border:5px solid #ffffff44;border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;} @keyframes sp{to{transform:rotate(360deg)}}
   .hide{display:none!important;} @media (max-width:520px){ .brand small{display:none;} .chat{width:200px;} }
@@ -67,12 +73,17 @@
 
 <!-- ENTRY -->
 <div id="entry">
-  <h1>🖼️ 몽글 메타버스 갤러리</h1>
-  <p data-t="entrySub">이름을 정하고, 나의 캐릭터를 골라 입장해요!</p>
+  <div class="ent-logo">
+    <div class="ent-badge"><canvas id="badge" width="120" height="120" style="width:52px;height:52px"></canvas></div>
+    <h1 data-t="entryTitle">몽글 메타버스 갤러리</h1>
+    <p data-t="entrySub">이름을 정하고, 나의 캐릭터를 골라 입장해요</p>
+  </div>
   <div class="ent-card">
+    <div class="lab" data-t="labName">이름</div>
     <input class="name" id="entName" data-ph="artist" placeholder="이름 (예: 몽글이)" maxlength="16">
+    <div class="lab" data-t="labChar" style="margin-top:16px">캐릭터 고르기</div>
     <div class="chars" id="chars"></div>
-    <button class="btn teal" id="enterBtn" style="width:100%" data-t="enter">🚪 입장하기</button>
+    <button class="btn teal" id="enterBtn" style="width:100%;padding:14px;font-size:15px" data-t="enter">입장하기</button>
     <p class="note" data-t="entryNote">다른 친구들과 같은 방에서 만나 그림을 감상하고 채팅해요.</p>
   </div>
 </div>
@@ -126,25 +137,29 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 const T={
- ko:{upload:'＋ 내 그림 올리기',hint:'바닥을 눌러 걷고, 계단으로 2층에 올라가요 🎨',upTitle:'🎨 내 그림 전시하기',dropTxt:'여기를 눌러 그림 사진을 골라요',submit:'✨ 갤러리에 전시하기',upNote:'아이 얼굴이 아닌 <b>그림</b>을 올려주세요.',star:'응원 별',cert:'🏅 전시 기록증',del:'🗑 이 작품 지우기',adminTitle:'관리자 · 전시 관리',brandSub:'Monglekids Metaverse Gallery',artist:'이름 (예: 몽글이)',title:'작품 제목 (예: 우리 가족)',cheer:'응원 한마디',chat:'채팅…',enter:'🚪 입장하기',entrySub:'이름을 정하고, 나의 캐릭터를 골라 입장해요!',entryNote:'다른 친구들과 같은 방에서 만나 그림을 감상하고 채팅해요.',presets:['멋져요! 🌟','최고예요! 👍','색깔이 예뻐요! 🎨','상상력 대단해요! 🚀','따뜻해요! 💛'],awards:['반짝이는 상상력 상','용감한 색깔 상','따뜻한 마음 상','자유로운 생각 상','오늘의 몽글 작가 상','반짝반짝 창의 상'],empty:'첫 번째 작품의 주인공이 되어보세요! ＋',ppl:'명 접속',guest:'손님',
-     docent:['안녕! 나는 도슨트 뭉이야. 갤러리에 온 걸 환영해! 🖼️','바닥을 누르면 그쪽으로 걸어갈 수 있어. 계단으로 2층도 올라가 봐!','그림을 누르면 크게 보고 응원 별과 댓글을 남길 수 있어.','＋ 버튼으로 네 그림도 전시해 봐. 멋진 상장도 나와!','풍선을 누르면 깜짝 선물이 나온단다 🎈'],
+ ko:{upload:'＋ 내 그림 올리기',hint:'바닥을 눌러 걷고, 계단으로 2층에 올라가요 🎨',upTitle:'🎨 내 그림 전시하기',dropTxt:'여기를 눌러 그림 사진을 골라요',submit:'✨ 갤러리에 전시하기',upNote:'아이 얼굴이 아닌 <b>그림</b>을 올려주세요.',star:'응원 별',cert:'🏅 전시 기록증',del:'🗑 이 작품 지우기',adminTitle:'관리자 · 전시 관리',brandSub:'Monglekids Metaverse Gallery',artist:'이름 (예: 몽글이)',title:'작품 제목 (예: 우리 가족)',cheer:'응원 한마디',chat:'채팅…',enter:'입장하기',entryTitle:'몽글 메타버스 갤러리',entrySub:'이름을 정하고, 나의 캐릭터를 골라 입장해요',entryNote:'다른 친구들과 같은 방에서 만나 그림을 감상하고 채팅해요.',labName:'이름',labChar:'캐릭터 고르기',presets:['멋져요! 🌟','최고예요! 👍','색깔이 예뻐요! 🎨','상상력 대단해요! 🚀','따뜻해요! 💛'],awards:['반짝이는 상상력 상','용감한 색깔 상','따뜻한 마음 상','자유로운 생각 상','오늘의 몽글 작가 상','반짝반짝 창의 상'],empty:'첫 번째 작품의 주인공이 되어보세요! ＋',ppl:'명 접속',guest:'손님',
+     docent:['안녕! 나는 도슨트 로비야. 몽글 갤러리에 온 걸 환영해! 🤖','바닥을 누르면 그쪽으로 걸어갈 수 있어. 계단으로 2층도 올라가 봐!','그림을 누르면 크게 보고 응원 별과 댓글을 남길 수 있어.','＋ 버튼으로 네 그림도 전시해 봐. 멋진 전시 기록증도 나와!','풍선을 누르면 깜짝 선물이 나온단다 🎈','문 밖에는 초록 풀밭이 펼쳐져 있어. 창밖을 구경해 봐!'],
      chars:['구름','토끼','로봇','고양이']},
- en:{upload:'＋ Add my drawing',hint:'Tap the floor to walk; take the stairs to level 2 🎨',upTitle:'🎨 Exhibit my drawing',dropTxt:'Tap to choose a photo of your drawing',submit:'✨ Put it in the gallery',upNote:'Please upload the <b>drawing</b>, not a child\'s face.',star:'Star',cert:'🏅 Certificate',del:'🗑 Delete',adminTitle:'Admin · Manage',brandSub:'Monglekids Metaverse Gallery',artist:'Name (e.g., Moong)',title:'Title (e.g., My Family)',cheer:'Write a cheer',chat:'Chat…',enter:'🚪 Enter',entrySub:'Pick a name and your character to enter!',entryNote:'Meet friends in the same room, view art and chat together.',presets:['Awesome! 🌟','You rock! 👍','Lovely colors! 🎨','So creative! 🚀','So warm! 💛'],awards:['Sparkling Imagination Award','Brave Colors Award','Warm Heart Award','Free Thinker Award','Today\'s Mongle Artist','Twinkle Creativity Award'],empty:'Be the very first artist! ＋',ppl:'online',guest:'Guest',
-     docent:['Hi! I\'m Docent Moong. Welcome to the gallery! 🖼️','Tap the floor to walk there. Take the stairs up to level 2!','Tap a picture to view it big, give stars and leave a cheer.','Use ＋ to exhibit your own drawing — you get a certificate too!','Tap a balloon for a surprise gift 🎈'],
+ en:{upload:'＋ Add my drawing',hint:'Tap the floor to walk; take the stairs to level 2 🎨',upTitle:'🎨 Exhibit my drawing',dropTxt:'Tap to choose a photo of your drawing',submit:'✨ Put it in the gallery',upNote:'Please upload the <b>drawing</b>, not a child\'s face.',star:'Star',cert:'🏅 Certificate',del:'🗑 Delete',adminTitle:'Admin · Manage',brandSub:'Monglekids Metaverse Gallery',artist:'Name (e.g., Moong)',title:'Title (e.g., My Family)',cheer:'Write a cheer',chat:'Chat…',enter:'Enter',entryTitle:'Mongle Metaverse Gallery',entrySub:'Pick a name and your character to enter',entryNote:'Meet friends in the same room, view art and chat together.',labName:'Name',labChar:'Choose a character',presets:['Awesome! 🌟','You rock! 👍','Lovely colors! 🎨','So creative! 🚀','So warm! 💛'],awards:['Sparkling Imagination Award','Brave Colors Award','Warm Heart Award','Free Thinker Award','Today\'s Mongle Artist','Twinkle Creativity Award'],empty:'Be the very first artist! ＋',ppl:'online',guest:'Guest',
+     docent:['Hi! I\'m Docent Robi. Welcome to the Mongle gallery! 🤖','Tap the floor to walk there. Take the stairs up to level 2!','Tap a picture to view it big, give stars and leave a cheer.','Use ＋ to exhibit your own drawing — you get a certificate too!','Tap a balloon for a surprise gift 🎈','Green meadows lie outside the door. Take a peek through the window!'],
      chars:['Cloud','Bunny','Robot','Cat']}
 };
 let L=(window.MK_LANG==='en')?'en':'ko';
 function tr(){ const d=T[L]; document.querySelectorAll('[data-t]').forEach(e=>{const k=e.getAttribute('data-t'); if(d[k]!=null)e.innerHTML=d[k];}); document.querySelectorAll('[data-ph]').forEach(e=>{const k=e.getAttribute('data-ph'); if(d[k]!=null)e.placeholder=d[k];});
-  $('langBtn').textContent=(L==='ko')?'EN':'한국어'; $('cloudtag').textContent=(backend==='firebase')?'☁️':(L==='ko'?'💾 이 기기':'💾 device'); $('hint').textContent=shown.size?d.hint:d.empty; updatePeople(); buildPresets(); buildCharPicker(); document.documentElement.lang=L; }
+  $('langBtn').textContent=(L==='ko')?'EN':'한국어'; $('cloudtag').textContent=(backend==='firebase')?('☁️ '+(L==='ko'?'공유':'shared')):(backend==='mqtt')?('🌐 '+(L==='ko'?'공유':'shared')):(L==='ko'?'💾 이 기기':'💾 device'); $('hint').textContent=shown.size?d.hint:d.empty; updatePeople(); buildPresets(); buildCharPicker(); drawBadge(); document.documentElement.lang=L; }
 $('langBtn').onclick=()=>{ L=(L==='ko')?'en':'ko'; window.MK_LANG=L; localStorage.setItem('mk_lang',L); tr(); };
 
 /* ---------- scene ---------- */
 const canvas=$('c');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight);
-const scene=new THREE.Scene(); scene.background=new THREE.Color('#bfe6ff'); scene.fog=new THREE.Fog('#cdeaff',40,90);
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.08; renderer.outputColorSpace=THREE.SRGBColorSpace;
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#bfe6ff'); scene.fog=new THREE.Fog('#dff1ff',44,95);
+/* gradient sky dome */
+(function sky(){ const geo=new THREE.SphereGeometry(120,32,16); const mat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{top:{value:new THREE.Color('#7cc4ff')},bot:{value:new THREE.Color('#eafaff')}},vertexShader:'varying float h;void main(){h=normalize(position).y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'varying float h;uniform vec3 top;uniform vec3 bot;void main(){gl_FragColor=vec4(mix(bot,top,clamp(h*0.6+0.4,0.0,1.0)),1.0);}'}); scene.add(new THREE.Mesh(geo,mat)); })();
 const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,200); camera.position.set(0,2.7,11);
 const controls=new OrbitControls(camera,canvas); controls.target.set(0,2.2,3); controls.enablePan=false; controls.enableDamping=true; controls.dampingFactor=.08; controls.minDistance=1.5; controls.maxDistance=16; controls.minPolarAngle=0.6; controls.maxPolarAngle=1.54;
 scene.add(new THREE.HemisphereLight(0xffffff,0xdfefff,1.15));
@@ -174,6 +189,14 @@ wall(D,H,-W/2,H/2,0,Math.PI/2);                  // left
 })();
 const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({color:0xfffdf6})); ceil.rotation.x=Math.PI/2; ceil.position.y=H; scene.add(ceil);
 const rug=new THREE.Mesh(new THREE.CircleGeometry(4.2,48),new THREE.MeshStandardMaterial({color:0xffe3f2,roughness:1})); rug.rotation.x=-Math.PI/2; rug.position.set(0,0.02,3.5); scene.add(rug);
+/* ceiling glow panels (modern gallery lighting) */
+(function panels(){ const m=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xfff2d8,emissiveIntensity:.85,roughness:1}); for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const p=new THREE.Mesh(new THREE.PlaneGeometry(3.2,3.2),m); p.rotation.x=Math.PI/2; p.position.set(i*6.6,H-0.06,j*6.6); scene.add(p);} })();
+/* accent spotlights on each wall */
+(function spots(){ const mk=(x,z,tx,tz)=>{const sp=new THREE.SpotLight(0xfff2dc,26,30,0.66,0.55,1.2); sp.position.set(x,H-0.5,z); sp.target.position.set(tx,3,tz); scene.add(sp,sp.target);}; mk(0,-D/2+3.5,0,-D/2); mk(0,D/2-3.5,0,D/2); mk(-W/2+3.5,0,-W/2,0); mk(W/2-3.5,0,W/2,0); mk(0,7,0,3.5); })();
+/* potted plants in corners */
+(function plants(){ const pot=new THREE.MeshStandardMaterial({color:0xd98b5f,roughness:.9}), leaf=new THREE.MeshStandardMaterial({color:0x5fbf6a,roughness:.8}); [[-W/2+1.3,D/2-1.3],[W/2-1.3,D/2-1.3],[-W/2+1.3,-1],[W/2-1.3,-1]].forEach(([x,z])=>{const g=new THREE.Group(); const p=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.24,0.44,14),pot); p.position.y=0.22; g.add(p); for(let i=0;i<8;i++){const l=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.95,6),leaf); l.position.y=0.75; l.rotation.z=(i-4)*0.18; l.rotation.x=Math.sin(i)*0.4; g.add(l);} g.position.set(x,0,z); scene.add(g);}); })();
+/* benches */
+(function benches(){ const w=new THREE.MeshStandardMaterial({color:0xf3e4ec,roughness:.7}); const mk=(x,z)=>{const g=new THREE.Group(); const s=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.18,0.7),w); s.position.y=0.5; g.add(s); [[-0.9,-0.25],[0.9,-0.25],[-0.9,0.25],[0.9,0.25]].forEach(([lx,lz])=>{const leg=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.5,0.13),w); leg.position.set(lx,0.25,lz); g.add(leg);}); g.position.set(x,0,z); scene.add(g);}; mk(-5.5,4); mk(5.5,4); })();
 /* rainbow wall */
 (function rainbow(){ const cols=[0xff6b6b,0xffa94d,0xffe066,0x8ce99a,0x74c0fc,0x748ffc,0xb197fc],bandH=H/7; cols.forEach((c,i)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(D-0.2,bandH),new THREE.MeshStandardMaterial({color:c,roughness:.85,side:THREE.DoubleSide})); m.position.set(W/2-0.06,bandH*(i+0.5),0); m.rotation.y=-Math.PI/2; scene.add(m);}); })();
 /* stars */
@@ -234,10 +257,19 @@ function makeChar(type,name,col){ const g=new THREE.Group(); col=col||0xffd45e; 
   }
   const tag=nameTag(name); tag.position.y=type===0?1.75:2.0; g.add(tag); g.userData.tagY=tag.position.y; return g; }
 
-/* docent NPC */
-let docent=null, docentBubble=null, docentIdx=0, docentTimer=0;
-function addDocent(){ docent=makeChar(0,(L==='ko'?'도슨트 뭉이':'Docent Moong'),0xfff2a8); docent.position.set(-2.6,0,6.2); docent.rotation.y=0.5; scene.add(docent); showDocentTip(); }
-function showDocentTip(){ if(docentBubble){docent.remove(docentBubble);} const txt=T[L].docent[docentIdx%T[L].docent.length]; docentIdx++; const c=document.createElement('canvas'); c.width=512;c.height=140; const x=c.getContext('2d'); x.fillStyle='rgba(255,255,255,.96)'; roundRect(x,6,6,500,128,22); x.fill(); x.fillStyle='#3a3550'; x.font='26px "Apple SD Gothic Neo",sans-serif'; x.textAlign='center'; wrap(x,txt,256,52,470,32); docentBubble=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false})); docentBubble.scale.set(3.4,0.93,1); docentBubble.position.y=2.5; docent.add(docentBubble); docentTimer=6; }
+/* docent NPC — free 3D asset (three.js RobotExpressive, CC0), fallback to procedural */
+let docent=null, docentBubble=null, docentIdx=0, docentTimer=0, docentMixer=null, docentWave=null, docentIdleA=null;
+const DOCENT_URL='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/models/gltf/RobotExpressive/RobotExpressive.glb';
+function addDocent(){ const grp=new THREE.Group(); grp.position.set(-3.0,0,6.4); grp.rotation.y=0.55; scene.add(grp); docent=grp;
+  const tag=nameTag(L==='ko'?'🤖 도슨트 로비':'🤖 Docent Robi',true); tag.position.y=2.35; grp.add(tag);
+  new GLTFLoader().load(DOCENT_URL, g=>{ const m=g.scene; m.scale.setScalar(0.42); m.traverse(o=>{ if(o.isMesh){o.frustumCulled=false;} }); grp.add(m);
+      docentMixer=new THREE.AnimationMixer(m); const clips=g.animations||[]; const byName=n=>clips.find(c=>c.name.toLowerCase()===n);
+      docentIdleA=byName('idle')||clips.find(c=>/idle/i.test(c.name)); docentWave=byName('wave'); if(docentIdleA)docentMixer.clipAction(docentIdleA).play(); docentGesture(); },
+    undefined, err=>{ console.warn('docent glb failed, fallback',err); const f=makeChar(0,'',0xfff2a8); grp.add(f); });
+  showDocentTip();
+}
+function docentGesture(){ if(docentMixer&&docentWave&&docentIdleA){ const a=docentMixer.clipAction(docentWave); a.reset(); a.setLoop(THREE.LoopOnce); a.clampWhenFinished=false; a.fadeIn(0.2).play(); setTimeout(()=>{a.fadeOut(0.4);},1600); } }
+function showDocentTip(){ if(docentBubble){docent.remove(docentBubble);} const txt=T[L].docent[docentIdx%T[L].docent.length]; docentIdx++; const c=document.createElement('canvas'); c.width=512;c.height=140; const x=c.getContext('2d'); x.fillStyle='rgba(255,255,255,.96)'; roundRect(x,6,6,500,128,22); x.fill(); x.fillStyle='#3a3550'; x.font='26px "Apple SD Gothic Neo",sans-serif'; x.textAlign='center'; wrap(x,txt,256,52,470,32); docentBubble=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false})); docentBubble.scale.set(3.4,0.93,1); docentBubble.position.y=2.9; docent.add(docentBubble); docentTimer=7; docentGesture(); }
 function wrap(x,text,cx,cy,maxw,lh){ const words=text.split(' '); let line='',y=cy,lines=[]; for(const w of words){ if(x.measureText(line+w).width>maxw&&line){lines.push(line);line=w+' ';}else line+=w+' '; } lines.push(line); const sy=cy-(lines.length-1)*lh/2; lines.forEach((l,i)=>x.fillText(l.trim(),cx,sy+i*lh)); }
 
 /* other players (real, via MQTT) */
@@ -283,37 +315,59 @@ $('musicBtn').onclick=()=>{ musicOn=!musicOn; $('musicBtn').textContent=musicOn?
 function sfxPop(){ if(!actx)return; const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.setValueAtTime(420,t); o.frequency.exponentialRampToValueAtTime(900,t+0.12); g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.16); o.connect(g).connect(master||actx.destination); o.start(t); o.stop(t+0.2); }
 function sfxTwinkle(){ if(!actx)return; [1200,1600,2000].forEach((f,i)=>{const t=actx.currentTime+i*0.05,o=actx.createOscillator(),g=actx.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25); o.connect(g).connect(master||actx.destination); o.start(t); o.stop(t+0.3);}); }
 
-/* ---------- backend (artworks: local + firebase) ---------- */
-let backend='local',fb=null; const LKEY='mg_gallery_v2';
+/* ---------- backend: free shared (MQTT retained) + optional Firebase ---------- */
+let backend='local',fb=null; const LKEY='mg_gallery_v4'; const artMap=new Map(); let seq=0;
 function loadLocal(){ try{return JSON.parse(localStorage.getItem(LKEY))||{items:[]};}catch(e){return{items:[]};} }
-function saveLocal(){ try{localStorage.setItem(LKEY,JSON.stringify(LDATA));}catch(e){alert('저장 공간이 가득 찼어요.');} }
-let LDATA=loadLocal(); let seq=LDATA.items.reduce((m,i)=>Math.max(m,i.id||0),0);
-let mine=new Set(JSON.parse(localStorage.getItem('mg_mine')||'[]'));
+function saveLocal(){ try{localStorage.setItem(LKEY,JSON.stringify({items:[...artMap.values()]}));}catch(e){} }
+let mine=new Set(JSON.parse(localStorage.getItem('mg_mine_v4')||'[]'));
+function saveMine(){ localStorage.setItem('mg_mine_v4',JSON.stringify([...mine])); }
 let isAdmin=new URLSearchParams(location.search).get('admin')==='1'&&sessionStorage.getItem('mg_admin')==='1';
-async function initBackend(){ const cfg=window.MG_FIREBASE; if(cfg&&cfg.apiKey&&cfg.apiKey.indexOf('PASTE')<0){ try{ const appMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'); const fsMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js'); const app=appMod.initializeApp(cfg); const db=fsMod.getFirestore(app); fb={m:fsMod,db,col:fsMod.collection(db,'artworks')}; fsMod.onSnapshot(fsMod.query(fb.col,fsMod.orderBy('createdAt','asc')),snap=>{const items=[]; snap.forEach(d=>{const x=d.data();x.key=d.id;items.push(x);}); syncItems(items);}); backend='firebase'; return; }catch(e){console.warn('fb off',e);} } backend='local'; LDATA.items.forEach(it=>{it.key=it.key||('L'+it.id);}); syncItems(LDATA.items); }
-async function addArtwork(item){ if(backend==='firebase'){const ref=await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:Date.now()}); mine.add(ref.id); localStorage.setItem('mg_mine',JSON.stringify([...mine]));} else{ item.id=++seq; item.key='L'+item.id; LDATA.items.push(item); saveLocal(); mine.add(item.key); localStorage.setItem('mg_mine',JSON.stringify([...mine])); await syncItems(LDATA.items); openArt(item);} }
-async function addComment(txt){ if(!cur||!txt.trim())return; const c={t:txt.trim().slice(0,60),by:myName}; if(backend==='firebase'){try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{comments:fb.m.arrayUnion(c)});}catch(e){}} else{cur.comments=cur.comments||[]; cur.comments.push(c); saveLocal(); refreshModal();} }
-async function addStar(){ if(!cur)return; if(backend==='firebase'){try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{stars:fb.m.increment(1)});}catch(e){}} else{cur.stars=(cur.stars||0)+1; saveLocal(); renderStars();} burstAt(innerWidth/2,innerHeight*0.4,['⭐','🌟']); }
-async function deleteArt(key){ if(!confirm(L==='ko'?'이 작품을 지울까요?':'Remove this artwork?'))return; if(backend==='firebase'){try{await fb.m.deleteDoc(fb.m.doc(fb.db,'artworks',key));}catch(e){alert('삭제 실패');}} else{LDATA.items=LDATA.items.filter(i=>i.key!==key); saveLocal(); const e=shown.get(key); if(e){scene.remove(e.group);shown.delete(key);}} mine.delete(key); localStorage.setItem('mg_mine',JSON.stringify([...mine])); closeArt(); if($('adminModal').classList.contains('show'))renderAdmin(); }
+let syncTimer=null;
+function scheduleSync(){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>{ syncItems([...artMap.values()].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0))); saveLocal(); },140); }
+async function initBackend(){ const cfg=window.MG_FIREBASE;
+  if(cfg&&cfg.apiKey&&cfg.apiKey.indexOf('PASTE')<0){ try{ const appMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'); const fsMod=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js'); const app=appMod.initializeApp(cfg); const db=fsMod.getFirestore(app); fb={m:fsMod,db,col:fsMod.collection(db,'artworks')}; fsMod.onSnapshot(fsMod.query(fb.col,fsMod.orderBy('createdAt','asc')),snap=>{ artMap.clear(); snap.forEach(d=>{const x=d.data();x.key=d.id;artMap.set(d.id,x);}); scheduleSync(); }); backend='firebase'; return; }catch(e){console.warn('firebase off',e);} }
+  backend=window.mqtt?'mqtt':'local';
+  loadLocal().items.forEach(it=>{ if(it.key)artMap.set(it.key,it); }); scheduleSync();
+}
+async function addArtwork(item){ item.createdAt=Date.now(); item.stars=0; item.comments=[];
+  if(backend==='firebase'){ const ref=await fb.m.addDoc(fb.col,{img:item.img,artist:item.artist,title:item.title,award:item.award,stars:0,comments:[],date:item.date,createdAt:item.createdAt}); mine.add(ref.id); saveMine(); return; }
+  item.key=(backend==='mqtt'?'m':'L')+myId.slice(0,4)+'-'+(++seq)+'-'+(item.createdAt%100000); artMap.set(item.key,item); mine.add(item.key); saveMine(); scheduleSync();
+  if(backend==='mqtt'&&mqc&&mqc.connected) mqc.publish(window.MG_ROOM+'/art/'+item.key,JSON.stringify(item),{retain:true});
+  openArt(item); }
+function pushArtUpdate(item){ if(backend==='mqtt'&&mqc&&mqc.connected) mqc.publish(window.MG_ROOM+'/art/'+item.key,JSON.stringify(item),{retain:true}); saveLocal(); }
+async function addComment(txt){ if(!cur||!txt.trim())return; const c={t:txt.trim().slice(0,60),by:myName};
+  if(backend==='firebase'){try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{comments:fb.m.arrayUnion(c)});}catch(e){} return;}
+  cur.comments=cur.comments||[]; cur.comments.push(c); refreshModal(); pushArtUpdate(cur); }
+async function addStar(){ if(!cur)return;
+  if(backend==='firebase'){try{await fb.m.updateDoc(fb.m.doc(fb.db,'artworks',cur.key),{stars:fb.m.increment(1)});}catch(e){}}
+  else{ cur.stars=(cur.stars||0)+1; renderStars(); pushArtUpdate(cur); }
+  burstAt(innerWidth/2,innerHeight*0.4,['⭐','🌟']); }
+async function deleteArt(key){ if(!confirm(L==='ko'?'이 작품을 지울까요?':'Remove this artwork?'))return;
+  if(backend==='firebase'){try{await fb.m.deleteDoc(fb.m.doc(fb.db,'artworks',key));}catch(e){alert('삭제 실패');}}
+  else{ artMap.delete(key); const e=shown.get(key); if(e){scene.remove(e.group);shown.delete(key);} scheduleSync(); if(backend==='mqtt'&&mqc&&mqc.connected)mqc.publish(window.MG_ROOM+'/art/'+key,'',{retain:true}); }
+  mine.delete(key); saveMine(); closeArt(); if($('adminModal').classList.contains('show'))renderAdmin(); }
 
-/* ---------- realtime presence + chat via MQTT (free public broker) ---------- */
-let mqc=null; const myId=Math.random().toString(36).slice(2); let myName='몽글이', myType=0, myColor=0xffd45e, lastPub=0;
+/* ---------- realtime: presence + chat + shared art (MQTT) ---------- */
+let mqc=null,mqSubbed=false,chatBusy=false; const myId=Math.random().toString(36).slice(2); let myName='몽글이', myType=0, myColor=0xffd45e, lastPub=0;
 function connectMQTT(){ if(!window.mqtt){ addDocent(); return; } try{
-  mqc=window.mqtt.connect(window.MG_MQTT,{clientId:'mg_'+myId,keepalive:30,reconnectPeriod:3000,connectTimeout:8000});
+  mqc=window.mqtt.connect(window.MG_MQTT,{clientId:'mg_'+myId,keepalive:30,reconnectPeriod:4000,connectTimeout:9000,clean:true});
   const base=window.MG_ROOM;
-  mqc.on('connect',()=>{ mqc.subscribe(base+'/pos/#'); mqc.subscribe(base+'/chat'); mqc.subscribe(base+'/bye/#'); pubPos(true); });
-  mqc.on('message',(topic,payload)=>{ let d; try{d=JSON.parse(payload.toString());}catch(e){return;}
+  mqc.on('connect',()=>{ if(!mqSubbed){ mqSubbed=true; mqc.subscribe(base+'/pos/#'); mqc.subscribe(base+'/chat'); mqc.subscribe(base+'/bye/#'); if(backend==='mqtt')mqc.subscribe(base+'/art/#'); } pubPos(true); });
+  mqc.on('message',(topic,payload)=>{ const str=payload.toString();
+    if(topic.startsWith(base+'/art/')){ const key=topic.slice((base+'/art/').length); if(!str){ artMap.delete(key); } else { let a; try{a=JSON.parse(str);}catch(e){return;} a.key=key; artMap.set(key,a); } scheduleSync(); return; }
+    let d; try{d=JSON.parse(str);}catch(e){return;}
     if(topic.startsWith(base+'/pos/')){ if(d.id===myId)return; upsertOther(d.id,d); updatePeople(); }
-    else if(topic===base+'/chat'){ addChat(d.name,d.text,d.id===myId); if(d.id!==myId){const o=others.get(d.id); if(o)chatBubble(o,d.text);} }
+    else if(topic===base+'/chat'){ if(d.id===myId)return; addChat(d.name,d.text); const o=others.get(d.id); if(o)chatBubble(o,d.text); }
     else if(topic.startsWith(base+'/bye/')){ const o=others.get(d.id); if(o){scene.remove(o.group); others.delete(d.id); updatePeople();} } });
   addEventListener('beforeunload',()=>{ try{mqc.publish(base+'/bye/'+myId,JSON.stringify({id:myId}));}catch(e){} });
   addDocent();
  }catch(e){ console.warn('mqtt fail',e); addDocent(); } }
 function pubPos(force){ if(!mqc||!mqc.connected)return; const now=Date.now(); if(!force&&now-lastPub<700)return; lastPub=now; mqc.publish(window.MG_ROOM+'/pos/'+myId,JSON.stringify({id:myId,name:myName,type:myType,color:myColor,x:controls.target.x,z:controls.target.z})); }
-function sendChat(text){ if(!text.trim())return; addChat(myName,text,true); if(mqc&&mqc.connected)mqc.publish(window.MG_ROOM+'/chat',JSON.stringify({id:myId,name:myName,text:text.slice(0,80)})); }
-function addChat(name,text,me){ const log=$('chatLog'); const m=document.createElement('div'); m.className='m'; m.innerHTML='<b>'+esc(name)+'</b> '+esc(text); log.appendChild(m); while(log.children.length>30)log.removeChild(log.firstChild); log.scrollTop=log.scrollHeight; }
-$('chatSend').onclick=()=>{ const v=$('chatIn').value; if(v.trim()){sendChat(v); $('chatIn').value='';} };
-$('chatIn').addEventListener('keydown',e=>{ if(e.key==='Enter')$('chatSend').click(); });
+function sendChat(text){ text=text.trim(); if(!text||chatBusy)return; chatBusy=true; setTimeout(()=>chatBusy=false,250); addChat(myName,text); if(mqc&&mqc.connected)mqc.publish(window.MG_ROOM+'/chat',JSON.stringify({id:myId,name:myName,text:text.slice(0,80)})); }
+function addChat(name,text){ const log=$('chatLog'); const m=document.createElement('div'); m.className='m'; m.innerHTML='<b>'+esc(name)+'</b> '+esc(text); log.appendChild(m); while(log.children.length>30)log.removeChild(log.firstChild); log.scrollTop=log.scrollHeight; }
+let chatLock=false;
+$('chatSend').onclick=()=>{ const el=$('chatIn'); const v=el.value; if(v.trim()){ el.value=''; sendChat(v); } };
+$('chatIn').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); if(chatLock)return; chatLock=true; setTimeout(()=>chatLock=false,120); $('chatSend').click(); } });
 
 /* ---------- upload / modal / admin / cert / fx ---------- */
 $('uploadBtn').onclick=()=>{ startAudio(); $('upModal').classList.add('show'); };
@@ -342,8 +396,16 @@ function burstAt(px,py,emo){ for(let i=0;i<20;i++){const s=document.createElemen
 function ripple(px,py){ const r=document.createElement('div'); r.style.cssText='position:fixed;z-index:44;left:'+px+'px;top:'+py+'px;width:12px;height:12px;border:3px solid #ff9fc4;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:all .5s ease;opacity:.9'; document.body.appendChild(r); requestAnimationFrame(()=>{r.style.width='70px'; r.style.height='70px'; r.style.opacity='0';}); setTimeout(()=>r.remove(),520); }
 
 /* ---------- entry + loop ---------- */
-let selChar=0;
-function buildCharPicker(){ const box=$('chars'); if(!box)return; box.innerHTML=''; CHARS.forEach((ch,i)=>{const d=document.createElement('div'); d.className='char'+(i===selChar?' on':''); d.innerHTML='<div class="e">'+ch.e+'</div><small>'+T[L].chars[i]+'</small>'; d.onclick=()=>{selChar=i; buildCharPicker();}; box.appendChild(d);}); }
+let selChar=0; const CHARHEX=['#dff2ff','#ffb3d1','#bfe3ff','#d0b8ff'];
+function rrP(x,a,b,w,h,r){ x.beginPath(); x.moveTo(a+r,b); x.arcTo(a+w,b,a+w,b+h,r); x.arcTo(a+w,b+h,a,b+h,r); x.arcTo(a,b+h,a,b,r); x.arcTo(a,b,a+w,b,r); x.closePath(); }
+function drawCharIcon(x,type,hex){ x.clearRect(0,0,120,120); const dark='#2b2b3a'; const eye=(ex,ey)=>{x.fillStyle=dark;x.beginPath();x.arc(ex,ey,6,0,7);x.fill();};
+  if(type===0){ x.fillStyle='#fff'; [[42,52,20],[78,52,20],[60,46,26]].forEach(([cx,cy,r])=>{x.beginPath();x.arc(cx,cy,r,0,7);x.fill();}); x.beginPath();x.arc(60,66,26,0,7);x.fill(); eye(52,58);eye(70,58); x.fillStyle='#ffb6c8';[[46,68],[76,68]].forEach(([cx,cy])=>{x.beginPath();x.arc(cx,cy,6,0,7);x.fill();}); x.strokeStyle=dark;x.lineWidth=3;x.beginPath();x.arc(61,66,7,0.15,Math.PI-0.15);x.stroke(); }
+  else if(type===1){ x.fillStyle=hex; x.beginPath();x.ellipse(48,30,8,22,0,0,7);x.fill(); x.beginPath();x.ellipse(72,30,8,22,0,0,7);x.fill(); x.fillStyle='#ffdff0';x.beginPath();x.ellipse(48,32,4,15,0,0,7);x.fill();x.beginPath();x.ellipse(72,32,4,15,0,0,7);x.fill(); x.fillStyle='#fff'; x.beginPath();x.arc(60,66,32,0,7);x.fill(); x.strokeStyle=hex;x.lineWidth=4;x.stroke(); eye(50,62);eye(70,62); x.fillStyle='#ff8fb0';x.beginPath();x.arc(60,74,4,0,7);x.fill(); }
+  else if(type===2){ x.fillStyle=hex; rrP(x,34,36,52,52,15); x.fill(); x.strokeStyle='#8fbfff';x.lineWidth=3;x.stroke(); x.fillStyle='#e7f2ff';rrP(x,42,46,36,20,9);x.fill(); eye(52,56);eye(68,56); x.strokeStyle=dark;x.lineWidth=3;x.beginPath();x.moveTo(60,36);x.lineTo(60,22);x.stroke(); x.fillStyle='#ff6b6b';x.beginPath();x.arc(60,18,5,0,7);x.fill(); x.fillStyle=dark;rrP(x,50,76,20,5,2);x.fill(); }
+  else { x.fillStyle=hex; x.beginPath();x.moveTo(40,46);x.lineTo(34,22);x.lineTo(56,40);x.closePath();x.fill(); x.beginPath();x.moveTo(80,46);x.lineTo(86,22);x.lineTo(64,40);x.closePath();x.fill(); x.beginPath();x.arc(60,64,32,0,7);x.fill(); eye(50,60);eye(70,60); x.fillStyle='#ff7a9b';x.beginPath();x.moveTo(60,66);x.lineTo(56,70);x.lineTo(64,70);x.closePath();x.fill(); x.strokeStyle=dark;x.lineWidth=2;[[36,68,-14],[36,74,-14],[84,68,14],[84,74,14]].forEach(([sx,sy,dx])=>{x.beginPath();x.moveTo(sx,sy);x.lineTo(sx+dx,sy-1);x.stroke();}); }
+}
+function drawBadge(){ const cv=$('badge'); if(!cv)return; drawCharIcon(cv.getContext('2d'),2,CHARHEX[2]); }
+function buildCharPicker(){ const box=$('chars'); if(!box)return; box.innerHTML=''; CHARS.forEach((ch,i)=>{const d=document.createElement('div'); d.className='char'+(i===selChar?' on':''); const cv=document.createElement('canvas'); cv.width=cv.height=120; drawCharIcon(cv.getContext('2d'),i,CHARHEX[i]); d.appendChild(cv); const s=document.createElement('small'); s.textContent=T[L].chars[i]; d.appendChild(s); d.onclick=()=>{selChar=i; buildCharPicker();}; box.appendChild(d);}); }
 $('enterBtn').onclick=()=>{ myName=($('entName').value||(L==='ko'?'몽글이':'Moong')).slice(0,16); myType=selChar; myColor=[0xffd45e,0xffb3d1,0xbfe3ff,0xd0b8ff][selChar]||0xffd45e;
   $('entry').classList.add('hide'); $('loading').classList.remove('hide'); startAudio();
   initBackend().then(()=>{ connectMQTT(); $('loading').classList.add('hide'); $('hud').classList.remove('hide'); tr(); animate(); setInterval(pubPos,700); }); };
@@ -352,7 +414,8 @@ let last=performance.now(),t0=last;
 function animate(){ const now=performance.now(),dt=Math.min(0.05,(now-last)/1000); last=now; const t=(now-t0)/1000;
   moveStep(dt); bobFloaties(t); stepOthers(dt);
   statueSpin=Math.max(0.5,statueSpin-dt*3); statueMesh.rotation.y+=dt*statueSpin; statueMesh.rotation.x+=dt*statueSpin*0.4;
-  if(docent){ docent.position.y=0+Math.sin(t*1.5)*0.03; docentTimer-=dt; if(docentTimer<=0)showDocentTip(); if(docentBubble){docentBubble.material.opacity=1;} }
+  if(docentMixer)docentMixer.update(dt);
+  if(docent){ docentTimer-=dt; if(docentTimer<=0)showDocentTip(); }
   for(const s of stars){ const k=0.6+0.4*Math.abs(Math.sin(t*1.6+s.userData.ph)); s.scale.set(s.userData.sz*k,s.userData.sz*k,1); s.material.opacity=0.4+0.6*k; }
   pubPos(false); controls.update(); renderer.render(scene,camera); requestAnimationFrame(animate); }
 tr();
